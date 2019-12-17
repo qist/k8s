@@ -26,7 +26,7 @@
 ##########  flannel 网络插件部署 kubectl apply -f /opt/aaa/yaml/flannel.yaml 等待容器部署完成查看node 节点网络 ip a| grep flannel.1
 ##########  给 master ingress 添加污点 防止其它服务使用这些节点:kubectl taint nodes  k8s-master-01 node-role.kubernetes.io/master=:NoSchedule kubectl taint nodes  k8s-ingress-01 node-role.kubernetes.io/ingress=:NoSchedule
 ##########  calico 网络插件部署 50节点内 wget https://docs.projectcalico.org/v3.10/manifests/calico.yaml  大于50节点 wget https://docs.projectcalico.org/v3.10/manifests/calico-typha.yaml
-########## 如果cni配置没放到默认路径请创建软链 ln -s /apps/cni/etc /etc/cni 同时修改yaml hostPath路径 同时修改CALICO_IPV4POOL_CIDR 参数为 10.80.0.0/12
+########## 如果cni配置没放到默认路径请创建软链 ln -s /apps/cni/etc /etc/cni 同时修改yaml hostPath路径 同时修改CALICO_IPV4POOL_CIDR 参数为 10.80.0.0/12 CALICO_IPV4POOL_IPIP: Never 启用bgp模式
 ##########  windows 证书访问 openssl pkcs12 -export -inkey k8s-apiserver-admin-key.pem -in k8s_apiserver-admin.pem -out client.p12
 ########## kubectl proxy --port=8001 &  把kube-apiserver 端口映射成本地 8001 端口      
 ########## 查看kubelet节点配置信息 NODE_NAME="k8s-node-04"; curl -sSL "http://localhost:8001/api/v1/nodes/${NODE_NAME}/proxy/configz" | jq '.kubeletconfig|.kind="KubeletConfiguration"|.apiVersion="kubelet.config.k8s.io/v1beta1"' > kubelet_configz_${NODE_NAME}
