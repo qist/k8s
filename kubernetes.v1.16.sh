@@ -2463,9 +2463,9 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --serialize-image-pulls=false \\
               --enforce-node-allocatable=pods,kube-reserved,system-reserved \\
               --pod-manifest-path=${POD_MANIFEST_PATH}/kubernetes/manifests \\
-              --runtime-cgroups=/systemd/system.slice/kubelet.service \\
-              --kubelet-cgroups=/systemd/system.slice/kubelet.service \\
-              --kube-reserved-cgroup=/systemd/system.slice/kubelet.service \\
+              --runtime-cgroups=/systemd/system.slice \\
+              --kubelet-cgroups=/systemd/system.slice \\
+              --kube-reserved-cgroup=/systemd/system.slice \\
               --system-reserved-cgroup=/systemd/system.slice \\
               --root-dir=${POD_MANIFEST_PATH}/kubernetes/kubelet \\
               --log-dir=${K8S_PATH}/log \\
@@ -2503,17 +2503,6 @@ After=docker.service
 Requires=docker.service
 
 [Service]
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/hugetlb/systemd/system.slice/kubelet.service
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/blkio/systemd/system.slice/kubelet.service
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpuset/systemd/system.slice/kubelet.service
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/devices/systemd/system.slice/kubelet.service
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/net_cls,net_prio/systemd/system.slice/kubelet.service
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/perf_event/systemd/system.slice/kubelet.service
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpu,cpuacct/systemd/system.slice/kubelet.service
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/freezer/systemd/system.slice/kubelet.service
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/memory/systemd/system.slice/kubelet.service
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/pids/systemd/system.slice/kubelet.service
-ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice/kubelet.service
 LimitNOFILE=1024000
 LimitNPROC=1024000
 LimitCORE=infinity
