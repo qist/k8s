@@ -1,3 +1,4 @@
+```
 ########## mkdir -p /root/.kube
 ##########复制admin kubeconfig 到root用户作为kubectl 工具默认密钥文件
 ########## \cp -pdr /opt/aaa/kubeconfig/admin.kubeconfig /root/.kube/config
@@ -29,4 +30,4 @@
 ##########  windows 证书访问 openssl pkcs12 -export -inkey k8s-apiserver-admin-key.pem -in k8s_apiserver-admin.pem -out client.p12
 ########## kubectl proxy --port=8001 &  把kube-apiserver 端口映射成本地 8001 端口      
 ########## 查看kubelet节点配置信息 NODE_NAME="k8s-node-04"; curl -sSL "http://localhost:8001/api/v1/nodes/${NODE_NAME}/proxy/configz" | jq '.kubeletconfig|.kind="KubeletConfiguration"|.apiVersion="kubelet.config.k8s.io/v1beta1"' > kubelet_configz_${NODE_NAME}
-
+```
