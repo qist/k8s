@@ -3342,8 +3342,8 @@ cat << EOF | tee ${HOST_PATH}/README.md
 ##########  提交bootstrap 跟授权到K8S 集群 kubectl apply -f ${HOST_PATH}/yaml/bootstrap-secret.yaml 
 ##########  提交授权到K8S集群 kubectl apply -f ${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml kubectl apply -f ${HOST_PATH}/yaml/kube-api-rbac.yaml
 ##########  系统版本为centos7 或者 ubuntu18 请先升级 iptables ansible-playbook -i  要安装node ip列表, iptables.yml
-##########  安装K8S node 使用kube-router ansible部署 ansible-playbook -i 要安装node ip列表 package.yml lxcfs.yml docker.yml kubelet.yml
-##########  安装K8S node 使用 flannel 网络插件ansible部署ansible-playbook -i 要安装node ip列表 package.yml lxcfs.yml docker.yml kubelet.yml kube-proxy.yml
+##########  安装K8S node 使用kube-router ansible部署 ansible-playbook -i 要安装node ip列表 package.yml cni.yml lxcfs.yml docker.yml kubelet.yml
+##########  安装K8S node 使用 flannel 网络插件ansible部署ansible-playbook -i 要安装node ip列表 package.yml cni.yml lxcfs.yml docker.yml kubelet.yml kube-proxy.yml
 ##########  部署自动挂载日期与lxcfs 到pod的 PodPreset  kubectl apply -f ${HOST_PATH}/yaml/allow-lxcfs-tz-env.yaml -n kube-system  " kube-system 命名空间名字"PodPreset 只是当前空间生效所以需要每个命名空间执行
 ##########  查看node 节点是否注册到K8S kubectl get node kubectl get csr 如果有节点 kube-router 方式部署 kubectl apply -f ${HOST_PATH}/yaml/kube-router.yaml 等待容器部署完成查看node ip a | grep kube-bridge
 ##########  flannel 网络插件部署 kubectl apply -f ${HOST_PATH}/yaml/flannel.yaml 等待容器部署完成查看node 节点网络 ip a| grep flannel.1
