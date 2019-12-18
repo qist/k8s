@@ -2228,15 +2228,20 @@ cat << EOF | tee ${HOST_PATH}/roles/docker/tasks/main.yml
   raw: mkdir -p ${DOCKER_BIN_PATH} && mkdir -p /etc/docker &&  mkdir -p /etc/containerd
 - name: copy docker ${DOCKER_BIN_PATH}
   copy: src=bin/ dest=${DOCKER_BIN_PATH}/ owner=root group=root mode=755
+- stat: path=/usr/bin/docker
+  register: docker_path_register
 - name: PATH 
   raw: echo PATH=\$PATH:${DOCKER_BIN_PATH} >> /etc/profile
+  when: docker_path_register.stat.exists == False
 - name: daemon.json conf
   template: src=daemon.json dest=/etc/docker owner=root group=root
 - name: config.toml
   shell: ${DOCKER_BIN_PATH}/containerd config default >/etc/containerd/config.toml
 - name: ln runc containerd-shim
   raw: ln -s ${DOCKER_BIN_PATH}/runc /usr/bin/runc && ln -s ${DOCKER_BIN_PATH}/containerd-shim /usr/bin/containerd-shim
+  when: docker_path_register.stat.exists == False
   ignore_errors: True
+  
 - name: copy "{{ item }}"
   template: src={{ item }} dest=/lib/systemd/system/ owner=root group=root
   with_items:
