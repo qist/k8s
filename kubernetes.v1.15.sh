@@ -1,5 +1,5 @@
 #!/bin/bash
-export PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:root/bin"
+#export PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:root/bin"
 #################################################################################################################################################
 ################docker:        wget https://download.docker.com/linux/static/stable/x86_64/docker-19.03.5.tgz
 ################lxcfs:         wget https://github.com/qist/lxcfs/releases/download/3.1.2/lxcfs-3.1.2.tar.gz 
