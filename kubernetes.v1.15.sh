@@ -705,8 +705,8 @@ cat << EOF | tee ${HOST_PATH}/cfssl/k8s/kube-router.json
             "C": "CN",
             "ST": "$CERT_ST",
             "L": "$CERT_L",
-            "O": "$CERT_O",
-            "OU": "$CERT_OU"
+      "O": "system:masters",
+      "OU": "Kubernetes-manual"
     }
   ]
 }
@@ -733,8 +733,8 @@ cat << EOF | tee ${HOST_PATH}/cfssl/k8s/kube-proxy.json
             "C": "CN",
             "ST": "$CERT_ST",
             "L": "$CERT_L",
-            "O": "$CERT_O",
-            "OU": "$CERT_OU"
+      "O": "system:masters",
+      "OU": "Kubernetes-manual"
     }
   ]
 }
@@ -2763,20 +2763,6 @@ roleRef:
   name: kube-router
 subjects:
 - kind: ServiceAccount
-  name: kube-router
-  namespace: kube-system
----
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: kube-router-admin
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-- apiGroup: rbac.authorization.k8s.io
-  kind: User
   name: kube-router
   namespace: kube-system
 EOF
