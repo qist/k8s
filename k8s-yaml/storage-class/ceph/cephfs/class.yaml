@@ -1,0 +1,12 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: cephfs
+provisioner: ceph.com/cephfs
+reclaimPolicy: Retain
+parameters:
+    monitors: 10.10.10.6,10.10.10.7,10.10.10.5:6789
+    adminId: admin
+    adminSecretName: ceph-secret-admin
+    adminSecretNamespace: "kube-system"
+    claimRoot: /pvc-volumes
