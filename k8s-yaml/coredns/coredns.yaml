@@ -69,7 +69,6 @@ data:
         ready
         kubernetes __PILLAR__DNS__DOMAIN__ in-addr.arpa ip6.arpa {
             pods insecure
-            upstream /etc/resolv.conf
             fallthrough in-addr.arpa ip6.arpa
             ttl 30
         }

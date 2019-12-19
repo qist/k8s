@@ -1,0 +1,120 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik
+  namespace: ingress-system
+---
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  namespace: ingress-system
+  name: traefik
+  labels:
+    k8s-app: traefik
+spec:
+  selector:
+    matchLabels:
+      k8s-app: traefik
+  template:
+    metadata:
+      labels:
+        k8s-app: traefik
+    spec:
+      serviceAccountName: traefik
+      terminationGracePeriodSeconds: 60
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: ingress-system
+          image: traefik:v2.1.1
+          args:
+            - --api.insecure
+            - --api.dashboard
+            - --log
+            - --log.format=json
+            - --log.level=INFO
+            - --accesslog
+            - --accesslog.format=json
+            - --accessLog.fields.headers.defaultMode=redact
+            - --accesslog
+            - --entrypoints.web.Address=:80
+            - --entrypoints.websecure.Address=:443
+            - --entrypoints.jaeger.Address=:16686
+            - --providers.kubernetescrd
+            - --metrics.prometheus
+            - --metrics.prometheus.entrypoint=metrics
+            - --metrics.prometheus.addEntryPointsLabels=true
+            - --entryPoints.metrics.address=:8082
+            - --serverstransport.insecureskipverify=true
+            - --providers.kubernetesingress.disablepasshostheaders=true
+            - --tracing.jaeger=true
+            - --tracing.jaeger.samplingServerURL=http://jaeger-agent:5778/sampling
+            - --tracing.jaeger.samplingType=const
+            - --tracing.jaeger.samplingParam=1.0
+            - --tracing.jaeger.localAgentHostPort=jaeger-agent:6831
+            - --tracing.jaeger.gen128Bit
+            - --tracing.jaeger.propagation=jaeger
+            - --tracing.jaeger.collector.endpoint=http://jaeger-collector:14268/api/traces?format=jaeger.thrift
+          ports:
+            - name: web
+              containerPort: 80
+              hostPort: 80
+            - name: websecure
+              containerPort: 443
+              hostPort: 443
+            - name: admin
+              containerPort: 8080
+              hostPort: 8080
+            - name: http-metrics
+              containerPort: 8082
+              hostPort: 8082
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+              add:
+              - NET_BIND_SERVICE
+      nodeSelector:
+        ingress: "yes"
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/ingress
+        operator: Equal
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: traefik
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/affinity: "true"
+    traefik.ingress.kubernetes.io/load-balancer-method: drr
+    prometheus.io/port: "8082"
+    prometheus.io/scrape: 'true'  
+  name: traefik
+  namespace: ingress-system
+spec:
+  clusterIP: None
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      name: web
+      port: 80
+    - protocol: TCP
+      name: admin
+      port: 8080
+    - protocol: TCP
+      name: websecure
+      port: 443
+    - protocol: TCP
+      name: http-metrics
+      port: 8082
+  selector:
+    k8s-app: traefik
