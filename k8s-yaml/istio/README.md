@@ -34,8 +34,6 @@ apiVersion: v1
 metadata:
   name: prometheus 
   namespace: istio-system
-  labels:
-    app: prometheus
 spec:
   type: ExternalName
   sessionAffinity: None
