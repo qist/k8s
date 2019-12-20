@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: rbd-claim1
+  name: nfs-claim1
 spec:
   accessModes:
     - ReadWriteOnce

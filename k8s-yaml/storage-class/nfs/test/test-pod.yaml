@@ -1,10 +1,10 @@
 kind: Pod
 apiVersion: v1
 metadata:
-  name: test-rbd-pod
+  name: test-nfs-pod
 spec:
   containers:
-  - name: test-rbd-pod
+  - name: test-nfs-pod
     image: juestnow/busybox:1.24
     command:
     - "/bin/sh"
@@ -18,4 +18,4 @@ spec:
   volumes:
   - name: pvc
     persistentVolumeClaim:
-      claimName: rbd-claim1
+      claimName: nfs-claim1
