@@ -4,9 +4,9 @@ metadata:
   name: cephfs-provisioner
   namespace: clusterstorage
 spec:
-   selector:
-     matchLabels:
-       app: cephfs-provisioner
+  selector:
+    matchLabels:
+      app: cephfs-provisioner
   replicas: 1
   strategy:
     type: Recreate

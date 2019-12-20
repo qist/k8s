@@ -4,10 +4,10 @@ metadata:
   name: rbd-provisioner
   namespace: clusterstorage
 spec:
-   selector:
-     matchLabels:
-       app: rbd-provisioner
   replicas: 1
+  selector:
+    matchLabels:
+      app: rbd-provisioner
   strategy:
     type: Recreate
   template:
