@@ -2149,6 +2149,7 @@ cat << EOF | tee ${HOST_PATH}/roles/package/tasks/main.yml
       - lvm2
       - device-mapper-persistent-data
       - fuse-devel
+      - ceph-common
     state: latest
   when: ansible_pkg_mgr == "yum"
 - name: Only run "update_cache=yes"
