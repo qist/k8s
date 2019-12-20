@@ -76,5 +76,47 @@ helm install install/kubernetes/helm/istio-cni --name-template istio-cni --names
 --set cniConfDir=/apps/cni/etc/net.d   \
 --set excludeNamespaces={"istio-system,monitoring,kubernetes-dashboard,kube-system"}
 ```
-
+##  istio 更新
+```
+#检查是否安装 istio-cni  插件
+helm status istio-cni --namespace istio-system
+#由于istio-cni 安装在非kube-system命名空间 先卸载istio-cni
+helm uninstall istio-cni --namespace istio-system
+# cni 部署
+helm install install/kubernetes/helm/istio-cni --name-template istio-cni --namespace istio-system \
+--set cniBinDir=/apps/cni/bin \
+--set cniConfDir=/apps/cni/etc/net.d   \
+--set excludeNamespaces={"istio-system,monitoring,kubernetes-dashboard,kube-system"}
+# 升级istio-init
+helm upgrade --install istio-init install/kubernetes/helm/istio-init  --namespace istio-system --force
+# 升级istio
+helm upgrade --install istio install/kubernetes/helm/istio --namespace istio-system --timeout=300s  \
+--set gateways.istio-ingressgateway.type=ClusterIP   \
+--set gateways.istio-egressgateway.enabled=true \
+--set mixer.policy.enabled=true \
+--set prometheus.enabled=false \
+--set tracing.enabled=true \
+--set tracing.ingress.enabled=true \
+--set tracing.ingress.hosts={"tracing.tycng.com"} \
+--set tracing.contextPath=/ \
+--set kiali.enabled=true \
+--set kiali.ingress.enabled=true \
+--set kiali.ingress.hosts={"kiali.tycng.com"} \
+--set kiali.contextPath=/ \
+--set kiali.dashboard.viewOnlyMode=true \
+--set kiali.dashboard.grafanaURL=http://monitor.tycng.com \
+--set kiali.dashboard.jaegerURL=http://tracing.tycng.com \
+--set kiali.createDemoSecret=true \
+--set istio_cni.enabled=true   \
+--set istio-cni.cniBinDir=/apps/cni/bin   \
+--set istio-cni.cniConfDir=/apps/cni/etc/net.d   \
+--set istio-cni.excludeNamespaces={"istio-system,monitoring,kubernetes-dashboard,kube-system"}  \
+--set global.proxy.clusterDomain="cluster.local" \
+--set global.proxy.accessLogFile="/dev/stdout" \
+--set global.proxy.logLevel="info" \
+--set global.disablePolicyChecks=false \
+--set global.proxy.autoInject=disabled
+# 替换tracing 跟踪器为zipkin
+添加--set tracing.provider=zipkin \
+```
 

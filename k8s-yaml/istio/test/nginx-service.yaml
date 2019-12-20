@@ -1,0 +1,33 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: nginx
+    app: nginx
+    istio: ingressgateway
+  name: nginx
+  namespace: default
+  annotations:
+    prometheus.io/port: "9913"
+    prometheus.io/scrape: 'true'    
+spec:
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  selector:
+    k8s-app: nginx
+    app: nginx
+    istio: ingressgateway
+  ports:
+    - protocol: TCP
+      port: 80
+      name: http
+    - protocol: TCP
+      port: 8080
+      name: http-vts
+    - protocol: TCP
+      port: 9913
+      name: http-metrics
+  type: ClusterIP
