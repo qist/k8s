@@ -3341,7 +3341,7 @@ cat << EOF | tee ${HOST_PATH}/README.md
 ##########  部署完成验证集群 kubectl cluster-info  kubectl api-versions  kubectl get cs 1.16 kubectl 显示不正常 
 ##########  提交bootstrap 跟授权到K8S 集群 kubectl apply -f ${HOST_PATH}/yaml/bootstrap-secret.yaml 
 ##########  提交授权到K8S集群 kubectl apply -f ${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml kubectl apply -f ${HOST_PATH}/yaml/kube-api-rbac.yaml
-##########  系统版本为centos7 或者 ubuntu18 请先升级 iptables ansible-playbook -i  要安装node ip列表, iptables.yml
+##########  系统版本为centos7,8 或者 ubuntu18 请先升级 iptables ansible-playbook -i  要安装node ip列表, iptables.yml
 ##########  安装K8S node 使用kube-router ansible部署 ansible-playbook -i 要安装node ip列表 package.yml cni.yml lxcfs.yml docker.yml kubelet.yml
 ##########  安装K8S node 使用 flannel 网络插件ansible部署ansible-playbook -i 要安装node ip列表 package.yml cni.yml lxcfs.yml docker.yml kubelet.yml kube-proxy.yml
 ##########  部署自动挂载日期与lxcfs 到pod的 PodPreset  kubectl apply -f ${HOST_PATH}/yaml/allow-lxcfs-tz-env.yaml -n kube-system  " kube-system 命名空间名字"PodPreset 只是当前空间生效所以需要每个命名空间执行
