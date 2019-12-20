@@ -9,7 +9,7 @@
 ################haproxy:       wget https://www.haproxy.org/download/2.1/src/haproxy-2.1.1.tar.gz
 ################automake:      wget https://ftp.gnu.org/gnu/automake/automake-1.15.1.tar.gz
 ################keepalived:    wget https://www.keepalived.org/software/keepalived-2.0.19.tar.gz
-################iptables:      wget  https://www.netfilter.org/projects/iptables/files/iptables-1.6.2.tar.bz2
+################iptables:      wget https://www.netfilter.org/projects/iptables/files/iptables-1.8.4.tar.bz2
 ##################################################################################################################################################
 ##################################################################################################################################################
 ###############cfssl签名工具下载  wget https://github.com/qist/lxcfs/releases/download/cfssl/cfssl.tar.gz # 解压二进制放到/usr/bin 目录
@@ -53,7 +53,7 @@ K8S_VERSION=v1.14.10
 LXCFS_VERSION=3.1.2
 DOCKER_VERSION=19.03.5
 CNI_VERSION=v0.8.3
-IPTABLES_VERSION=1.6.2 #centos7,ubuntu18 版本需要升级  centos8, ubuntu19 不用升级
+IPTABLES_VERSION=1.8.4 #centos7,ubuntu18,centos8 版本需要升级 ubuntu19 不用升级
 KEEPALIVED_VERSION=2.0.19
 AUTOMAKE_VERSION=1.15.1 #KEEPALIVED 编译依赖使用
 HAPROXY_VERSION=2.1.1
@@ -166,7 +166,7 @@ ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 #kube-apiserver 服务器IP列表 有更多的节点时请添加IP K8S_APISERVER_VIP="\"192.168.2.247\",\"192.168.2.248\",\"192.168.2.249\",\"192.168.2.250\",\"192.168.2.251\""
 K8S_APISERVER_VIP="\"192.168.2.247\",\"192.168.2.248\",\"192.168.2.249\""
 # 创建bootstrap配置
-TOKEN_ID=$(head -c 6 /dev/urandom | md5sum | head -c 6)
+TOKEN_ID=$(head -c 16 /dev/urandom | od -An -t x | tr -dc a-f3-9|cut -c 1-6)
 TOKEN_SECRET=$(head -c 16 /dev/urandom | md5sum | head -c 16)
 BOOTSTRAP_TOKEN=${TOKEN_ID}.${TOKEN_SECRET}
 #######################################################################################################################################################################
@@ -2011,6 +2011,22 @@ EOF
 # 生成node 节点 ansible配置
 # iptables playbook 配置
 cat << EOF | tee ${HOST_PATH}/roles/iptables/tasks/main.yml
+- name: centos8 enabled CentOS-PowerTools.repo
+  raw: sed -i "s/enabled=0/enabled=1/" /etc/yum.repos.d/CentOS-PowerTools.repo
+  when: ansible_pkg_mgr == "dnf"
+- name: centos8 dnf Install
+  dnf:
+    name:
+      - epel-release
+    state: latest
+  when: ansible_pkg_mgr == "dnf"
+- name: centos8 dnf Install
+  dnf:
+    name:
+      - gcc
+      - make
+    state: latest
+  when: ansible_pkg_mgr == "dnf"
 - name: centos7 yum Install
   yum: 
     name:  
@@ -2062,11 +2078,9 @@ cat << EOF | tee ${HOST_PATH}/roles/iptables/tasks/main.yml
 - name: tar iptables-${IPTABLES_VERSION}.tar.bz2
   raw: tar -xvf  ${SOURCE_PATH}/iptables-${IPTABLES_VERSION}.tar.bz2 -C  ${SOURCE_PATH}
 - name: configure to iptables
-  shell: cd  ${SOURCE_PATH}/iptables-${IPTABLES_VERSION} && ./configure 
+  shell: cd  ${SOURCE_PATH}/iptables-${IPTABLES_VERSION} && ./configure --disable-nftables
 - name: make install
   shell:  cd  ${SOURCE_PATH}/iptables-${IPTABLES_VERSION} && make -j4 &&  make install
-- name: ln -sf /usr/local/sbin/xtables-multi /sbin/xtables-multi
-  raw: ln -sf /usr/local/sbin/xtables-multi /sbin/xtables-multi 
 EOF
 # 复制 iptables 源码到 playbook
 \cp -pdr ${TEMP_PATH}/iptables-${IPTABLES_VERSION}.tar.bz2 ${HOST_PATH}/roles/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2
