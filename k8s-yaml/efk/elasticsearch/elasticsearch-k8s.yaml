@@ -1,0 +1,167 @@
+apiVersion: rbac.authorization.k8s.io/v1 
+kind: ClusterRoleBinding
+metadata:
+  name: elasticsearch-k8s
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: elasticsearch-k8s
+subjects:
+- kind: ServiceAccount
+  name: elasticsearch-k8s
+  namespace: elasticsearch
+---
+apiVersion: rbac.authorization.k8s.io/v1 
+kind: ClusterRole 
+metadata:
+  name: elasticsearch-k8s
+rules:
+- apiGroups: [""]
+  resources:
+  - services
+  - endpoints
+  - namespaces
+  verbs: ["get"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: elasticsearch-k8s
+  namespace: elasticsearch
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: elasticsearch-k8s
+  namespace: elasticsearch
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+    k8s-app: elasticsearch-k8s
+    kubernetes.io/cluster-service: 'true'
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      k8s-app: elasticsearch-k8s
+  template:
+    metadata:
+      labels:
+        k8s-app: elasticsearch-k8s
+        kubernetes.io/cluster-service: 'true'
+    spec:
+      initContainers:
+        - name: increase-vm-max-map
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ["sysctl", "-w", "vm.max_map_count=262144"]
+          securityContext:
+            privileged: true
+        - name: increase-fd-ulimit
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "ulimit -n 65536"]
+          securityContext:
+            privileged: true
+      containers:
+        - name: elasticsearch-k8s
+          image: 'elasticsearch:7.5.1'
+          ports:
+            - name: db
+              containerPort: 9200
+              protocol: TCP
+            - name: transport
+              containerPort: 9300
+              protocol: TCP
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: cluster.name
+              value: "es_cluster"
+            - name: node.name
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: ES_JAVA_OPTS
+              value: '-Xms1g -Xmx1g'
+            - name: path.data
+              value: "/data/elasticsearch"
+            - name: discovery.seed_hosts
+              value: "elasticsearch-discovery"
+            - name: cluster.initial_master_nodes
+              value: "elasticsearch-k8s-0,elasticsearch-k8s-1,elasticsearch-k8s-2"
+            - name: bootstrap.memory_lock
+              value: "false"
+            - name: bootstrap.system_call_filter
+              value: "false"             
+          resources:
+            limits:
+              cpu: '1'
+              memory: 3Gi
+            requests:
+              cpu: '1'
+              memory: 3Gi
+          volumeMounts:
+            - name: elasticsearch-data
+              mountPath: /data
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - '-c'
+                  - set -e -x; 
+                      /bin/mkdir -p /data/elasticsearch; 
+                      /bin/chown -R elasticsearch.elasticsearch /data/elasticsearch
+          imagePullPolicy: IfNotPresent
+      dnsPolicy: ClusterFirst
+      serviceAccountName: elasticsearch-k8s
+      serviceAccount: elasticsearch-k8s
+      dnsConfig:
+        options:
+          - name: single-request-reopen
+  volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Gi
+        volumeMode: Filesystem
+  serviceName: elasticsearch-k8s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: elasticsearch-k8s
+  name: elasticsearch-discovery
+  namespace: elasticsearch
+spec:
+  publishNotReadyAddresses: true
+  ports:
+  - name: transport
+    port: 9300
+    targetPort: 9300
+  selector:
+    k8s-app: elasticsearch-k8s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: elasticsearch-k8s
+  name: elasticsearch-svc
+  namespace: elasticsearch
+spec:
+  type: ClusterIP
+  ports:
+  - name: db
+    protocol: TCP
+    port: 9200
+  selector:
+    k8s-app: elasticsearch-k8s

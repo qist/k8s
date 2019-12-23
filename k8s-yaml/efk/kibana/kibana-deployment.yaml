@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana-k8s
+  namespace: elasticsearch
+  labels:
+    k8s-app: kibana-k8s
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: kibana-k8s
+  template:
+    metadata:
+      labels:
+        k8s-app: kibana-k8s
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
+    spec:
+      containers:
+      - name: kibana-k8s
+        image: kibana:7.5.1
+        resources:
+          # need more cpu upon initialization, therefore burstable class
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m
+        env:
+          - name: ELASTICSEARCH_HOSTS
+            value: http://elasticsearch-svc:9200
+          - name: SERVER_NAME
+            value: kibana-k8s
+          - name: SERVER_REWRITEBASEPATH
+            value: "false"
+          - name: ELASTICSEARCH_REQUESTTIMEOUT
+            value: '60000'
+          - name: I18N_LOCALE
+            value: zh-CN
+          - name: xpack.monitoring.ui.container.elasticsearch.enabled
+            value: "true"
+        ports:
+        - containerPort: 5601
+          name: ui
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /api/status
+            port: ui
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/status
+            port: ui
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
