@@ -3307,6 +3307,17 @@ spec:
     - name: allow-tz-env
       hostPath:
         path: /usr/share/zoneinfo/Asia/Shanghai
+---
+apiVersion: settings.k8s.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: allow-tz-env
+spec:
+  selector:
+    matchLabels:
+  env:
+    - name: TZ
+      value: Asia/Shanghai
 EOF
 # 生成环境变量配置方便创建kubeconfig 跟签发新的个人证书
 cat << EOF | tee ${HOST_PATH}/environment.sh
