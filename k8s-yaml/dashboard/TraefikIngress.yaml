@@ -18,4 +18,5 @@ spec:
             serviceName: kubernetes-dashboard
             servicePort: 443
   tls:
-   - secretName: dashboard-tls-cert
+   - secretName: default
+   #- secretName: dashboard-tls-cert
