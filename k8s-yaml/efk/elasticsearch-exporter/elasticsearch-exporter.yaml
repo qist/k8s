@@ -1,0 +1,94 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch-exporter
+  namespace: elasticsearch
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      k8s-app: elasticsearch-exporter
+  template:
+    metadata:
+      labels:
+        k8s-app: elasticsearch-exporter
+    spec:   
+      containers:
+        - name: elasticsearch-exporter
+          image: juestnow/elasticsearch_exporter
+          imagePullPolicy: IfNotPresent
+          args:
+          - "--es.uri=http://elasticsearch-svc:9200"
+          - "--es.all"
+          securityContext:
+            capabilities:
+              drop:
+              - SETPCAP
+              - MKNOD
+              - AUDIT_WRITE
+              - CHOWN
+              - NET_RAW
+              - DAC_OVERRIDE
+              - FOWNER
+              - FSETID
+              - KILL
+              - SETGID
+              - SETUID
+              - NET_BIND_SERVICE
+              - SYS_CHROOT
+              - SETFCAP
+            readOnlyRootFilesystem: true
+          ports:
+          - containerPort: 9114
+            name: http-metrics
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http-metrics
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http-metrics
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 200m
+              memory: 30Mi
+            limits:
+              memory: 50Mi
+              cpu: 250m
+      restartPolicy: Always
+      securityContext:
+        runAsNonRoot: true
+        runAsGroup: 10000
+        runAsUser: 10000
+        fsGroup: 10000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: elasticsearch-exporter
+  name: elasticsearch-exporter
+  annotations:
+    prometheus.io/scrape: 'true'
+  namespace: elasticsearch
+spec:
+  selector:
+    k8s-app: elasticsearch-exporter
+  ports:
+    - protocol: TCP
+      port: 9114
+      name: http-metrics
