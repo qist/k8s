@@ -147,6 +147,7 @@ spec:
   - name: transport
     port: 9300
     targetPort: 9300
+  clusterIP: None
   selector:
     k8s-app: elasticsearch-k8s
 ---
