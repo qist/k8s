@@ -5,7 +5,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "6.5.1"
+      "version": "6.5.2"
     },
     {
       "type": "panel",
@@ -38,11 +38,11 @@
       }
     ]
   },
-  "editable": true,
+  "editable": false,
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1576725583856,
+  "iteration": 1577253356432,
   "links": [],
   "panels": [
     {
@@ -90,10 +90,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by(container_name) (container_memory_usage_bytes{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\", container_name=~\"$container\", container_name!=\"POD\"})",
+          "expr": "sum by(container) (container_memory_working_set_bytes{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\", container=~\"$container\", container!=\"POD\"})",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "Current: {{ container_name }}",
+          "legendFormat": "Current: {{ container }}",
           "refId": "A"
         },
         {
@@ -111,10 +111,10 @@
           "refId": "C"
         },
         {
-          "expr": "sum by(container_name) (container_memory_cache{job=\"kubelet\", namespace=\"$namespace\", pod_name=~\"$pod\", container_name=~\"$container\", container_name!=\"POD\"})",
+          "expr": "sum by(container) (container_memory_cache{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", container=~\"$container\", container!=\"POD\"})",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "Cache: {{ container_name }}",
+          "legendFormat": "Cache: {{ container }}",
           "refId": "D"
         }
       ],
@@ -204,10 +204,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (container_name) (rate(container_cpu_usage_seconds_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", image!=\"\", pod_name=\"$pod\", container_name=~\"$container\", container_name!=\"POD\"}[1m]))",
+          "expr": "sum by (container) (irate(container_cpu_usage_seconds_total{job=\"kubernetes-endpoints\", cluster=\"$cluster\", namespace=\"$namespace\", image!=\"\", pod=\"$pod\", container=~\"$container\", container!=\"POD\"}[4m]))",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "Current: {{ container_name }}",
+          "legendFormat": "Current: {{ container }}",
           "refId": "A"
         },
         {
@@ -311,17 +311,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sort_desc(sum by (pod_name) (rate(container_network_receive_bytes_total{job=\"kubernetes-cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\"}[1m])))",
+          "expr": "sort_desc(sum by (pod) (irate(container_network_receive_bytes_total{job=\"kubernetes-cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[4m])))",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "RX: {{ pod_name }}",
+          "legendFormat": "RX: {{ pod }}",
           "refId": "A"
         },
         {
-          "expr": "sort_desc(sum by (pod_name) (rate(container_network_transmit_bytes_total{job=\"kubernetes-cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=\"$pod\"}[1m])))",
+          "expr": "sort_desc(sum by (pod) (irate(container_network_transmit_bytes_total{job=\"kubernetes-cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[4m])))",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "TX: {{ pod_name }}",
+          "legendFormat": "TX: {{ pod }}",
           "refId": "B"
         }
       ],
@@ -470,8 +470,8 @@
     "list": [
       {
         "current": {
-          "text": "Prometheus",
-          "value": "Prometheus"
+          "text": "prometheus",
+          "value": "prometheus"
         },
         "hide": 0,
         "includeAll": false,
@@ -500,7 +500,7 @@
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
+        "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
         "tagsQuery": "",
@@ -522,7 +522,7 @@
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
+        "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
         "tagsQuery": "",
@@ -544,7 +544,7 @@
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
+        "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
         "tagsQuery": "",
@@ -566,7 +566,7 @@
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
+        "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
         "tagsQuery": "",
@@ -607,5 +607,5 @@
   "timezone": "",
   "title": "Kubernetes / Pods",
   "uid": "ab4f13a9892a76a4d21ce8c2445bf4ea",
-  "version": 3
+  "version": 9
 }

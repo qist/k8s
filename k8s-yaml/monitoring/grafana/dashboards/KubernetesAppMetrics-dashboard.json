@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "6.5.1"
+      "version": "6.5.2"
     },
     {
       "type": "panel",
@@ -47,7 +47,7 @@
   "gnetId": 1471,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1576725635053,
+  "iteration": 1577253434463,
   "links": [],
   "panels": [
     {

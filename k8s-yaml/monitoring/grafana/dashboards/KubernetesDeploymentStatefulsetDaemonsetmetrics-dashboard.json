@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "6.5.1"
+      "version": "6.5.2"
     },
     {
       "type": "panel",
@@ -53,7 +53,7 @@
   "gnetId": 8588,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1576725735801,
+  "iteration": 1577253490232,
   "links": [],
   "panels": [
     {
@@ -1321,5 +1321,5 @@
   "timezone": "browser",
   "title": "Kubernetes Deployment Statefulset Daemonset metrics",
   "uid": "oWe9aYxmk",
-  "version": 1
+  "version": 2
 }

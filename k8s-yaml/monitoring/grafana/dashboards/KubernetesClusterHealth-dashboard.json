@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "6.5.1"
+      "version": "6.5.2"
     },
     {
       "type": "datasource",
@@ -774,5 +774,5 @@
   "timezone": "browser",
   "title": "Kubernetes Cluster Health",
   "uid": "pncI_FiWk",
-  "version": 1
+  "version": 2
 }
