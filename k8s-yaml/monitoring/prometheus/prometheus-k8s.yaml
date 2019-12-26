@@ -11,25 +11,45 @@ subjects:
   name: prometheus-k8s
   namespace: monitoring
 ---
-apiVersion: rbac.authorization.k8s.io/v1 
-kind: ClusterRole 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
   name: prometheus
 rules:
-- apiGroups: [""]
+- apiGroups: 
+  - ""
   resources:
   - nodes
   - nodes/proxy
   - services
   - endpoints
   - pods
-  verbs: ["get", "list", "watch"]
-- apiGroups: [""]
+  verbs: 
+    - get
+    - list
+    - watch
+- apiGroups: 
+  - ""
   resources:
   - configmaps
-  verbs: ["get"]
-- nonResourceURLs: ["/metrics"]
-  verbs: ["get"]
+  verbs: 
+    - get
+- apiGroups:
+  - ""
+  resources:
+  - nodes/metrics
+  verbs: 
+    - get
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+- nonResourceURLs: 
+  - /metrics
+  verbs: 
+    - get
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -170,9 +190,6 @@ metadata:
     operated-prometheus: "true"
   name: prometheus-operated
   namespace: monitoring
-  annotations:
-    prometheus.io/port: "9090"
-    prometheus.io/scrape: 'true'
 spec:
   clusterIP: None
   ports:

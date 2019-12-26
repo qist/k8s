@@ -6,6 +6,8 @@
 # 添加节点数prometheus-k8s.yaml replicas: 3 修改cpu 内存 存储大小 这部署同时支持 hpa 自定义参数扩缩容，同时整合istio支持 不再需要部署prometheus-operator
 # 部署 prometheus  kubectl apply -f .
 # kubectl get pod  -n  monitoring | grep prometheus-k8s kubectl get service  -n  monitoring | grep prometheus-k8s
+# monitor 文件夹是etcd Kube-Scheduler Kube-Controller-Manager Kubelet 监控yaml 二进制方式请修改IP Kubelet 以service 方式发现监控所以使用外部DaemonSet方式部署的应用这里以node-exporter为当然也可以使用网络插件来做
+# 可以使用kube-prometheus 项目的rules 文件及grafana dashboard 文件
 # 添加监控外部节点
 vi Jenkins.yaml
 apiVersion: v1

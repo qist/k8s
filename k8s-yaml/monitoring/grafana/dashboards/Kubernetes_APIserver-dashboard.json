@@ -108,7 +108,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(up{job=\"kubernetes-apiservers\"})",
+          "expr": "sum(up{job=\"apiserver\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "",
@@ -176,28 +176,28 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(apiserver_request_total{job=\"kubernetes-apiservers\", instance=~\"$instance\",code=~\"2..\"}[5m]))",
+          "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"2..\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "2xx",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(apiserver_request_total{job=\"kubernetes-apiservers\", instance=~\"$instance\",code=~\"3..\"}[5m]))",
+          "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"3..\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "3xx",
           "refId": "B"
         },
         {
-          "expr": "sum(rate(apiserver_request_total{job=\"kubernetes-apiservers\", instance=~\"$instance\",code=~\"4..\"}[5m]))",
+          "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"4..\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "4xx",
           "refId": "C"
         },
         {
-          "expr": "sum(rate(apiserver_request_total{job=\"kubernetes-apiservers\", instance=~\"$instance\",code=~\"5..\"}[5m]))",
+          "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"5..\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "5xx",
@@ -290,7 +290,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{job=\"kubernetes-apiservers\", instance=~\"$instance\", verb!=\"WATCH\"}[5m])) by (verb, le))",
+          "expr": "histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{job=\"apiserver\", instance=~\"$instance\", verb!=\"WATCH\"}[5m])) by (verb, le))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{verb}}",
@@ -383,7 +383,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(workqueue_adds_total{job=\"kubernetes-apiservers\", instance=~\"$instance\"}[5m])) by (instance, name)",
+          "expr": "sum(rate(workqueue_adds_total{job=\"apiserver\", instance=~\"$instance\"}[5m])) by (instance, name)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}} {{name}}",
@@ -476,7 +476,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(workqueue_depth{job=\"kubernetes-apiservers\", instance=~\"$instance\"}[5m])) by (instance, name)",
+          "expr": "sum(rate(workqueue_depth{job=\"apiserver\", instance=~\"$instance\"}[5m])) by (instance, name)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}} {{name}}",
@@ -569,7 +569,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "histogram_quantile(0.99, sum(rate(workqueue_queue_duration_seconds_bucket{job=\"kubernetes-apiservers\", instance=~\"$instance\"}[5m])) by (instance, name, le))",
+          "expr": "histogram_quantile(0.99, sum(rate(workqueue_queue_duration_seconds_bucket{job=\"apiserver\", instance=~\"$instance\"}[5m])) by (instance, name, le))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}} {{name}}",
@@ -662,7 +662,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "etcd_helper_cache_entry_total{job=\"kubernetes-apiservers\", instance=~\"$instance\"}",
+          "expr": "etcd_helper_cache_entry_total{job=\"apiserver\", instance=~\"$instance\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}}",
@@ -755,14 +755,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(etcd_helper_cache_hit_total{job=\"kubernetes-apiservers\",instance=~\"$instance\"}[5m])) by (intance)",
+          "expr": "sum(rate(etcd_helper_cache_hit_total{job=\"apiserver\",instance=~\"$instance\"}[5m])) by (intance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}} hit",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(etcd_helper_cache_miss_total{job=\"kubernetes-apiservers\",instance=~\"$instance\"}[5m])) by (instance)",
+          "expr": "sum(rate(etcd_helper_cache_miss_total{job=\"apiserver\",instance=~\"$instance\"}[5m])) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}} miss",
@@ -855,14 +855,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "histogram_quantile(0.99,sum(rate(etcd_request_cache_get_duration_seconds_bucket{job=\"kubernetes-apiservers\",instance=~\"$instance\"}[5m])) by (instance, le))",
+          "expr": "histogram_quantile(0.99,sum(rate(etcd_request_cache_get_duration_seconds_bucket{job=\"apiserver\",instance=~\"$instance\"}[5m])) by (instance, le))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}} get",
           "refId": "A"
         },
         {
-          "expr": "histogram_quantile(0.99,sum(rate(etcd_request_cache_add_duration_seconds_bucket{job=\"kubernetes-apiservers\",instance=~\"$instance\"}[5m])) by (instance, le))",
+          "expr": "histogram_quantile(0.99,sum(rate(etcd_request_cache_add_duration_seconds_bucket{job=\"apiserver\",instance=~\"$instance\"}[5m])) by (instance, le))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}} miss",
@@ -955,7 +955,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "process_resident_memory_bytes{job=\"kubernetes-apiservers\",instance=~\"$instance\"}",
+          "expr": "process_resident_memory_bytes{job=\"apiserver\",instance=~\"$instance\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}}",
@@ -1048,7 +1048,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(process_cpu_seconds_total{job=\"kubernetes-apiservers\",instance=~\"$instance\"}[5m])",
+          "expr": "rate(process_cpu_seconds_total{job=\"apiserver\",instance=~\"$instance\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}}",
@@ -1141,7 +1141,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "go_goroutines{job=\"kubernetes-apiservers\",instance=~\"$instance\"}",
+          "expr": "go_goroutines{job=\"apiserver\",instance=~\"$instance\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}}",
@@ -1219,14 +1219,14 @@
         "allValue": null,
         "current": {},
         "datasource": "$datasource",
-        "definition": "label_values(apiserver_request_total{job=\"kubernetes-apiservers\"}, instance)",
+        "definition": "label_values(apiserver_request_total{job=\"apiserver\"}, instance)",
         "hide": 0,
         "includeAll": true,
         "label": null,
         "multi": false,
         "name": "instance",
         "options": [],
-        "query": "label_values(apiserver_request_total{job=\"kubernetes-apiservers\"}, instance)",
+        "query": "label_values(apiserver_request_total{job=\"apiserver\"}, instance)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
