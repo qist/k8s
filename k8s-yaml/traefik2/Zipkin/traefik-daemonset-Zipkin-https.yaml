@@ -37,7 +37,6 @@ spec:
             - --accesslog
             - --accesslog.format=json
             - --accessLog.fields.headers.defaultMode=redact
-            - --accesslog
             - --entrypoints.web.Address=:80
             - --entrypoints.websecure.Address=:443
             - --entrypoints.zipkin.Address=:16686
