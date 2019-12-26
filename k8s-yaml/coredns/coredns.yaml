@@ -68,7 +68,8 @@ data:
         }
         ready
         kubernetes __PILLAR__DNS__DOMAIN__ in-addr.arpa ip6.arpa {
-            pods insecure
+            pods verified
+            endpoint_pod_names
             fallthrough in-addr.arpa ip6.arpa
             ttl 30
         }
