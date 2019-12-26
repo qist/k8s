@@ -6,6 +6,9 @@ metadata:
   namespace: kube-system
   labels:
     kubernetes.io/name: "Metrics-server"
+  annotations:
+    prometheus.io/scheme: https
+    prometheus.io/scrape: 'true'
 spec:
   selector:
     k8s-app: metrics-server
