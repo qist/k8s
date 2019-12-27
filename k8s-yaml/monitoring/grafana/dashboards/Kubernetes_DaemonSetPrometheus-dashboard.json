@@ -448,7 +448,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$daemonset_namespace\",pod_name=~\"$daemonset_name.*\"}[2m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$daemonset_namespace\",pod=~\"$daemonset_name.*\"}[2m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -530,7 +530,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(container_memory_working_set_bytes{namespace=\"$daemonset_namespace\",pod_name=~\"$daemonset_name.*\", container_name!=\"POD\"})",
+          "expr": "sum(container_memory_working_set_bytes{namespace=\"$daemonset_namespace\",pod=~\"$daemonset_name.*\", container!=\"POD\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -612,7 +612,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rate(container_network_transmit_bytes_total{namespace=\"$daemonset_namespace\",pod_name=~\"$daemonset_name.*\"}[2m])) + sum(rate(container_network_receive_bytes_total{namespace=\"$daemonset_namespace\",pod_name=~\"$daemonset_name.*\"}[2m]))",
+          "expr": "sum(rate(container_network_transmit_bytes_total{namespace=\"$daemonset_namespace\",pod=~\"$daemonset_name.*\"}[2m])) + sum(rate(container_network_receive_bytes_total{namespace=\"$daemonset_namespace\",pod=~\"$daemonset_name.*\"}[2m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -684,7 +684,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (pod_name) (rate(container_cpu_usage_seconds_total{namespace=\"$daemonset_namespace\",pod_name=~\"$daemonset_name.*\"}[2m]))",
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"$daemonset_namespace\",pod=~\"$daemonset_name.*\"}[2m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -782,7 +782,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (pod_name) (container_memory_working_set_bytes{namespace=\"$daemonset_namespace\",pod_name=~\"$daemonset_name.*\", container_name!=\"POD\"})",
+          "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"$daemonset_namespace\",pod=~\"$daemonset_name.*\", container!=\"POD\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"

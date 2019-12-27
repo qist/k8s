@@ -1145,7 +1145,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "max(container_memory_usage_bytes{namespace=\"$namespace\", container_name=\"traefik\"})",
+              "expr": "max(container_memory_usage_bytes{namespace=\"$namespace\", container=\"traefik\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "Max memory used",
@@ -1244,7 +1244,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "max(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container_name=\"traefik\"}[1m]))",
+              "expr": "max(rate(container_cpu_usage_seconds_total{namespace=\"$namespace\", container=\"traefik\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "Max cpu used",

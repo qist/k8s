@@ -525,7 +525,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=~\"$statefulset.*\"}[3m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$statefulset.*\"}[3m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "",
@@ -609,7 +609,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(container_memory_usage_bytes{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=~\"$statefulset.*\"}) / 1024^3",
+          "expr": "sum(container_memory_usage_bytes{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$statefulset.*\"}) / 1024^3",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "",
@@ -693,7 +693,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rate(container_network_transmit_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod_name=~\"$statefulset.*\"}[3m])) + sum(rate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=\"$namespace\",pod_name=~\"$statefulset.*\"}[3m]))",
+          "expr": "sum(rate(container_network_transmit_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$statefulset.*\"}[3m])) + sum(rate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=\"$namespace\",pod=~\"$statefulset.*\"}[3m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "",
@@ -758,7 +758,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (pod_name) (rate(container_cpu_usage_seconds_total{namespace=\"$namespace\",pod_name=~\"$statefulset.*\"}[2m]))",
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"$namespace\",pod=~\"$statefulset.*\"}[2m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -807,9 +807,9 @@
     },
     {
       "aliasColors": {
-        "{pod_name=\"alertmanager-main-0\"}": "dark-green",
-        "{pod_name=\"alertmanager-main-1\"}": "dark-blue",
-        "{pod_name=\"alertmanager-main-2\"}": "dark-orange"
+        "{pod=\"alertmanager-main-0\"}": "dark-green",
+        "{pod=\"alertmanager-main-1\"}": "dark-blue",
+        "{pod=\"alertmanager-main-2\"}": "dark-orange"
       },
       "bars": false,
       "dashLength": 10,
@@ -851,7 +851,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (pod_name) (container_memory_working_set_bytes{namespace=\"$namespace\",pod_name=~\"$statefulset.*\", container_name!=\"POD\"})",
+          "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"$namespace\",pod=~\"$statefulset.*\", container!=\"POD\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"

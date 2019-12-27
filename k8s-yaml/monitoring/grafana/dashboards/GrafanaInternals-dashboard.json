@@ -215,7 +215,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "grafana_stat_total_orgs{kubernetes_pod_name=\"$pod\"}",
+          "expr": "grafana_stat_total_orgs{kubernetes_pod=\"$pod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "refId": "A"
@@ -297,7 +297,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "grafana_stat_total_users{kubernetes_pod_name=\"$pod\"}",
+          "expr": "grafana_stat_total_users{kubernetes_pod=\"$pod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "refId": "A"
@@ -379,7 +379,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "grafana_stat_totals_dashboard{kubernetes_pod_name=\"$pod\"}",
+          "expr": "grafana_stat_totals_dashboard{kubernetes_pod=\"$pod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "refId": "A"
@@ -452,7 +452,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(rate(process_cpu_seconds_total{kubernetes_pod_name=\"$pod\"}[5m]))",
+          "expr": "avg(rate(process_cpu_seconds_total{kubernetes_pod=\"$pod\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "CPU Time",
@@ -540,14 +540,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(rate(process_resident_memory_bytes{kubernetes_pod_name=\"$pod\"}[5m]))",
+          "expr": "avg(rate(process_resident_memory_bytes{kubernetes_pod=\"$pod\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Resident Mem",
           "refId": "A"
         },
         {
-          "expr": "avg(rate(process_virtual_memory_bytes{kubernetes_pod_name=\"$pod\"}[5m]))",
+          "expr": "avg(rate(process_virtual_memory_bytes{kubernetes_pod=\"$pod\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Virtual Mem",
@@ -636,7 +636,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "process_open_fds{kubernetes_pod_name=\"$pod\"}",
+          "expr": "process_open_fds{kubernetes_pod=\"$pod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Open FD",
@@ -739,21 +739,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "grafana_api_response_status_total{kubernetes_pod_name=\"$pod\"}",
+          "expr": "grafana_api_response_status_total{kubernetes_pod=\"$pod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "API {{ code }}",
           "refId": "A"
         },
         {
-          "expr": "grafana_page_response_status_total{kubernetes_pod_name=\"$pod\"}",
+          "expr": "grafana_page_response_status_total{kubernetes_pod=\"$pod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Page {{ code }}",
           "refId": "B"
         },
         {
-          "expr": "grafana_proxy_response_status_total{kubernetes_pod_name=\"$pod\"}",
+          "expr": "grafana_proxy_response_status_total{kubernetes_pod=\"$pod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Proxy {{ code }}",
@@ -841,7 +841,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "http_request_total{kubernetes_pod_name=\"$pod\"}",
+          "expr": "http_request_total{kubernetes_pod=\"$pod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{handler}} - {{method}} - {{statuscode}}",
@@ -929,14 +929,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "grafana_api_login_post_total{kubernetes_pod_name=\"$pod\"}",
+          "expr": "grafana_api_login_post_total{kubernetes_pod=\"$pod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "POST",
           "refId": "A"
         },
         {
-          "expr": "grafana_api_login_oauth_total{kubernetes_pod_name=\"$pod\"}",
+          "expr": "grafana_api_login_oauth_total{kubernetes_pod=\"$pod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "OAuth",
@@ -1038,21 +1038,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "grafana_api_dataproxy_request_all_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.5\"}",
+          "expr": "grafana_api_dataproxy_request_all_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.5\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.5 ",
           "refId": "A"
         },
         {
-          "expr": "grafana_api_dataproxy_request_all_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.9\"}",
+          "expr": "grafana_api_dataproxy_request_all_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.9\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.9",
           "refId": "B"
         },
         {
-          "expr": "grafana_api_dataproxy_request_all_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.99\"}",
+          "expr": "grafana_api_dataproxy_request_all_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.99\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.99",
@@ -1140,7 +1140,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(grafana_api_dataproxy_request_all_milliseconds_sum{kubernetes_pod_name=\"$pod\"}[5m]) / rate(grafana_api_dataproxy_request_all_milliseconds_count{kubernetes_pod_name=\"$pod\"}[5m])",
+          "expr": "rate(grafana_api_dataproxy_request_all_milliseconds_sum{kubernetes_pod=\"$pod\"}[5m]) / rate(grafana_api_dataproxy_request_all_milliseconds_count{kubernetes_pod=\"$pod\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Average Requests Duration",
@@ -1242,21 +1242,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "grafana_api_dashboard_get_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.5\"}",
+          "expr": "grafana_api_dashboard_get_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.5\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.5",
           "refId": "A"
         },
         {
-          "expr": "grafana_api_dashboard_get_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.9\"}",
+          "expr": "grafana_api_dashboard_get_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.9\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.9",
           "refId": "B"
         },
         {
-          "expr": "grafana_api_dashboard_get_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.99\"}",
+          "expr": "grafana_api_dashboard_get_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.99\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.99",
@@ -1344,7 +1344,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(grafana_api_dashboard_get_milliseconds_sum{kubernetes_pod_name=\"$pod\"}[5m]) / rate(grafana_api_dashboard_get_milliseconds_count{kubernetes_pod_name=\"$pod\"}[5m])",
+          "expr": "rate(grafana_api_dashboard_get_milliseconds_sum{kubernetes_pod=\"$pod\"}[5m]) / rate(grafana_api_dashboard_get_milliseconds_count{kubernetes_pod=\"$pod\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.5",
@@ -1446,21 +1446,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "grafana_api_dashboard_save_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.5\"}",
+          "expr": "grafana_api_dashboard_save_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.5\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.5",
           "refId": "A"
         },
         {
-          "expr": "grafana_api_dashboard_save_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.9\"}",
+          "expr": "grafana_api_dashboard_save_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.9\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.9",
           "refId": "B"
         },
         {
-          "expr": "grafana_api_dashboard_save_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.99\"}",
+          "expr": "grafana_api_dashboard_save_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.99\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.99",
@@ -1548,7 +1548,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(grafana_api_dashboard_save_milliseconds_sum{kubernetes_pod_name=\"$pod\"}[5m]) / rate(grafana_api_dashboard_save_milliseconds_count{kubernetes_pod_name=\"$pod\"}[5m])",
+          "expr": "rate(grafana_api_dashboard_save_milliseconds_sum{kubernetes_pod=\"$pod\"}[5m]) / rate(grafana_api_dashboard_save_milliseconds_count{kubernetes_pod=\"$pod\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.5",
@@ -1650,21 +1650,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "grafana_api_dashboard_search_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.5\"}",
+          "expr": "grafana_api_dashboard_search_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.5\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.5",
           "refId": "A"
         },
         {
-          "expr": "grafana_api_dashboard_search_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.9\"}",
+          "expr": "grafana_api_dashboard_search_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.9\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.9",
           "refId": "B"
         },
         {
-          "expr": "grafana_api_dashboard_search_milliseconds{kubernetes_pod_name=\"$pod\", quantile=\"0.99\"}",
+          "expr": "grafana_api_dashboard_search_milliseconds{kubernetes_pod=\"$pod\", quantile=\"0.99\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.99",
@@ -1752,7 +1752,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(grafana_api_dashboard_search_milliseconds_sum{kubernetes_pod_name=\"$pod\"}[5m]) / rate(grafana_api_dashboard_search_milliseconds_count{kubernetes_pod_name=\"$pod\"}[5m])",
+          "expr": "rate(grafana_api_dashboard_search_milliseconds_sum{kubernetes_pod=\"$pod\"}[5m]) / rate(grafana_api_dashboard_search_milliseconds_count{kubernetes_pod=\"$pod\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "0.5",
@@ -1820,7 +1820,7 @@
         "multi": false,
         "name": "pod",
         "options": [],
-        "query": "label_values(grafana_info,kubernetes_pod_name)",
+        "query": "label_values(grafana_info,kubernetes_pod)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,

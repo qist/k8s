@@ -1136,7 +1136,7 @@
           "refId": "A"
         },
         {
-          "expr": "sum(\n   count(count(container_spec_cpu_shares{namespace!=\"\"}) by (pod_name, namespace)) by (pod_name, namespace)  \n   * on (pod_name, namespace) \n   sum(irate(container_cpu_usage_seconds_total{namespace!=\"\"}[1m])) by (pod_name, namespace)\n) by (namespace) * 1000\n/\nsum(container_spec_cpu_shares{namespace!=\"\",namespace!=\"kube-system\"}) by (namespace) * 100\n",
+          "expr": "sum(\n   count(count(container_spec_cpu_shares{namespace!=\"\"}) by (pod, namespace)) by (pod, namespace)  \n   * on (pod, namespace) \n   sum(irate(container_cpu_usage_seconds_total{namespace!=\"\"}[1m])) by (pod, namespace)\n) by (namespace) * 1000\n/\nsum(container_spec_cpu_shares{namespace!=\"\",namespace!=\"kube-system\"}) by (namespace) * 100\n",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1152,7 +1152,7 @@
           "refId": "B"
         },
         {
-          "expr": "sum(\n   count(count(container_memory_working_set_bytes{namespace!=\"\"}) by (pod_name, namespace)) by (pod_name, namespace)  \n   * on (pod_name, namespace) \n   sum(avg_over_time(container_memory_working_set_bytes{namespace!=\"\"}[1m])) by (pod_name, namespace)\n) by (namespace)\n/\nsum(container_spec_memory_limit_bytes{namespace!=\"\",namespace!=\"kube-system\"}) by (namespace) * 100\n",
+          "expr": "sum(\n   count(count(container_memory_working_set_bytes{namespace!=\"\"}) by (pod, namespace)) by (pod, namespace)  \n   * on (pod, namespace) \n   sum(avg_over_time(container_memory_working_set_bytes{namespace!=\"\"}[1m])) by (pod, namespace)\n) by (namespace)\n/\nsum(container_spec_memory_limit_bytes{namespace!=\"\",namespace!=\"kube-system\"}) by (namespace) * 100\n",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,

@@ -525,7 +525,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$deployment_namespace\",pod_name=~\"$deployment_name.*\"}[3m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$deployment_namespace\",pod=~\"$deployment_name.*\"}[3m]))",
           "format": "time_series",
           "intervalFactor": 2,
           "refId": "A",
@@ -608,7 +608,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(container_memory_usage_bytes{namespace=\"$deployment_namespace\",pod_name=~\"$deployment_name.*\"}) / 1024^3",
+          "expr": "sum(container_memory_usage_bytes{namespace=\"$deployment_namespace\",pod=~\"$deployment_name.*\"}) / 1024^3",
           "intervalFactor": 2,
           "refId": "A",
           "step": 600
@@ -690,7 +690,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rate(container_network_transmit_bytes_total{namespace=\"$deployment_namespace\",pod_name=~\"$deployment_name.*\"}[3m])) + sum(rate(container_network_receive_bytes_total{namespace=\"$deployment_namespace\",pod_name=~\"$deployment_name.*\"}[3m]))",
+          "expr": "sum(rate(container_network_transmit_bytes_total{namespace=\"$deployment_namespace\",pod=~\"$deployment_name.*\"}[3m])) + sum(rate(container_network_receive_bytes_total{namespace=\"$deployment_namespace\",pod=~\"$deployment_name.*\"}[3m]))",
           "intervalFactor": 2,
           "refId": "A",
           "step": 600
@@ -711,8 +711,8 @@
     },
     {
       "aliasColors": {
-        "{pod_name=\"coredns-6cbf85dbc6-hcqd7\"}": "dark-blue",
-        "{pod_name=\"coredns-6cbf85dbc6-wcqmd\"}": "dark-purple"
+        "{pod=\"coredns-6cbf85dbc6-hcqd7\"}": "dark-blue",
+        "{pod=\"coredns-6cbf85dbc6-wcqmd\"}": "dark-purple"
       },
       "bars": false,
       "dashLength": 10,
@@ -754,7 +754,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (pod_name) (rate(container_cpu_usage_seconds_total{namespace=\"$deployment_namespace\",pod_name=~\"$deployment_name.*\"}[2m]))",
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"$deployment_namespace\",pod=~\"$deployment_name.*\"}[2m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -803,8 +803,8 @@
     },
     {
       "aliasColors": {
-        "{pod_name=\"coredns-6cbf85dbc6-hcqd7\"}": "dark-green",
-        "{pod_name=\"coredns-6cbf85dbc6-wcqmd\"}": "dark-blue"
+        "{pod=\"coredns-6cbf85dbc6-hcqd7\"}": "dark-green",
+        "{pod=\"coredns-6cbf85dbc6-wcqmd\"}": "dark-blue"
       },
       "bars": false,
       "dashLength": 10,
@@ -847,7 +847,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (pod_name) (container_memory_working_set_bytes{namespace=\"$deployment_namespace\",pod_name=~\"$deployment_name.*\", container_name!=\"POD\"})",
+          "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"$deployment_namespace\",pod=~\"$deployment_name.*\", container!=\"POD\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
