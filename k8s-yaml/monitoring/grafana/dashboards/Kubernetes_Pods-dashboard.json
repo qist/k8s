@@ -311,14 +311,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sort_desc(sum by (pod) (irate(container_network_receive_bytes_total{job=\"kubernetes-cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[4m])))",
+          "expr": "sort_desc(sum by (pod) (irate(container_network_receive_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[4m])))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "RX: {{ pod }}",
           "refId": "A"
         },
         {
-          "expr": "sort_desc(sum by (pod) (irate(container_network_transmit_bytes_total{job=\"kubernetes-cadvisor\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[4m])))",
+          "expr": "sort_desc(sum by (pod) (irate(container_network_transmit_bytes_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\"}[4m])))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "TX: {{ pod }}",
