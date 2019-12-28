@@ -87,7 +87,7 @@ spec:
       serviceAccountName: prometheus-k8s
       containers:
       - name: prometheus
-        image: prom/prometheus:v2.14.0
+        image: prom/prometheus:v2.15.1
         args:
           - --web.console.templates=/etc/prometheus/consoles
           - --web.console.libraries=/etc/prometheus/console_libraries
@@ -161,6 +161,10 @@ spec:
         requests:
           storage: 50Gi
       volumeMode: Filesystem
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 10
 ---
 apiVersion: v1
 kind: Service
