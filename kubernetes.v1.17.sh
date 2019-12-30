@@ -2826,7 +2826,7 @@ KUBE_PROXY_OPTS="--logtostderr=false \\
 --ipvs-scheduler=rr \\
 --cluster-cidr=${CLUSTER_CIDR} \\
 --log-dir=${K8S_PATH}/log \\
---feature-gates="ServiceTopology=true,EndpointSlice=true" \\
+--feature-gates=ServiceTopology=true,EndpointSlice=true \\
 --metrics-bind-address 0.0.0.0 \\
 --kubeconfig=${K8S_PATH}/conf/kube-proxy.kubeconfig"
 EOF
