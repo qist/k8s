@@ -58,7 +58,7 @@ KEEPALIVED_VERSION=2.0.19
 AUTOMAKE_VERSION=1.15.1 #KEEPALIVED 编译依赖使用
 HAPROXY_VERSION=2.1.1
 # 网络插件 选择 1、kube-router 2、kube-proxy+flannel
-NET_PLUG=1
+NET_PLUG=2
 # 节点间互联网络接口名称flannel 指定网络接口
 IFACE="eth0"
 # K8S api 网络互联接口 多网卡请指定接口ansible_网卡接口名字.ipv4.address
