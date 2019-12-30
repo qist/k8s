@@ -1881,7 +1881,7 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=false \\
 --enable-garbage-collector=true \\
 --root-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --service-account-private-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem \\
---feature-gates=RotateKubeletServerCertificate=true,RotateKubeletClientCertificate=true \\
+--feature-gates=RotateKubeletServerCertificate=true,RotateKubeletClientCertificate=true,ServiceTopology=true,EndpointSlice=true \\
 --controllers=*,bootstrapsigner,tokencleaner \\
 --horizontal-pod-autoscaler-use-rest-clients=true \\
 --horizontal-pod-autoscaler-sync-period=10s \\
@@ -1970,6 +1970,7 @@ KUBE_SCHEDULER_OPTS=" \
                    --alsologtostderr=true \\
                    --kube-api-qps=${KUBE_API_QPS} \\
                    --kube-api-burst=${KUBE_API_BURST} \\
+                   --feature-gates=ServiceTopology=true,EndpointSlice=true \\
                    --log-dir=${K8S_PATH}/log \\
                    --v=${LEVEL_LOG}"
 EOF
@@ -2479,7 +2480,7 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --healthz-port=10248 \\
               --healthz-bind-address={{ $KUBELET_IPV4 }} \\
               --cert-dir=${K8S_PATH}/ssl \\
-              --feature-gates=RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true \\
+              --feature-gates=RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true,ServiceTopology=true,EndpointSlice=true \\
               --serialize-image-pulls=false \\
               --enforce-node-allocatable=pods,kube-reserved,system-reserved \\
               --pod-manifest-path=${POD_MANIFEST_PATH}/kubernetes/manifests \\
