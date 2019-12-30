@@ -1,15 +1,15 @@
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  name: traefik-dashbord
+  name: traefik-dashboard
   namespace: ingress-system
-
 spec:
-  rules:
-  - host: traefik.tycng.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: traefik
-          servicePort: 8080
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`traefik.tycng.com`)
+    kind: Rule
+    services:
+    - name: api@internal
+      kind: TraefikService
