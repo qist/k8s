@@ -140,7 +140,7 @@ KUBE_APISERVER="https://${K8S_VIP_DOMAIN}:${K8S_VIP_PORT}"
 # RUNTIME_CONFIG v1.16 版本设置 低于v1.16 RUNTIME_CONFIG="api/all=true" 即可
 RUNTIME_CONFIG="api/all=true"
 #开启插件enable-admission-plugins #AlwaysPullImages 启用istio 不能自动注入需要手动执行注入
-ENABLE_ADMISSION_PLUGINS="DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceExists,NamespaceLifecycle,NodeRestriction,OwnerReferencesPermissionEnforcement,PodNodeSelector,PersistentVolumeClaimResize,PodPreset,PodTolerationRestriction,ResourceQuota,ServiceAccount,StorageObjectInUseProtection,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
+ENABLE_ADMISSION_PLUGINS="DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceExists,NamespaceLifecycle,NodeRestriction,PodNodeSelector,PersistentVolumeClaimResize,PodPreset,PodTolerationRestriction,ResourceQuota,ServiceAccount,StorageObjectInUseProtection,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
 #禁用插件disable-admission-plugins 
 DISABLE_ADMISSION_PLUGINS="DenyEscalatingExec,ExtendedResourceToleration,ImagePolicyWebhook,LimitPodHardAntiAffinityTopology,NamespaceAutoProvision,Priority,EventRateLimit,PodSecurityPolicy"
 # 设置api 副本数
@@ -1070,7 +1070,7 @@ KUBE_APISERVER_OPTS="--logtostderr=false \\
         --profiling \\
         --kubelet-https \\
         --event-ttl=1h \\
-        --feature-gates=RotateKubeletServerCertificate=true,RotateKubeletClientCertificate=true,DynamicAuditing=true \\
+        --feature-gates=RotateKubeletServerCertificate=true,RotateKubeletClientCertificate=true,DynamicAuditing=true,ServiceTopology=true,EndpointSlice=true \\
         --enable-bootstrap-token-auth=true \\
         --alsologtostderr=true \\
         --log-dir=${K8S_PATH}/log \\
@@ -1881,7 +1881,7 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=false \\
 --enable-garbage-collector=true \\
 --root-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --service-account-private-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem \\
---feature-gates=RotateKubeletServerCertificate=true,RotateKubeletClientCertificate=true \\
+--feature-gates=RotateKubeletServerCertificate=true,RotateKubeletClientCertificate=true,ServiceTopology=true,EndpointSlice=true \\
 --controllers=*,bootstrapsigner,tokencleaner \\
 --horizontal-pod-autoscaler-use-rest-clients=true \\
 --horizontal-pod-autoscaler-sync-period=10s \\
@@ -1964,6 +1964,7 @@ KUBE_SCHEDULER_OPTS=" \
                    --logtostderr=false \\
                    --address=0.0.0.0 \\
                    --leader-elect=true \\
+                   --feature-gates=ServiceTopology=true,EndpointSlice=true \\
                    --kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authentication-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authorization-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
@@ -2479,7 +2480,7 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --healthz-port=10248 \\
               --healthz-bind-address={{ $KUBELET_IPV4 }} \\
               --cert-dir=${K8S_PATH}/ssl \\
-              --feature-gates=RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true \\
+              --feature-gates=RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true,ServiceTopology=true,EndpointSlice=true \\
               --serialize-image-pulls=false \\
               --enforce-node-allocatable=pods,kube-reserved,system-reserved \\
               --pod-manifest-path=${POD_MANIFEST_PATH}/kubernetes/manifests \\
@@ -2817,7 +2818,7 @@ EOF
 cat << EOF | tee ${HOST_PATH}/roles/kube-proxy/templates/kube-proxy
 KUBE_PROXY_OPTS="--logtostderr=false \\
 --v=${LEVEL_LOG} \\
---feature-gates=SupportIPVSProxyMode=true \\
+--feature-gates=SupportIPVSProxyMode=true,ServiceTopology=true,EndpointSlice=true \\
 --masquerade-all=true \\
 --proxy-mode=ipvs \\
 --ipvs-min-sync-period=5s \\
