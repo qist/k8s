@@ -2246,7 +2246,7 @@ cat << EOF | tee ${HOST_PATH}/roles/docker/tasks/main.yml
 - stat: path=/usr/bin/docker
   register: docker_path_register
 - name: PATH 
-  raw: echo PATH=\$PATH:${DOCKER_BIN_PATH} >> /etc/profile
+  raw: echo "export PATH=\\\$PATH:${DOCKER_BIN_PATH}" >> /etc/profile
   when: docker_path_register.stat.exists == False
 - name: daemon.json conf
   template: src=daemon.json dest=/etc/docker owner=root group=root
