@@ -2818,7 +2818,7 @@ EOF
 cat << EOF | tee ${HOST_PATH}/roles/kube-proxy/templates/kube-proxy
 KUBE_PROXY_OPTS="--logtostderr=false \\
 --v=${LEVEL_LOG} \\
---feature-gates=SupportIPVSProxyMode=true \\
+--feature-gates=SupportIPVSProxyMode=true,ServiceTopology=true,EndpointSlice=true \\
 --masquerade-all=true \\
 --proxy-mode=ipvs \\
 --ipvs-min-sync-period=5s \\
@@ -2826,7 +2826,6 @@ KUBE_PROXY_OPTS="--logtostderr=false \\
 --ipvs-scheduler=rr \\
 --cluster-cidr=${CLUSTER_CIDR} \\
 --log-dir=${K8S_PATH}/log \\
---feature-gates=ServiceTopology=true,EndpointSlice=true \\
 --metrics-bind-address 0.0.0.0 \\
 --kubeconfig=${K8S_PATH}/conf/kube-proxy.kubeconfig"
 EOF
