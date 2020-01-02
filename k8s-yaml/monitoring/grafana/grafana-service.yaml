@@ -10,6 +10,7 @@ metadata:
     prometheus.io/scrape: 'true'
 spec:
   type: NodePort
+  externalTrafficPolicy: Cluster
   ports:
     - port: 3000
       targetPort: 3000
