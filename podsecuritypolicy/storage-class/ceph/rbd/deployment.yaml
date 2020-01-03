@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rbd-provisioner
+  namespace: clusterstorage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rbd-provisioner
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: rbd-provisioner
+    spec:
+      containers:
+      - name: rbd-provisioner
+        image: "quay.io/external_storage/rbd-provisioner:latest"
+        env:
+        - name: PROVISIONER_NAME
+          value: ceph.com/rbd
+        - name: PROVISIONER_SECRET_NAMESPACE
+          value: clusterstorage
+      serviceAccount: rbd-provisioner

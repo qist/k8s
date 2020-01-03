@@ -1,0 +1,90 @@
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: psp.process-exporter.unprivileged
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  defaultAllowPrivilegeEscalation: false
+  volumes:
+    - secret
+    - configMap
+    - emptyDir
+    - hostPath
+  allowedHostPaths:
+    - pathPrefix: "/proc"
+  allowedCapabilities: ['NET_ADMIN']
+  defaultAddCapabilities: []
+  requiredDropCapabilities: []
+  hostNetwork: true
+  hostIPC: false
+  hostPID: true
+  hostPorts:
+  - min: 0
+    max: 65535
+  readOnlyRootFilesystem: true
+  # Users and groups
+  runAsUser:
+    rule: MustRunAsNonRoot
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: MustRunAs
+    ranges:
+      - min: 1
+        max: 65535
+  # SELinux
+  seLinux:
+    # SELinux is unused in CaaSP
+    rule: 'RunAsAny'
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: process-exporter
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: process-exporter
+rules:
+- apiGroups: 
+  - policy
+  resources: 
+  - podsecuritypolicies
+  verbs: 
+  - use
+  resourceNames: 
+  - psp.process-exporter.unprivileged
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: process-exporter
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: process-exporter
+subjects:
+- kind: ServiceAccount
+  name: process-exporter
+  namespace: monitoring
