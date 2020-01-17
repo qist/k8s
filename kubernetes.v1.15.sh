@@ -1960,7 +1960,7 @@ cat << EOF | tee ${HOST_PATH}/roles/kube-scheduler/tasks/main.yml
 EOF
 # 创建kube-scheduler 启动配置文件
 cat << EOF | tee ${HOST_PATH}/roles/kube-scheduler/templates/kube-scheduler
-KUBE_SCHEDULER_OPTS=" \
+KUBE_SCHEDULER_OPTS=" \\
                    --logtostderr=false \\
                    --address=0.0.0.0 \\
                    --leader-elect=true \\
