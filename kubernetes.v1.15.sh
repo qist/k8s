@@ -2939,7 +2939,8 @@ data:
     {
       "Network": "${CLUSTER_CIDR}",
       "Backend": {
-        "Type": "vxlan"
+        "Type": "vxlan",
+        "Directrouting": true
       }
     }
 ---
