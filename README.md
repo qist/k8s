@@ -3,7 +3,7 @@
 ##########复制admin kubeconfig 到root用户作为kubectl 工具默认密钥文件
 ########## \cp -pdr /opt/aaa/kubeconfig/admin.kubeconfig /root/.kube/config
 ###################################################################################
-##########  ansible 及ansible-playbook 单个ip ip结尾一点要添加“,”符号 ansible-playbook -i 192.168.0.1, xxx.yml
+##########  ansible 及ansible-playbook 单个ip ip结尾一点要添加“,”符号例如： ansible-playbook -i 192.168.0.1, xxx.yml
 ##########  source /opt/aaa/environment.sh 设置环境变量生效方便后期新增证书等
 ##########  etcd 部署 ansible-playbook -i "192.168.2.247","192.168.2.248","192.168.2.249" etcd.yml
 ##########  etcd EVENTS 部署 ansible-playbook -i "192.168.2.250","192.168.2.251","192.168.2.252", events-etcd.yml
