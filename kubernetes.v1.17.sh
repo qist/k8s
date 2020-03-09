@@ -1,11 +1,11 @@
 #!/bin/bash
 #export PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:root/bin"
 #################################################################################################################################################
-################docker:        wget https://download.docker.com/linux/static/stable/x86_64/docker-19.03.5.tgz
+################docker:        wget https://download.docker.com/linux/static/stable/x86_64/docker-19.03.7.tgz
 ################lxcfs:         wget https://github.com/qist/lxcfs/releases/download/3.1.2/lxcfs-3.1.2.tar.gz 
-################cni:           wget https://github.com/containernetworking/plugins/releases/download/v0.8.3/cni-plugins-linux-amd64-v0.8.3.tgz
-################etcd:          wget https://github.com/etcd-io/etcd/releases/download/v3.3.18/etcd-v3.3.18-linux-amd64.tar.gz
-################kubernetes:    wget https://storage.googleapis.com/kubernetes-release/release/v1.17.0/kubernetes-server-linux-amd64.tar.gz
+################cni:           wget https://github.com/containernetworking/plugins/releases/download/v0.8.5/cni-plugins-linux-amd64-v0.8.5.tgz
+################etcd:          wget https://github.com/etcd-io/etcd/releases/download/v3.4.4/etcd-v3.4.4-linux-amd64.tar.gz
+################kubernetes:    wget https://storage.googleapis.com/kubernetes-release/release/v1.17.3/kubernetes-server-linux-amd64.tar.gz
 ################haproxy:       wget https://www.haproxy.org/download/2.1/src/haproxy-2.1.1.tar.gz
 ################automake:      wget https://ftp.gnu.org/gnu/automake/automake-1.15.1.tar.gz
 ################keepalived:    wget https://www.keepalived.org/software/keepalived-2.0.19.tar.gz
@@ -48,11 +48,11 @@ HOST_PATH=`pwd`
 # 设置工作端压缩包所在目录
 TEMP_PATH=/tmp
 #应用版本号
-ETCD_VERSION=v3.3.18
-K8S_VERSION=v1.17.0
+ETCD_VERSION=v3.4.4
+K8S_VERSION=v1.17.3
 LXCFS_VERSION=3.1.2
-DOCKER_VERSION=19.03.5
-CNI_VERSION=v0.8.3
+DOCKER_VERSION=19.03.7
+CNI_VERSION=v0.8.5
 IPTABLES_VERSION=1.8.4 #centos7,ubuntu18,centos8 版本需要升级 ubuntu19 不用升级
 KEEPALIVED_VERSION=2.0.19
 AUTOMAKE_VERSION=1.15.1 #KEEPALIVED 编译依赖使用
@@ -2826,7 +2826,7 @@ KUBE_PROXY_OPTS="--logtostderr=false \\
 --ipvs-scheduler=rr \\
 --cluster-cidr=${CLUSTER_CIDR} \\
 --log-dir=${K8S_PATH}/log \\
---metrics-bind-address 0.0.0.0 \\
+--metrics-bind-address=0.0.0.0 \\
 --kubeconfig=${K8S_PATH}/conf/kube-proxy.kubeconfig"
 EOF
 # 创建kubelet 启动文件
