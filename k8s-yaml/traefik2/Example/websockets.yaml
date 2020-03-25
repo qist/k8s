@@ -1,0 +1,60 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rancher
+  namespace: cattle-system
+spec:
+  entryPoints:   
+    - websecure
+  routes:
+    - match: Host(`rke.tyconf.com`)
+      middlewares:
+        - name: x-forwarded-proto-allow
+          namespace: cattle-system
+      kind: Rule
+      services:
+        - name: rancher
+          port: 80
+  tls:
+    options: 
+      name: mintls13
+      namespace: cattle-system
+    secretName: tls-rancher-ingress    
+---    
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect
+  namespace: cattle-system
+spec:
+  redirectScheme:
+    scheme: https    
+---    
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: default
+  namespace: cattle-system
+
+spec:
+  minVersion: VersionTLS12  
+--- 
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: x-forwarded-proto-allow
+  namespace: cattle-system
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: mintls13
+  namespace: cattle-system
+
+spec:
+  minVersion: VersionTLS13
