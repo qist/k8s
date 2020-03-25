@@ -1,21 +1,21 @@
 #!/bin/bash
 #export PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin:root/bin"
 #################################################################################################################################################
-################docker:        wget https://download.docker.com/linux/static/stable/x86_64/docker-19.03.7.tgz
+################docker:        wget https://download.docker.com/linux/static/stable/x86_64/docker-19.03.8.tgz
 ################lxcfs:         wget https://github.com/qist/lxcfs/releases/download/3.1.2/lxcfs-3.1.2.tar.gz 
 ################cni:           wget https://github.com/containernetworking/plugins/releases/download/v0.8.5/cni-plugins-linux-amd64-v0.8.5.tgz
-################etcd:          wget https://github.com/etcd-io/etcd/releases/download/v3.4.4/etcd-v3.4.4-linux-amd64.tar.gz
-################kubernetes:    wget https://storage.googleapis.com/kubernetes-release/release/v1.16.7/kubernetes-server-linux-amd64.tar.gz
+################etcd:          wget https://github.com/etcd-io/etcd/releases/download/v3.4.5/etcd-v3.4.5-linux-amd64.tar.gz
+################kubernetes:    wget https://storage.googleapis.com/kubernetes-release/release/v1.18.0-rc.1/kubernetes-server-linux-amd64.tar.gz
 ################haproxy:       wget https://www.haproxy.org/download/2.1/src/haproxy-2.1.1.tar.gz
 ################automake:      wget https://ftp.gnu.org/gnu/automake/automake-1.15.1.tar.gz
 ################keepalived:    wget https://www.keepalived.org/software/keepalived-2.0.19.tar.gz
 ################iptables:      wget https://www.netfilter.org/projects/iptables/files/iptables-1.8.4.tar.bz2
 ##################################################################################################################################################
 ##################################################################################################################################################
-###############cfssl签名工具下载  wget https://github.com/qist/lxcfs/releases/download/cfssl/cfssl.tar.gz # 解压二进制放到/usr/bin 目录
-###############kubectl下载  https://storage.googleapis.com/kubernetes-release/release/v1.16.3/kubernetes-client-linux-amd64.tar.gz 解压到/usr/bin
+###############cfssl签名工具下载  wget https://github.com/qist/lxcfs/releases/download/cfssl/cfssl.tar.gz # 解压二进制放到/usr/bin 目录 
+###############kubectl下载  wget https://storage.googleapis.com/kubernetes-release/release/v1.17.0/kubernetes-client-linux-amd64.tar.gz 解压到/usr/bin
 ############### ansible 安装 dnf -y install ansible ##yum -y install ansible ##apt -y install ansible
-############### 记得修改下面的配置参数！！！！！！！！
+############### 记得修改下面的配置参数！！！！！！！！ 
 ##################################################################################################################################################
 # 检查是否安装 cffsl 与 kubectl
 which kubectl
@@ -48,17 +48,17 @@ HOST_PATH=`pwd`
 # 设置工作端压缩包所在目录
 TEMP_PATH=/tmp
 #应用版本号
-ETCD_VERSION=v3.4.4
-K8S_VERSION=v1.16.7
+ETCD_VERSION=v3.4.5
+K8S_VERSION=v1.18.0-rc.1
 LXCFS_VERSION=3.1.2
-DOCKER_VERSION=19.03.7
+DOCKER_VERSION=19.03.8
 CNI_VERSION=v0.8.5
 IPTABLES_VERSION=1.8.4 #centos7,ubuntu18,centos8 版本需要升级 ubuntu19 不用升级
 KEEPALIVED_VERSION=2.0.19
 AUTOMAKE_VERSION=1.15.1 #KEEPALIVED 编译依赖使用
 HAPROXY_VERSION=2.1.1
 # 网络插件 选择 1、kube-router 2、kube-proxy+flannel
-NET_PLUG=1
+NET_PLUG=2
 # 节点间互联网络接口名称flannel 指定网络接口
 IFACE="eth0"
 # K8S api 网络互联接口 多网卡请指定接口ansible_网卡接口名字.ipv4.address
@@ -78,12 +78,12 @@ ETCD_PREFIX="/registry"
 # 配置etcd集群参数
 #ETCD_SERVER_HOSTNAMES="\"k8s-master-01\",\"k8s-master-02\",\"k8s-master-03\""
 #ETCD_SERVER_IPS="\"192.168.2.247\",\"192.168.2.248\",\"192.168.2.249\""
-ETCD_MEMBER_1_IP="192.168.2.247"
-ETCD_MEMBER_1_HOSTNAMES="k8s-master-01"
-ETCD_MEMBER_2_IP="192.168.2.248"
-ETCD_MEMBER_2_HOSTNAMES="k8s-master-02"
-ETCD_MEMBER_3_IP="192.168.2.249"
-ETCD_MEMBER_3_HOSTNAMES="k8s-master-03"
+ETCD_MEMBER_1_IP="192.168.2.175"
+ETCD_MEMBER_1_HOSTNAMES="2-175"
+ETCD_MEMBER_2_IP="192.168.2.176"
+ETCD_MEMBER_2_HOSTNAMES="2-176"
+ETCD_MEMBER_3_IP="192.168.2.177"
+ETCD_MEMBER_3_HOSTNAMES="2-177"
 ETCD_SERVER_HOSTNAMES="\"${ETCD_MEMBER_1_HOSTNAMES}\",\"${ETCD_MEMBER_2_HOSTNAMES}\",\"${ETCD_MEMBER_3_HOSTNAMES}\""
 ETCD_SERVER_IPS="\"${ETCD_MEMBER_1_IP}\",\"${ETCD_MEMBER_2_IP}\",\"${ETCD_MEMBER_3_IP}\""
 # etcd 集群间通信的 IP 和端口
@@ -126,6 +126,9 @@ CLUSTER_NAME=kubernetes
 CLUSTER_DNS_DOMAIN="cluster.local"
 #集群DNS
 CLUSTER_DNS_SVC_IP="10.66.0.2"
+# k8s 负载工具选择 选择 1、keepalived+haproxy 0、confd+nginx 
+K8S_VIP_TOOL=0
+if [ ${K8S_VIP_TOOL} == 1 ]; then
 # k8s vip ip
 K8S_VIP_1_IP="192.168.3.12"
 K8S_VIP_2_IP="192.168.3.13"
@@ -136,11 +139,23 @@ SECURE_PORT=5443
 # kube-apiserver vip port # 如果配置vip IP 请设置
 K8S_VIP_PORT=6443
 # kube-apiserver vip ip
+K8S_SSL="\"${K8S_VIP_1_IP}\",\"${K8S_VIP_2_IP}\",\"${K8S_VIP_3_IP}\",\"${K8S_VIP_DOMAIN}\",\"127.0.0.1\""
+
 KUBE_APISERVER="https://${K8S_VIP_DOMAIN}:${K8S_VIP_PORT}"
+elif [ ${K8S_VIP_TOOL} == 0 ]; then 
+SECURE_PORT=6443
+K8S_VIP_PORT=6443
+K8S_VIP_DOMAIN=127.0.0.1
+K8S_SSL="\"${K8S_VIP_DOMAIN}\""
+# 操作集群使用IP 任意master IP
+MASTER_IP=192.168.2.175
+KUBE_APISERVER="https://${K8S_VIP_DOMAIN}:${K8S_VIP_PORT}"
+CP_HOSTS="192.168.2.175,192.168.2.176,192.168.2.177"
+fi
 # RUNTIME_CONFIG v1.16 版本设置 低于v1.16 RUNTIME_CONFIG="api/all=true" 即可
-RUNTIME_CONFIG="api/all=true,extensions/v1beta1/daemonsets=true,extensions/v1beta1/deployments=true,extensions/v1beta1/replicasets=true,extensions/v1beta1/networkpolicies=true,extensions/v1beta1/podsecuritypolicies=true"
+RUNTIME_CONFIG="api/all=true"
 #开启插件enable-admission-plugins #AlwaysPullImages 启用istio 不能自动注入需要手动执行注入
-ENABLE_ADMISSION_PLUGINS="DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceExists,NamespaceLifecycle,NodeRestriction,OwnerReferencesPermissionEnforcement,PodNodeSelector,PersistentVolumeClaimResize,PodPreset,PodTolerationRestriction,ResourceQuota,ServiceAccount,StorageObjectInUseProtection,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
+ENABLE_ADMISSION_PLUGINS="DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceExists,NamespaceLifecycle,NodeRestriction,PodNodeSelector,PersistentVolumeClaimResize,PodPreset,PodTolerationRestriction,ResourceQuota,ServiceAccount,StorageObjectInUseProtection,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
 #禁用插件disable-admission-plugins 
 DISABLE_ADMISSION_PLUGINS="DenyEscalatingExec,ExtendedResourceToleration,ImagePolicyWebhook,LimitPodHardAntiAffinityTopology,NamespaceAutoProvision,Priority,EventRateLimit,PodSecurityPolicy"
 # 设置api 副本数
@@ -164,7 +179,7 @@ MAX_PODS=100
 # 生成 EncryptionConfig 所需的加密 key
 ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 #kube-apiserver 服务器IP列表 有更多的节点时请添加IP K8S_APISERVER_VIP="\"192.168.2.247\",\"192.168.2.248\",\"192.168.2.249\",\"192.168.2.250\",\"192.168.2.251\""
-K8S_APISERVER_VIP="\"192.168.2.247\",\"192.168.2.248\",\"192.168.2.249\""
+K8S_APISERVER_VIP="\"192.168.2.175\",\"192.168.2.176\",\"192.168.2.177\""
 # 创建bootstrap配置
 TOKEN_ID=$(head -c 16 /dev/urandom | od -An -t x | tr -dc a-f3-9|cut -c 1-6)
 TOKEN_SECRET=$(head -c 16 /dev/urandom | md5sum | head -c 16)
@@ -464,13 +479,9 @@ cat << EOF | tee ${HOST_PATH}/cfssl/k8s/k8s-apiserver.json
 {
   "CN": "$CLUSTER_NAME",
   "hosts": [
-    "127.0.0.1",
     ${K8S_APISERVER_VIP},
     "${CLUSTER_KUBERNETES_SVC_IP}", 
-    "${K8S_VIP_DOMAIN}",
-    "${K8S_VIP_1_IP}",
-    "${K8S_VIP_2_IP}",
-    "${K8S_VIP_3_IP}",
+    ${K8S_SSL},
     "kubernetes",
     "kubernetes.default",
     "kubernetes.default.svc",
@@ -688,9 +699,9 @@ cfssl gencert -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
       -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
       -config=${HOST_PATH}/cfssl/ca-config.json \
       -profile=${CERT_PROFILE} \
-	  ${HOST_PATH}/cfssl/k8s/k8s-apiserver-admin.json | \
-	  cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin
-	
+      ${HOST_PATH}/cfssl/k8s/k8s-apiserver-admin.json | \
+     cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin
+    
 if [ ${NET_PLUG} == 1 ]; then
 cat << EOF | tee ${HOST_PATH}/cfssl/k8s/kube-router.json
 {
@@ -754,11 +765,20 @@ fi
 mkdir -p ${HOST_PATH}/kubeconfig
 # 创建admin管理员登录kubeconfig
 # 设置集群参数
+if [ ${K8S_VIP_TOOL} == 0 ]; then
+KUBE_API="https://${MASTER_IP}:${K8S_VIP_PORT}"
+kubectl config set-cluster ${CLUSTER_NAME} \
+--certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
+--embed-certs=true  \
+--server=${KUBE_API} \
+--kubeconfig=${HOST_PATH}/kubeconfig/admin.kubeconfig
+else
 kubectl config set-cluster ${CLUSTER_NAME} \
 --certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
 --embed-certs=true  \
 --server=${KUBE_APISERVER} \
 --kubeconfig=${HOST_PATH}/kubeconfig/admin.kubeconfig
+fi
 # 设置客户端认证参数
 kubectl config set-credentials admin \
  --client-certificate=${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin.pem \
@@ -876,7 +896,7 @@ kubectl config set-context default \
 kubectl config use-context default --kubeconfig=${HOST_PATH}/kubeconfig/bootstrap.kubeconfig
 # 创建ansibe playbook
 # 创建 playbook 目录
-mkdir -p roles/{docker,cni,etcd,kube-apiserver,kube-controller-manager,kubelet,kube-scheduler,package,lxcfs,haproxy,keepalived,iptables}/{files,tasks,templates}
+mkdir -p roles/{docker,cni,etcd,kube-apiserver,kube-controller-manager,kubelet,kube-scheduler,package,lxcfs,iptables}/{files,tasks,templates}
 #创建etcd playbook
 cat << EOF | tee ${HOST_PATH}/roles/etcd/tasks/main.yml
 - name: create groupadd etcd
@@ -1024,7 +1044,7 @@ EOF
 # 创建 kube-apiserver 启动配置文件
 cat << EOF | tee ${HOST_PATH}/roles/kube-apiserver/templates/kube-apiserver
 KUBE_APISERVER_OPTS="--logtostderr=false \\
-        --bind-address={{ $API_IPV4 }} \\
+        --bind-address=0.0.0.0 \\
         --advertise-address={{ $API_IPV4 }} \\
         --secure-port=${SECURE_PORT} \\
         --insecure-port=0 \\
@@ -1070,7 +1090,7 @@ KUBE_APISERVER_OPTS="--logtostderr=false \\
         --profiling \\
         --kubelet-https \\
         --event-ttl=1h \\
-        --feature-gates=RotateKubeletServerCertificate=true,RotateKubeletClientCertificate=true,DynamicAuditing=true \\
+        --feature-gates=RotateKubeletServerCertificate=true,RotateKubeletClientCertificate=true,DynamicAuditing=true,ServiceTopology=true,EndpointSlice=true \\
         --enable-bootstrap-token-auth=true \\
         --alsologtostderr=true \\
         --log-dir=${K8S_PATH}/log \\
@@ -1319,6 +1339,8 @@ cat << EOF | tee ${HOST_PATH}/kube-apiserver.yml
   roles:
     - kube-apiserver
 EOF
+if [ ${K8S_VIP_TOOL} == 1 ]; then
+mkdir -p roles/{haproxy,keepalived}/{files,tasks,templates}
 # 创建haproxy playbook
 cat << EOF | tee ${HOST_PATH}/roles/haproxy/tasks/main.yml
 - name: centos8 enabled CentOS-PowerTools.repo
@@ -1820,6 +1842,7 @@ cat << EOF | tee ${HOST_PATH}/keepalived.yml
   roles:
    - keepalived
 EOF
+fi
 # 创建kube-controller-manager playbook
 cat << EOF | tee ${HOST_PATH}/roles/kube-controller-manager/tasks/main.yml
 - name: create groupadd k8s
@@ -1881,7 +1904,7 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=false \\
 --enable-garbage-collector=true \\
 --root-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --service-account-private-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem \\
---feature-gates=RotateKubeletServerCertificate=true,RotateKubeletClientCertificate=true \\
+--feature-gates=RotateKubeletServerCertificate=true,RotateKubeletClientCertificate=true,ServiceTopology=true,EndpointSlice=true \\
 --controllers=*,bootstrapsigner,tokencleaner \\
 --horizontal-pod-autoscaler-use-rest-clients=true \\
 --horizontal-pod-autoscaler-sync-period=10s \\
@@ -1921,7 +1944,9 @@ mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
 # 复制kube-controller-manager.kubeconfig 文件
 \cp -pdr ${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig ${HOST_PATH}/roles/kube-controller-manager/templates/
 # 修改kube-controller-manager.kubeconfig 为连接当前主机api ip地址
+if [ ${K8S_VIP_TOOL} == 1 ]; then
 sed -i "s/${K8S_VIP_DOMAIN}:${K8S_VIP_PORT}/{{ $API_IPV4 }}:${SECURE_PORT}/" ${HOST_PATH}/roles/kube-controller-manager/templates/kube-controller-manager.kubeconfig
+fi
 # 
 cat << EOF | tee ${HOST_PATH}/kube-controller-manager.yml
 - hosts: all
@@ -1964,6 +1989,7 @@ KUBE_SCHEDULER_OPTS=" \\
                    --logtostderr=false \\
                    --address=0.0.0.0 \\
                    --leader-elect=true \\
+                   --feature-gates=ServiceTopology=true,EndpointSlice=true \\
                    --kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authentication-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authorization-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
@@ -2000,7 +2026,9 @@ mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/bin
 # 复制kube-controller-manager.kubeconfig 文件
 \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/
 # 修改kube-scheduler.kubeconfig 为连接当前主机api ip地址
+if [ ${K8S_VIP_TOOL} == 1 ]; then
 sed -i "s/${K8S_VIP_DOMAIN}:${K8S_VIP_PORT}/{{ $API_IPV4 }}:${SECURE_PORT}/" ${HOST_PATH}/roles/kube-scheduler/templates/kube-scheduler.kubeconfig
+fi
 #
 cat << EOF | tee ${HOST_PATH}/kube-scheduler.yml
 - hosts: all
@@ -2479,7 +2507,7 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --healthz-port=10248 \\
               --healthz-bind-address={{ $KUBELET_IPV4 }} \\
               --cert-dir=${K8S_PATH}/ssl \\
-              --feature-gates=RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true \\
+              --feature-gates=RotateKubeletClientCertificate=true,RotateKubeletServerCertificate=true,ServiceTopology=true,EndpointSlice=true \\
               --serialize-image-pulls=false \\
               --enforce-node-allocatable=pods,kube-reserved,system-reserved \\
               --pod-manifest-path=${POD_MANIFEST_PATH}/kubernetes/manifests \\
@@ -2548,6 +2576,47 @@ cat << EOF | tee ${HOST_PATH}/kubelet.yml
   roles:
     - kubelet
 EOF
+if [ ${K8S_VIP_TOOL} == 0 ]; then
+mkdir -p roles/ha-proxy/{files,tasks}
+# 创建kube-proxy ansible
+cat << EOF | tee ${HOST_PATH}/roles/ha-proxy/tasks/main.yml
+- name:  mkdir -p ${POD_MANIFEST_PATH}/kubernetes/manifests
+  shell:  mkdir -p ${POD_MANIFEST_PATH}/kubernetes/manifests
+- name: copy kubelet to ${POD_MANIFEST_PATH}
+  copy: src=ha-proxy.yaml dest=${POD_MANIFEST_PATH}/kubernetes/manifests/ owner=root group=root mode=644
+EOF
+cat << EOF | tee ${HOST_PATH}/roles/ha-proxy/files/ha-proxy.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    component: ha-proxy
+    tier: control-plane
+  name: ha-proxy
+  namespace: kube-system
+spec:
+  containers:
+  - args:
+    - "CP_HOSTS=${CP_HOSTS}"
+    image: juestnow/ha-tools:v1.17.9
+    imagePullPolicy: IfNotPresent
+    name: ha-proxy
+    env:
+    - name: CP_HOSTS
+      value: "${CP_HOSTS}"
+  hostNetwork: true
+  priorityClassName: system-cluster-critical
+status: {}
+EOF
+cat << EOF | tee ${HOST_PATH}/ha-proxy.yml
+- hosts: all
+  user: root
+  roles:
+    - ha-proxy
+EOF
+fi
+
 #配置网络插件
 mkdir ${HOST_PATH}/yaml
 if [ ${NET_PLUG} == 1 ]; then
@@ -2739,7 +2808,7 @@ metadata:
   namespace: kube-system
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: kube-router
   namespace: kube-system
@@ -2774,7 +2843,7 @@ rules:
       - watch
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: kube-router
 roleRef:
@@ -2817,7 +2886,7 @@ EOF
 cat << EOF | tee ${HOST_PATH}/roles/kube-proxy/templates/kube-proxy
 KUBE_PROXY_OPTS="--logtostderr=false \\
 --v=${LEVEL_LOG} \\
---feature-gates=SupportIPVSProxyMode=true \\
+--feature-gates=SupportIPVSProxyMode=true,ServiceTopology=true,EndpointSlice=true \\
 --masquerade-all=true \\
 --proxy-mode=ipvs \\
 --ipvs-min-sync-period=5s \\
@@ -2862,7 +2931,7 @@ EOF
 cat << EOF | tee ${HOST_PATH}/yaml/flannel.yaml
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: flannel
 rules:
@@ -2887,7 +2956,7 @@ rules:
       - patch
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: flannel
 roleRef:
@@ -2932,7 +3001,18 @@ data:
          "capabilities":{
            "portMappings":true
          }
+       },
+     {
+       "name": "mytuning",
+       "type": "tuning",
+       "sysctl": {
+               "net.core.somaxconn": "65535",
+               "net.ipv4.ip_local_port_range": "1024 65535",
+               "net.ipv4.tcp_keepalive_time": "600",
+               "net.ipv4.tcp_keepalive_probes": "10",
+               "net.ipv4.tcp_keepalive_intvl": "30"
        }
+     }
      ]
      }
   net-conf.json: |
@@ -3338,6 +3418,7 @@ EOF
 if [ ${K8S_EVENTS} == 1 ]; then
 EVENTS_ETCD="##########  etcd EVENTS 部署 ansible-playbook -i ${ETCD_EVENTS_IPS}, events-etcd.yml"
 fi
+if [ ${K8S_VIP_TOOL} == 1 ]; then
 if [ ${NET_PLUG} == 2 ]; then
 NET_PLUG1="##########  安装K8S node 使用 flannel 网络插件ansible部署ansible-playbook -i 要安装node ip列表 package.yml cni.yml lxcfs.yml docker.yml kubelet.yml kube-proxy.yml"
 NET_PLUG2="##########  flannel 网络插件部署 kubectl apply -f ${HOST_PATH}/yaml/flannel.yaml 等待容器部署完成查看node 节点网络 ip a| grep flannel.1"
@@ -3378,3 +3459,42 @@ ${NET_PLUG2}
 ########## 查看kubelet节点配置信息 NODE_NAME="k8s-node-04"; curl -sSL "http://localhost:8001/api/v1/nodes/\${NODE_NAME}/proxy/configz" | jq '.kubeletconfig|.kind="KubeletConfiguration"|.apiVersion="kubelet.config.k8s.io/v1beta1"' > kubelet_configz_\${NODE_NAME}
 
 EOF
+elif [ ${K8S_VIP_TOOL} == 0 ]; then
+if [ ${NET_PLUG} == 2 ]; then
+NET_PLUG1="##########  安装K8S node 使用 flannel 网络插件ansible部署ansible-playbook -i 要安装node ip列表 package.yml cni.yml lxcfs.yml docker.yml kubelet.yml kube-proxy.yml ha-proxy.yml"
+NET_PLUG2="##########  flannel 网络插件部署 kubectl apply -f ${HOST_PATH}/yaml/flannel.yaml 等待容器部署完成查看node 节点网络 ip a| grep flannel.1"
+MASTER="##########  MASTER 节点部署 flannel 网络插件 kubelet ansible-playbook -i ${K8S_APISERVER_VIP}, package.yml cni.yml lxcfs.yml docker.yml kubelet.yml kube-proxy.yml"
+elif [ ${NET_PLUG} == 1 ]; then
+NET_PLUG1="##########  安装K8S node 使用kube-router ansible部署 ansible-playbook -i 要安装node ip列表 package.yml cni.yml lxcfs.yml docker.yml kubelet.yml ha-proxy.yml"
+NET_PLUG2="##########  kube-router 网络插件部署 方式部署 kubectl apply -f ${HOST_PATH}/yaml/kube-router.yaml 等待容器部署完成查看node ip a | grep kube-bridge"
+MASTER="##########  MASTER 节点部署 kubelet 使用kube-router 插件 ansible-playbook -i ${K8S_APISERVER_VIP}, package.yml cni.yml lxcfs.yml docker.yml kubelet.yml" 
+fi
+cat << EOF | tee ${HOST_PATH}/README.md
+########## mkdir -p /root/.kube
+##########复制admin kubeconfig 到root用户作为kubectl 工具默认密钥文件
+########## \cp -pdr ${HOST_PATH}/kubeconfig/admin.kubeconfig /root/.kube/config
+###################################################################################
+##########  ansible 及ansible-playbook 单个ip ip结尾一点要添加“,”符号 ansible-playbook -i 192.168.0.1, xxx.yml
+##########  source ${HOST_PATH}/environment.sh 设置环境变量生效方便后期新增证书等
+##########  etcd 部署 ansible-playbook -i ${ETCD_SERVER_IPS} etcd.yml
+${EVENTS_ETCD}
+##########  kube-apiserver 部署 ansible-playbook -i ${K8S_APISERVER_VIP}, kube-apiserver.yml 
+##########  kube-controller-manager kube-scheduler  ansible-playbook -i ${K8S_APISERVER_VIP}, kube-controller-manager.yml kube-scheduler.yml
+##########  部署完成验证集群 kubectl cluster-info  kubectl api-versions  kubectl get cs 1.16 kubectl 显示不正常 
+##########  提交bootstrap 跟授权到K8S 集群 kubectl apply -f ${HOST_PATH}/yaml/bootstrap-secret.yaml 
+##########  提交授权到K8S集群 kubectl apply -f ${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml kubectl apply -f ${HOST_PATH}/yaml/kube-api-rbac.yaml
+##########  系统版本为centos7,8 或者 ubuntu18 请先升级 iptables ansible-playbook -i  要安装node ip列表, iptables.yml
+${MASTER}
+${NET_PLUG1}
+${NET_PLUG2}
+##########  部署自动挂载日期与lxcfs 到pod的 PodPreset  kubectl apply -f ${HOST_PATH}/yaml/allow-lxcfs-tz-env.yaml -n kube-system  " kube-system 命名空间名字"PodPreset 只是当前空间生效所以需要每个命名空间执行
+##########  查看node 节点是否注册到K8S kubectl get node kubectl get csr 如果有节点 
+##########  给 master ingress 添加污点 防止其它服务使用这些节点:kubectl taint nodes  k8s-master-01 node-role.kubernetes.io/master=:NoSchedule kubectl taint nodes  k8s-ingress-01 node-role.kubernetes.io/ingress=:NoSchedule
+##########  calico 网络插件部署 50节点内 wget https://docs.projectcalico.org/v3.10/manifests/calico.yaml  大于50节点 wget https://docs.projectcalico.org/v3.10/manifests/calico-typha.yaml
+########## 如果cni配置没放到默认路径请创建软链 ln -s ${CNI_PATH}/etc /etc/cni 同时修改yaml hostPath路径 同时修改CALICO_IPV4POOL_CIDR 参数为 ${CLUSTER_CIDR} CALICO_IPV4POOL_IPIP: Never 启用bgp模式
+##########  windows 证书访问 openssl pkcs12 -export -inkey k8s-apiserver-admin-key.pem -in k8s_apiserver-admin.pem -out client.p12
+########## kubectl proxy --port=8001 &  把kube-apiserver 端口映射成本地 8001 端口      
+########## 查看kubelet节点配置信息 NODE_NAME="k8s-node-04"; curl -sSL "http://localhost:8001/api/v1/nodes/\${NODE_NAME}/proxy/configz" | jq '.kubeletconfig|.kind="KubeletConfiguration"|.apiVersion="kubelet.config.k8s.io/v1beta1"' > kubelet_configz_\${NODE_NAME}
+
+EOF
+fi
