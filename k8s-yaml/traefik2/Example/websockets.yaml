@@ -1,3 +1,20 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rancherhttp
+  namespace: cattle-system
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`rke.tycng.com`)
+    kind: Rule
+    priority: 12
+    services:
+    - name: rancher
+      port: 80
+    middlewares:
+      - name: redirect
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -8,7 +25,7 @@ spec:
   entryPoints:   
     - websecure
   routes:
-    - match: Host(`rke.tyconf.com`)
+    - match: Host(`rke.tycng.com`)
       middlewares:
         - name: x-forwarded-proto-allow
           namespace: cattle-system
