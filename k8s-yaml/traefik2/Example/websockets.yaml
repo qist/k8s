@@ -17,9 +17,6 @@ spec:
         - name: rancher
           port: 80
   tls:
-    options: 
-      name: default
-      namespace: cattle-system
     secretName: tls-rancher-ingress    
 ---    
 apiVersion: traefik.containo.us/v1alpha1
