@@ -18,7 +18,7 @@ spec:
           port: 80
   tls:
     options: 
-      name: mintls13
+      name: default
       namespace: cattle-system
     secretName: tls-rancher-ingress    
 ---    
