@@ -176,6 +176,8 @@ KUBE_API_BURST="100"
 POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause-amd64:3.1"
 # max-pods node 节点启动最多pod 数量
 MAX_PODS=100
+#每1核cpu最多运行pod数 默认0 关闭 
+PODS_PER_CORE=0
 # 生成 EncryptionConfig 所需的加密 key
 ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 #kube-apiserver 服务器IP列表 有更多的节点时请添加IP K8S_APISERVER_VIP="\"192.168.2.247\",\"192.168.2.248\",\"192.168.2.249\",\"192.168.2.250\",\"192.168.2.251\""
@@ -2538,7 +2540,7 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --kube-api-burst=30 \\
               --kube-api-qps=15 \\
               --max-pods=${MAX_PODS} \\
-              --pods-per-core=10 \\
+              --pods-per-core=${PODS_PER_CORE} \\
               --read-only-port=0 \\
               --allowed-unsafe-sysctls 'kernel.msg*,kernel.shm*,kernel.sem,fs.mqueue.*,net.*' \\
               --volume-plugin-dir=${K8S_PATH}/kubelet-plugins/volume"
