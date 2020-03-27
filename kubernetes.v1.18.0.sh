@@ -5,7 +5,7 @@
 ################lxcfs:         wget https://github.com/qist/lxcfs/releases/download/3.1.2/lxcfs-3.1.2.tar.gz 
 ################cni:           wget https://github.com/containernetworking/plugins/releases/download/v0.8.5/cni-plugins-linux-amd64-v0.8.5.tgz
 ################etcd:          wget https://github.com/etcd-io/etcd/releases/download/v3.4.5/etcd-v3.4.5-linux-amd64.tar.gz
-################kubernetes:    wget https://storage.googleapis.com/kubernetes-release/release/v1.18.0-rc.1/kubernetes-server-linux-amd64.tar.gz
+################kubernetes:    wget https://storage.googleapis.com/kubernetes-release/release/v1.18.0/kubernetes-server-linux-amd64.tar.gz
 ################haproxy:       wget https://www.haproxy.org/download/2.1/src/haproxy-2.1.1.tar.gz
 ################automake:      wget https://ftp.gnu.org/gnu/automake/automake-1.15.1.tar.gz
 ################keepalived:    wget https://www.keepalived.org/software/keepalived-2.0.19.tar.gz
@@ -49,7 +49,7 @@ HOST_PATH=`pwd`
 TEMP_PATH=/tmp
 #应用版本号
 ETCD_VERSION=v3.4.5
-K8S_VERSION=v1.18.0-rc.1
+K8S_VERSION=v1.18.0
 LXCFS_VERSION=3.1.2
 DOCKER_VERSION=19.03.8
 CNI_VERSION=v0.8.5
