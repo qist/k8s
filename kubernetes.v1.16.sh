@@ -1941,6 +1941,10 @@ cat << EOF | tee ${HOST_PATH}/roles/kube-scheduler/tasks/main.yml
   raw: mkdir -p ${K8S_PATH}/{log,kubelet-plugins,conf} && mkdir -p ${K8S_PATH}/kubelet-plugins/volume
 - name: copy kube-scheduler
   copy: src=bin dest=${K8S_PATH}/ owner=k8s group=root mode=755
+- name: copy  ssl
+  copy: src={{ item }} dest=${K8S_PATH}/ owner=k8s group=root
+  with_items:
+      - ssl
 - name: kube-scheduler conf
   template: src=kube-scheduler dest=${K8S_PATH}/conf owner=k8s group=root
 - name: kube-scheduler config
@@ -1969,6 +1973,8 @@ KUBE_SCHEDULER_OPTS=" \\
                    --kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authentication-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authorization-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
+                   --requestheader-client-ca-file=${K8S_PATH}/k8s/ssl/k8s/k8s-ca.pem \\
+                   --client-ca-file=${K8S_PATH}/k8s/ssl/k8s/k8s-ca.pem \\
                    --alsologtostderr=true \\
                    --kube-api-qps=${KUBE_API_QPS} \\
                    --kube-api-burst=${KUBE_API_BURST} \\
@@ -1998,6 +2004,8 @@ WantedBy=multi-user.target
 EOF
 # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
 mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/bin
+mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
+\cp -pdr ${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
 \cp -pdr ${TEMP_PATH}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin
 # 复制kube-controller-manager.kubeconfig 文件
 \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/
