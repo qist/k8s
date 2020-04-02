@@ -2626,6 +2626,7 @@ KUBE_PROXY_OPTS="--logtostderr=false \\
 --cluster-cidr=${CLUSTER_CIDR} \\
 --log-dir=${K8S_PATH}/log \\
 --metrics-bind-address=:: \\
+--hostname-override={{ ansible_hostname }} \\
 --kubeconfig=${K8S_PATH}/conf/kube-proxy.kubeconfig"
 EOF
 # 创建kubelet 启动文件
