@@ -7,3 +7,6 @@ metadata:
   namespace: clusterstorage
 provisioner: fuseim.pri/ifs
 reclaimPolicy: Retain
+mountOptions:
+  - vers=4.0
+  - noresvport

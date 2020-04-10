@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`rke.tycng.com`)
+  - match: Host(`rke.qkagame.com`)
     kind: Rule
     priority: 12
     services:
@@ -25,7 +25,7 @@ spec:
   entryPoints:   
     - websecure
   routes:
-    - match: Host(`rke.tycng.com`)
+    - match: Host(`rke.qkagame.com`)
       middlewares:
         - name: x-forwarded-proto-allow
           namespace: cattle-system
