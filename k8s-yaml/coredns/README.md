@@ -34,5 +34,5 @@ metadata:
 # 使用一键脚本生成请 source environment.sh
 export CLUSTER_DNS_DOMAIN="cluster.local"
 export CLUSTER_DNS_SVC_IP="10.66.0.2"
-sed -i -e "s/__PILLAR__DNS__DOMAIN__/${CLUSTER_DNS_DOMAIN}/" -e "s/__PILLAR__DNS__SERVER__/${CLUSTER_DNS_SVC_IP}/" -e "s/__PILLAR__DNS__MEMORY__LIMIT__/500Mi/" coredns.yaml
+sed -i -e "s/__PILLAR__DNS__DOMAIN__/${CLUSTER_DNS_DOMAIN}/" -e "s/__PILLAR__DNS__SERVER__/${CLUSTER_DNS_SVC_IP}/" -e "s/__PILLAR__DNS__MEMORY__LIMIT__/100Mi/" coredns.yaml
 ```
