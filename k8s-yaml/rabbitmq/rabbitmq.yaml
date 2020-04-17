@@ -1,8 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rabbitmq
+---
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: rabbitmq
-  namespace: middleware
+  namespace: rabbitmq
 spec:
   replicas: 3
   selector:
@@ -94,7 +99,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: rabbitmq-config
-  namespace: middleware
+  namespace: rabbitmq
 data:
   enabled_plugins: |
     [rabbitmq_management,rabbitmq_peer_discovery_k8s].
@@ -112,7 +117,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: rabbitmq
-  namespace: middleware
+  namespace: rabbitmq
   labels:
     app: rabbitmq
 spec:
@@ -120,12 +125,13 @@ spec:
     - name: http
       protocol: TCP
       port: 15672
-      nodePort: 31672
+      targetPort: 15672
     - name: amqp
       protocol: TCP
       port: 5672
       targetPort: 5672
   selector:
     app: rabbitmq
+  type: ClusterIP
   sessionAffinity: None
-  externalTrafficPolicy: Cluster
+  publishNotReadyAddresses: true
