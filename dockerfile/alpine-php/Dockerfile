@@ -22,30 +22,23 @@ RUN PHP_CONFIG="\
      --sysconfdir=/etc \
      --with-config-file-path=/etc \
      --with-curl \
-     --with-freetype-dir \
-     --with-gd \
      --with-gettext \
      --with-iconv-dir \
      --with-kerberos \
      --with-libdir=lib64 \
-     --with-libxml-dir \
      --with-mysqli \
      --with-openssl \
-     --with-pcre-regex \
      --with-pdo-mysql \
      --with-pdo-sqlite \
      --with-pear \
-     --with-png-dir \
      --with-xmlrpc \
      --with-xsl \
      --with-zlib \
      --with-zlib-dir \
      --with-mhash \
      --with-openssl-dir \
-     --with-jpeg-dir \
      --enable-fpm \
      --enable-bcmath \
-     --enable-libxml \
      --enable-inline-optimization \
      --enable-mbregex \
      --enable-mbstring \
@@ -56,10 +49,8 @@ RUN PHP_CONFIG="\
      --enable-sockets \
      --enable-sysvsem \
      --enable-xml \
-     --enable-zip \
      --enable-maintainer-zts \
      --enable-mysqlnd \
-     --enable-embedded-mysqli \
      " \
      && addgroup -S nginx \
      && adduser -D -S -h /www -s /sbin/nologin -G nginx nginx \
@@ -97,6 +88,9 @@ RUN PHP_CONFIG="\
         libmemcached \
         libmemcached-dev \
         gettext \
+        krb5-dev \
+        sqlite-dev \
+        oniguruma-dev \
         gettext-dev \
         libzip \
         git \
@@ -117,7 +111,7 @@ RUN PHP_CONFIG="\
         && make install \
         && rm -rf /tmp/* \
         && apk del .build-deps \
-        && apk  add  --no-cache  \ 
+        && apk  add  --no-cache  \
            curl \
            wget \
            libjpeg \
@@ -128,6 +122,8 @@ RUN PHP_CONFIG="\
            libmcrypt  \
            libmemcached \
            gettext \
+           oniguruma \
+           sqlite-libs \
            libzip \
         && rm -rf /var/cache/apk/*
 # copy 配置到镜像中 
