@@ -11,7 +11,18 @@ spec:
   minReplicas: 2
   maxReplicas: 10
   metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 75
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 80
   - type: Pods
     pods:
       metricName: coredns_dns_request_count
       targetAverageValue: 1000
+
+
+
