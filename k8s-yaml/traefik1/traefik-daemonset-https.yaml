@@ -60,9 +60,7 @@ spec:
         - --web.metrics.prometheus
         - --kubernetes
         - --traefiklog
-        - --traefiklog.format=json
         - --accesslog
-        - --accesslog.format=json
         - --accessLog.fields.headers.defaultMode=redact
         - --insecureskipverify=true
         - --defaultentrypoints=http,https
