@@ -14,7 +14,7 @@ for file in *-datasource.json ; do
                 echo "importing $file" &&
                 ( echo '{"dashboard":'; \
                   cat "$file"; \
-                  echo ',"overwrite":true,"inputs":[{"name":"DS_PROMETHEUS","type":"datasource","pluginId":"prometheus","value":"prometheus"}]}' ) \
+                  echo ',"overwrite":true,"inputs":[{"name":"DS_PROMETHEUS","type":"datasource","pluginId":"Prometheus","value":"Prometheus"}]}' ) \
                 | jq -c '.' \
                 | curl --silent --fail --show-error \
                   --request POST http://admin:admin@monitor.tycng.com/api/dashboards/import \

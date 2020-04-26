@@ -24,7 +24,7 @@ spec:
           }
         ]'
     spec:
-      serviceAccountName: prometheus-k8s
+      serviceAccountName: Prometheus-k8s
       containers:
       - name: grafana-import-dashboards
         image: registry.cn-hangzhou.aliyuncs.com/nevermore/grafana-tiny-tools:v1
@@ -47,7 +47,7 @@ spec:
                 echo "importing $file" &&
                 ( echo '{"dashboard":'; \
                   cat "$file"; \
-                  echo ',"overwrite":true,"inputs":[{"name":"DS_PROMETHEUS","type":"datasource","pluginId":"prometheus","value":"prometheus"}]}' ) \
+                  echo ',"overwrite":true,"inputs":[{"name":"DS_PROMETHEUS","type":"datasource","pluginId":"Prometheus","value":"Prometheus"}]}' ) \
                 | jq -c '.' \
                 | curl --silent --fail --show-error \
                   --request POST http://admin:admin@grafana:3000/api/dashboards/import \

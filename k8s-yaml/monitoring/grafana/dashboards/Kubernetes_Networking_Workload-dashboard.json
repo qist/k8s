@@ -21,7 +21,7 @@
     },
     {
       "type": "datasource",
-      "id": "prometheus",
+      "id": "Prometheus",
       "name": "Prometheus",
       "version": "1.0.0"
     }
@@ -898,8 +898,8 @@
     "list": [
       {
         "current": {
-          "text": "prometheus",
-          "value": "prometheus"
+          "text": "Prometheus",
+          "value": "Prometheus"
         },
         "hide": 0,
         "includeAll": false,
@@ -907,7 +907,7 @@
         "multi": false,
         "name": "datasource",
         "options": [],
-        "query": "prometheus",
+        "query": "Prometheus",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

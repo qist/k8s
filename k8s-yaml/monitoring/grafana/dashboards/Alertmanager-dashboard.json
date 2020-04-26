@@ -15,7 +15,7 @@
     },
     {
       "type": "datasource",
-      "id": "prometheus",
+      "id": "Prometheus",
       "name": "Prometheus",
       "version": "1.0.0"
     },
@@ -71,7 +71,7 @@
       "title": "Docs",
       "tooltip": "Official documentation of Alertmanager",
       "type": "link",
-      "url": "https://prometheus.io/docs/alerting/alertmanager/"
+      "url": "https://Prometheus.io/docs/alerting/alertmanager/"
     },
     {
       "icon": "info",
@@ -80,14 +80,14 @@
       "title": "GitHub",
       "tooltip": "Alertmanager sources on GitHub",
       "type": "link",
-      "url": "https://github.com/prometheus/alertmanager"
+      "url": "https://github.com/Prometheus/alertmanager"
     },
     {
       "icon": "info",
       "tags": [],
       "targetBlank": true,
       "title": "Twitter",
-      "tooltip": "Twitter account with prometheus related info",
+      "tooltip": "Twitter account with Prometheus related info",
       "type": "link",
       "url": "https://twitter.com/PrometheusIO"
     },
@@ -98,7 +98,7 @@
       "title": "Mailing list",
       "tooltip": "Prometheus users mailing list",
       "type": "link",
-      "url": "https://groups.google.com/forum/#!forum/prometheus-users"
+      "url": "https://groups.google.com/forum/#!forum/Prometheus-users"
     },
     {
       "icon": "question",
@@ -107,7 +107,7 @@
       "title": "IRC",
       "tooltip": "Join IRC using Riot",
       "type": "link",
-      "url": "https://riot.im/app/#/room/#prometheus:matrix.org"
+      "url": "https://riot.im/app/#/room/#Prometheus:matrix.org"
     }
   ],
   "panels": [
@@ -11143,7 +11143,7 @@
   "style": "dark",
   "tags": [
     "alertmanager",
-    "prometheus",
+    "Prometheus",
     "alerting"
   ],
   "templating": {
@@ -11159,7 +11159,7 @@
         "multi": false,
         "name": "datasource",
         "options": [],
-        "query": "prometheus",
+        "query": "Prometheus",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

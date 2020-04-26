@@ -5,7 +5,7 @@
       "label": "Prometheus",
       "description": "",
       "type": "datasource",
-      "pluginId": "prometheus",
+      "pluginId": "Prometheus",
       "pluginName": "Prometheus"
     }
   ],
@@ -24,7 +24,7 @@
     },
     {
       "type": "datasource",
-      "id": "prometheus",
+      "id": "Prometheus",
       "name": "Prometheus",
       "version": "1.0.0"
     }
@@ -42,7 +42,7 @@
       }
     ]
   },
-  "description": "NFS and NFSd monitor for prometheus-node-exporter",
+  "description": "NFS and NFSd monitor for Prometheus-node-exporter",
   "editable": true,
   "gnetId": 6257,
   "graphTooltip": 0,
