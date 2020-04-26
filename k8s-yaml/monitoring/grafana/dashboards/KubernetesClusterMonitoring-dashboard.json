@@ -2,11 +2,11 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
-      "pluginId": "Prometheus",
-      "pluginName": "Prometheus"
+      "pluginId": "prometheus",
+      "pluginName": "prometheus"
     }
   ],
   "__requires": [
@@ -24,8 +24,8 @@
     },
     {
       "type": "datasource",
-      "id": "Prometheus",
-      "name": "Prometheus",
+      "id": "prometheus",
+      "name": "prometheus",
       "version": "1.0.0"
     },
     {
@@ -48,7 +48,7 @@
       }
     ]
   },
-  "description": "Monitors Kubernetes cluster using Prometheus. Shows overall cluster CPU / Memory / Filesystem usage as well as individual pod, containers, control plane (as deployed by kops) statistics. Uses cAdvisor metrics only. Tweaked from https://grafana.com/dashboards/3119 to add total pod and container count and the total nodes resource usage.",
+  "description": "Monitors Kubernetes cluster using prometheus. Shows overall cluster CPU / Memory / Filesystem usage as well as individual pod, containers, control plane (as deployed by kops) statistics. Uses cAdvisor metrics only. Tweaked from https://grafana.com/dashboards/3119 to add total pod and container count and the total nodes resource usage.",
   "editable": true,
   "gnetId": 9873,
   "graphTooltip": 0,
@@ -3248,8 +3248,8 @@
       },
       {
         "current": {
-          "text": "Prometheus",
-          "value": "Prometheus"
+          "text": "prometheus",
+          "value": "prometheus"
         },
         "hide": 0,
         "includeAll": false,
@@ -3257,7 +3257,7 @@
         "multi": false,
         "name": "Datasource",
         "options": [],
-        "query": "Prometheus",
+        "query": "prometheus",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

@@ -2,11 +2,11 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
-      "pluginId": "Prometheus",
-      "pluginName": "Prometheus"
+      "pluginId": "prometheus",
+      "pluginName": "prometheus"
     },
     {
       "name": "VAR_COSTCPU",
@@ -73,8 +73,8 @@
     },
     {
       "type": "datasource",
-      "id": "Prometheus",
-      "name": "Prometheus",
+      "id": "prometheus",
+      "name": "prometheus",
       "version": "1.0.0"
     },
     {

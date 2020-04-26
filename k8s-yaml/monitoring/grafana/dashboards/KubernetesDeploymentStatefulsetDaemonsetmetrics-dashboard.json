@@ -2,11 +2,11 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
-      "pluginId": "Prometheus",
-      "pluginName": "Prometheus"
+      "pluginId": "prometheus",
+      "pluginName": "prometheus"
     }
   ],
   "__requires": [
@@ -24,8 +24,8 @@
     },
     {
       "type": "datasource",
-      "id": "Prometheus",
-      "name": "Prometheus",
+      "id": "prometheus",
+      "name": "prometheus",
       "version": "1.0.0"
     },
     {
@@ -48,7 +48,7 @@
       }
     ]
   },
-  "description": "Monitors Kubernetes deployments in cluster using Prometheus. Shows overall cluster CPU / Memory of deployments, replicas in each deployment. Uses Kube state metrics and cAdvisor metrics (741)",
+  "description": "Monitors Kubernetes deployments in cluster using prometheus. Shows overall cluster CPU / Memory of deployments, replicas in each deployment. Uses Kube state metrics and cAdvisor metrics (741)",
   "editable": true,
   "gnetId": 8588,
   "graphTooltip": 0,

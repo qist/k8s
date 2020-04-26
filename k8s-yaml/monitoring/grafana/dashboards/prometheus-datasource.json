@@ -1,6 +1,6 @@
 {
-  "name": "Prometheus",
-  "type": "Prometheus",
+  "name": "prometheus",
+  "type": "prometheus",
   "url": "http://prometheus-k8s:9090",
   "access": "proxy",
   "basicAuth": false

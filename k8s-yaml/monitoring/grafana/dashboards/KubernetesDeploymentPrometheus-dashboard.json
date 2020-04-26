@@ -2,11 +2,11 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
-      "pluginId": "Prometheus",
-      "pluginName": "Prometheus"
+      "pluginId": "prometheus",
+      "pluginName": "prometheus"
     }
   ],
   "__requires": [
@@ -24,8 +24,8 @@
     },
     {
       "type": "datasource",
-      "id": "Prometheus",
-      "name": "Prometheus",
+      "id": "prometheus",
+      "name": "prometheus",
       "version": "1.0.0"
     },
     {
@@ -48,7 +48,7 @@
       }
     ]
   },
-  "description": "Kubernetes Deployment (Prometheus)",
+  "description": "Kubernetes Deployment (prometheus)",
   "editable": true,
   "gnetId": 5303,
   "graphTooltip": 1,
@@ -1103,7 +1103,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "Kubernetes Deployment (Prometheus)",
+  "title": "Kubernetes Deployment (prometheus)",
   "uid": "ORYiYUzmk",
   "version": 2
 }

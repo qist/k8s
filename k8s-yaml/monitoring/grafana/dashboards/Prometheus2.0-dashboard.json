@@ -2,11 +2,11 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
-      "pluginId": "Prometheus",
-      "pluginName": "Prometheus"
+      "pluginId": "prometheus",
+      "pluginName": "prometheus"
     },
     {
       "name": "VAR_SCRAPE_INTERVAL",
@@ -37,8 +37,8 @@
     },
     {
       "type": "datasource",
-      "id": "Prometheus",
-      "name": "Prometheus",
+      "id": "prometheus",
+      "name": "prometheus",
       "version": "1.0.0"
     },
     {
@@ -76,14 +76,14 @@
         "showIn": 0,
         "step": "30s",
         "tagKeys": "instance",
-        "textFormat": "Prometheus down",
+        "textFormat": "prometheus down",
         "titleFormat": "Downage",
         "type": "alert"
       },
       {
         "datasource": "$datasource",
         "enable": true,
-        "expr": "sum(changes(Prometheus_config_last_reload_success_timestamp_seconds[10m])) by (instance)",
+        "expr": "sum(changes(prometheus_config_last_reload_success_timestamp_seconds[10m])) by (instance)",
         "hide": false,
         "iconColor": "#fceaca",
         "limit": 100,
@@ -111,16 +111,16 @@
       "title": "Dashboard's Github ",
       "tooltip": "Github repo of this dashboard",
       "type": "link",
-      "url": "https://github.com/FUSAKLA/Prometheus2-grafana-dashboard"
+      "url": "https://github.com/FUSAKLA/prometheus2-grafana-dashboard"
     },
     {
       "icon": "doc",
       "tags": [],
       "targetBlank": true,
-      "title": "Prometheus Docs",
+      "title": "prometheus Docs",
       "tooltip": "",
       "type": "link",
-      "url": "http://Prometheus.io/docs/introduction/overview/"
+      "url": "http://prometheus.io/docs/introduction/overview/"
     }
   ],
   "panels": [
@@ -283,7 +283,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "Prometheus_tsdb_head_series{instance=\"$instance\"}",
+          "expr": "prometheus_tsdb_head_series{instance=\"$instance\"}",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 2,
@@ -365,7 +365,7 @@
       "tableColumn": "version",
       "targets": [
         {
-          "expr": "Prometheus_build_info",
+          "expr": "prometheus_build_info",
           "format": "table",
           "instant": true,
           "intervalFactor": 2,
@@ -448,7 +448,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "Prometheus_tsdb_head_max_time - Prometheus_tsdb_head_min_time{instance=\"$instance\"}",
+          "expr": "prometheus_tsdb_head_max_time - prometheus_tsdb_head_min_time{instance=\"$instance\"}",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 2,
@@ -469,7 +469,7 @@
       "valueName": "current"
     },
     {
-      "content": "<img src=\"https://cdn.worldvectorlogo.com/logos/Prometheus.svg\"/ height=\"140px\">",
+      "content": "<img src=\"https://cdn.worldvectorlogo.com/logos/prometheus.svg\"/ height=\"140px\">",
       "gridPos": {
         "h": 5,
         "w": 2,
@@ -622,11 +622,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "max(Prometheus_engine_query_duration_seconds{instance=\"$instance\"}) by (instance, slice)",
+          "expr": "max(prometheus_engine_query_duration_seconds{instance=\"$instance\"}) by (instance, slice)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "max duration for {{slice}}",
-          "metric": "Prometheus_local_storage_rushed_mode",
+          "metric": "prometheus_local_storage_rushed_mode",
           "refId": "A",
           "step": 900
         }
@@ -718,16 +718,16 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(Prometheus_tsdb_head_series_created_total{instance=\"$instance\"}[$aggregation_interval])) by (instance)",
+          "expr": "sum(increase(prometheus_tsdb_head_series_created_total{instance=\"$instance\"}[$aggregation_interval])) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "created on {{ instance }}",
-          "metric": "Prometheus_local_storage_maintain_series_duration_seconds_count",
+          "metric": "prometheus_local_storage_maintain_series_duration_seconds_count",
           "refId": "A",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_tsdb_head_series_removed_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) * -1",
+          "expr": "sum(increase(prometheus_tsdb_head_series_removed_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) * -1",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "removed on {{ instance }}",
@@ -821,102 +821,102 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(Prometheus_target_scrapes_exceeded_sample_limit_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_target_scrapes_exceeded_sample_limit_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "exceeded_sample_limit on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "A",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_target_scrapes_sample_duplicate_timestamp_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_target_scrapes_sample_duplicate_timestamp_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "duplicate_timestamp on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "B",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_target_scrapes_sample_out_of_bounds_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_target_scrapes_sample_out_of_bounds_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "out_of_bounds on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "C",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_target_scrapes_sample_out_of_order_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_target_scrapes_sample_out_of_order_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "out_of_order on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "D",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_rule_evaluation_failures_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_rule_evaluation_failures_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "rule_evaluation_failure on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "G",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_tsdb_compactions_failed_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_tsdb_compactions_failed_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "tsdb_compactions_failed on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "K",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_tsdb_reloads_failures_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_tsdb_reloads_failures_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "tsdb_reloads_failures on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "L",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_tsdb_head_series_not_found{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_tsdb_head_series_not_found{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "head_series_not_found on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "N",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_evaluator_iterations_missed_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_evaluator_iterations_missed_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "evaluator_iterations_missed on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "O",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_evaluator_iterations_skipped_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_evaluator_iterations_skipped_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "evaluator_iterations_skipped on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "P",
           "step": 1800
         }
@@ -925,7 +925,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Prometheus errors",
+      "title": "prometheus errors",
       "tooltip": {
         "msResolution": false,
         "shared": true,
@@ -1022,7 +1022,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "Prometheus_target_interval_length_seconds{instance=\"$instance\",quantile=\"0.99\"} - $scrape_interval",
+          "expr": "prometheus_target_interval_length_seconds{instance=\"$instance\",quantile=\"0.99\"} - $scrape_interval",
           "format": "time_series",
           "interval": "2m",
           "intervalFactor": 1,
@@ -1122,11 +1122,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(Prometheus_evaluator_duration_seconds{instance=\"$instance\"}) by (instance, quantile)",
+          "expr": "sum(prometheus_evaluator_duration_seconds{instance=\"$instance\"}) by (instance, quantile)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Queue length",
-          "metric": "Prometheus_local_storage_indexing_queue_length",
+          "metric": "prometheus_local_storage_indexing_queue_length",
           "refId": "B",
           "step": 1800
         }
@@ -1530,7 +1530,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(Prometheus_engine_queries{instance=\"$instance\"}) by (instance, handler)",
+          "expr": "sum(prometheus_engine_queries{instance=\"$instance\"}) by (instance, handler)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Current count ",
@@ -1539,7 +1539,7 @@
           "step": 1800
         },
         {
-          "expr": "sum(Prometheus_engine_queries_concurrent_max{instance=\"$instance\"}) by (instance, handler)",
+          "expr": "sum(prometheus_engine_queries_concurrent_max{instance=\"$instance\"}) by (instance, handler)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Max count",
@@ -1657,20 +1657,20 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(Prometheus_notifications_queue_capacity{instance=\"$instance\"})by (instance)",
+          "expr": "sum(prometheus_notifications_queue_capacity{instance=\"$instance\"})by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Alert queue capacity ",
-          "metric": "Prometheus_local_storage_checkpoint_last_size_bytes",
+          "metric": "prometheus_local_storage_checkpoint_last_size_bytes",
           "refId": "A",
           "step": 1800
         },
         {
-          "expr": "sum(Prometheus_notifications_queue_length{instance=\"$instance\"})by (instance)",
+          "expr": "sum(prometheus_notifications_queue_length{instance=\"$instance\"})by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Alert queue size on ",
-          "metric": "Prometheus_local_storage_checkpoint_last_size_bytes",
+          "metric": "prometheus_local_storage_checkpoint_last_size_bytes",
           "refId": "B",
           "step": 1800
         }
@@ -1762,11 +1762,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(Prometheus_notifications_alertmanagers_discovered{instance=\"$instance\"}) by (instance)",
+          "expr": "sum(prometheus_notifications_alertmanagers_discovered{instance=\"$instance\"}) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Checkpoint chunks written/s",
-          "metric": "Prometheus_local_storage_checkpoint_series_chunks_written_sum",
+          "metric": "prometheus_local_storage_checkpoint_series_chunks_written_sum",
           "refId": "A",
           "step": 1800
         }
@@ -1858,22 +1858,22 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(Prometheus_notifications_dropped_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_notifications_dropped_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "notifications_dropped on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "F",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_rule_evaluation_failures_total{rule_type=\"alerting\",instance=\"$instance\"}[$aggregation_interval])) by (rule_type,instance) > 0",
+          "expr": "sum(increase(prometheus_rule_evaluation_failures_total{rule_type=\"alerting\",instance=\"$instance\"}[$aggregation_interval])) by (rule_type,instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "rule_evaluation_failures on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "A",
           "step": 1800
         }
@@ -1972,7 +1972,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(Prometheus_target_sync_length_seconds_count{scrape_job=\"consul\", instance=\"$instance\"}[$aggregation_interval])",
+          "expr": "increase(prometheus_target_sync_length_seconds_count{scrape_job=\"consul\", instance=\"$instance\"}[$aggregation_interval])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Consul target sync count",
@@ -2059,7 +2059,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(Prometheus_target_sync_length_seconds_count{scrape_job=\"marathon\", instance=\"$instance\"}[$aggregation_interval])",
+          "expr": "increase(prometheus_target_sync_length_seconds_count{scrape_job=\"marathon\", instance=\"$instance\"}[$aggregation_interval])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Marathon target sync count",
@@ -2146,7 +2146,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(Prometheus_target_sync_length_seconds_count{scrape_job=\"kubernetes\"}[$aggregation_interval])",
+          "expr": "increase(prometheus_target_sync_length_seconds_count{scrape_job=\"kubernetes\"}[$aggregation_interval])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Count of target synces",
@@ -2240,52 +2240,52 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(Prometheus_target_scrapes_exceeded_sample_limit_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_target_scrapes_exceeded_sample_limit_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "exceeded_sample_limit on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "A",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_sd_file_read_errors_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_sd_file_read_errors_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "sd_file_read_error on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "E",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_sd_consul_rpc_failures_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_sd_consul_rpc_failures_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "sd_consul_rpc_failure on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "H",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_sd_marathon_refresh_failures_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_sd_marathon_refresh_failures_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "sd_marathon_refresh_failure on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "I",
           "step": 1800
         },
         {
-          "expr": "sum(increase(Prometheus_sd_openstack_refresh_failures_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
+          "expr": "sum(increase(prometheus_sd_openstack_refresh_failures_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) > 0",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "sd_openstack_refresh_failure on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "J",
           "step": 1800
         }
@@ -2384,7 +2384,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(Prometheus_tsdb_reloads_total{instance=\"$instance\"}[30m])) by (instance)",
+          "expr": "sum(increase(prometheus_tsdb_reloads_total{instance=\"$instance\"}[30m])) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{ instance }}",
@@ -2477,11 +2477,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(Prometheus_tsdb_blocks_loaded{instance=\"$instance\"}) by (instance)",
+          "expr": "sum(prometheus_tsdb_blocks_loaded{instance=\"$instance\"}) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Loaded data blocks",
-          "metric": "Prometheus_local_storage_memory_chunkdescs",
+          "metric": "prometheus_local_storage_memory_chunkdescs",
           "refId": "A",
           "step": 1800
         }
@@ -2573,11 +2573,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "Prometheus_tsdb_head_series{instance=\"$instance\"}",
+          "expr": "prometheus_tsdb_head_series{instance=\"$instance\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Time series count",
-          "metric": "Prometheus_local_storage_memory_series",
+          "metric": "prometheus_local_storage_memory_series",
           "refId": "A",
           "step": 1800
         }
@@ -2664,11 +2664,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(Prometheus_tsdb_head_samples_appended_total{instance=\"$instance\"}[$aggregation_interval])) by (instance)",
+          "expr": "sum(rate(prometheus_tsdb_head_samples_appended_total{instance=\"$instance\"}[$aggregation_interval])) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "samples/s {{instance}}",
-          "metric": "Prometheus_local_storage_ingested_samples_total",
+          "metric": "prometheus_local_storage_ingested_samples_total",
           "refId": "A",
           "step": 1800
         }
@@ -2780,12 +2780,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(Prometheus_tsdb_head_chunks{instance=\"$instance\"}) by (instance)",
+          "expr": "sum(prometheus_tsdb_head_chunks{instance=\"$instance\"}) by (instance)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "Head chunk count",
-          "metric": "Prometheus_local_storage_memory_chunks",
+          "metric": "prometheus_local_storage_memory_chunks",
           "refId": "A",
           "step": 1800
         }
@@ -2870,7 +2870,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "max(Prometheus_tsdb_head_max_time{instance=\"$instance\"}) by (instance) - min(Prometheus_tsdb_head_min_time{instance=\"$instance\"}) by (instance)",
+          "expr": "max(prometheus_tsdb_head_max_time{instance=\"$instance\"}) by (instance) - min(prometheus_tsdb_head_min_time{instance=\"$instance\"}) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{ instance }}",
@@ -2963,14 +2963,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(Prometheus_tsdb_head_chunks_created_total{instance=\"$instance\"}[$aggregation_interval])) by (instance)",
+          "expr": "sum(rate(prometheus_tsdb_head_chunks_created_total{instance=\"$instance\"}[$aggregation_interval])) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "created on {{ instance }}",
           "refId": "B"
         },
         {
-          "expr": "sum(rate(Prometheus_tsdb_head_chunks_removed_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) * -1",
+          "expr": "sum(rate(prometheus_tsdb_head_chunks_removed_total{instance=\"$instance\"}[$aggregation_interval])) by (instance) * -1",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "deleted on {{ instance }}",
@@ -3071,7 +3071,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(Prometheus_tsdb_compaction_duration_sum{instance=\"$instance\"}[30m]) / increase(Prometheus_tsdb_compaction_duration_count{instance=\"$instance\"}[30m])) by (instance)",
+          "expr": "sum(increase(prometheus_tsdb_compaction_duration_sum{instance=\"$instance\"}[30m]) / increase(prometheus_tsdb_compaction_duration_count{instance=\"$instance\"}[30m])) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{ instance }}",
@@ -3157,7 +3157,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(Prometheus_tsdb_head_gc_duration_seconds{instance=\"$instance\"}) by (instance, quantile)",
+          "expr": "sum(prometheus_tsdb_head_gc_duration_seconds{instance=\"$instance\"}) by (instance, quantile)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{ quantile }} on {{ instance }}",
@@ -3243,7 +3243,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(Prometheus_tsdb_wal_truncate_duration_seconds{instance=\"$instance\"}) by (instance, quantile)",
+          "expr": "sum(prometheus_tsdb_wal_truncate_duration_seconds{instance=\"$instance\"}) by (instance, quantile)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{ quantile }} on {{ instance }}",
@@ -3668,7 +3668,7 @@
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "CPU/s",
-          "metric": "Prometheus_local_storage_ingested_samples_total",
+          "metric": "prometheus_local_storage_ingested_samples_total",
           "refId": "B",
           "step": 1800
         }
@@ -3732,7 +3732,7 @@
       "type": "row"
     },
     {
-      "content": "Two rows bellow can serve as example if you are running **Prometheus** in **Kubernetes** and uses **Heapster** with **InfluxDB**.\n\nThe schema and queries are very hard to generalize so you will have to tweak them but I leave them here for inspiration.",
+      "content": "Two rows bellow can serve as example if you are running **prometheus** in **Kubernetes** and uses **Heapster** with **InfluxDB**.\n\nThe schema and queries are very hard to generalize so you will have to tweak them but I leave them here for inspiration.",
       "gridPos": {
         "h": 3,
         "w": 24,
@@ -3817,7 +3817,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\")/1000 as \"usage_rate.mean\"  FROM \"cpu/usage_rate\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /Prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\")/1000 as \"usage_rate.mean\"  FROM \"cpu/usage_rate\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -3856,7 +3856,7 @@
               "hide": false,
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\")/1000 as \"usage_rate.mean\"  FROM \"cpu/usage_rate\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /Prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\")/1000 as \"usage_rate.mean\"  FROM \"cpu/usage_rate\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -3895,7 +3895,7 @@
               "hide": false,
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\")/1000 as \"CPU LIMIT\"  FROM \"cpu/limit\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /Prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\")/1000 as \"CPU LIMIT\"  FROM \"cpu/limit\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "C",
               "resultFormat": "time_series",
@@ -4017,7 +4017,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"usage_rate.mean\"  FROM \"memory/usage\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /Prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"usage_rate.mean\"  FROM \"memory/usage\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -4056,7 +4056,7 @@
               "hide": false,
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"usage_rate.mean\"  FROM \"memory/usage\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /Prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"usage_rate.mean\"  FROM \"memory/usage\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -4095,7 +4095,7 @@
               "hide": false,
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"CPU LIMIT\"  FROM \"memory/limit\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /Prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"CPU LIMIT\"  FROM \"memory/limit\" WHERE \"type\" = 'pod_container' AND \"container\" =~ /prometheus/  AND $timeFilter GROUP BY container, time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "C",
               "resultFormat": "time_series",
@@ -4233,7 +4233,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"rx_rate.mean \"  FROM \"network/rx_rate\"  WHERE  \"labels\" =~ /app:Prometheus/  AND $timeFilter GROUP BY labels,  time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"rx_rate.mean \"  FROM \"network/rx_rate\"  WHERE  \"labels\" =~ /app:prometheus/  AND $timeFilter GROUP BY labels,  time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -4271,7 +4271,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"rx_rate.mean\"  FROM \"network/rx_rate\"  WHERE  \"labels\" =~ /app:Prometheus/ AND $timeFilter GROUP BY  labels,  time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"rx_rate.mean\"  FROM \"network/rx_rate\"  WHERE  \"labels\" =~ /app:prometheus/ AND $timeFilter GROUP BY  labels,  time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -4309,7 +4309,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\")*-1 as \"tx_rate.mean \"  FROM \"network/tx_rate\"  WHERE  \"labels\" =~ /app:Prometheus/ AND $timeFilter GROUP BY labels,  time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\")*-1 as \"tx_rate.mean \"  FROM \"network/tx_rate\"  WHERE  \"labels\" =~ /app:prometheus/ AND $timeFilter GROUP BY labels,  time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "C",
               "resultFormat": "time_series",
@@ -4347,7 +4347,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\")*-1 as \"tx_rate.mean\"  FROM \"network/tx_rate\"  WHERE  \"labels\" =~ /app:Prometheus/ AND $timeFilter GROUP BY  labels, time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\")*-1 as \"tx_rate.mean\"  FROM \"network/tx_rate\"  WHERE  \"labels\" =~ /app:prometheus/ AND $timeFilter GROUP BY  labels, time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "D",
               "resultFormat": "time_series",
@@ -4385,7 +4385,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"rx_errors_rate.mean\"  FROM \"network/rx_errors_rate\"  WHERE  \"labels\" =~ /app:Prometheus/ AND $timeFilter AND \"value\">0 GROUP BY  labels,  time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"rx_errors_rate.mean\"  FROM \"network/rx_errors_rate\"  WHERE  \"labels\" =~ /app:prometheus/ AND $timeFilter AND \"value\">0 GROUP BY  labels,  time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "E",
               "resultFormat": "time_series",
@@ -4423,7 +4423,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"rx_errors_rate.mean\"  FROM \"network/rx_errors_rate\"  WHERE  \"labels\" =~ /app:Prometheus/ AND $timeFilter AND \"value\">0 GROUP BY  labels,  time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"rx_errors_rate.mean\"  FROM \"network/rx_errors_rate\"  WHERE  \"labels\" =~ /app:prometheus/ AND $timeFilter AND \"value\">0 GROUP BY  labels,  time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "F",
               "resultFormat": "time_series",
@@ -4461,7 +4461,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"tx_errors_rate.mean\"  FROM \"network/rx_errors_rate\"  WHERE  \"labels\" =~ /app:Prometheus/ AND $timeFilter AND \"value\">0 GROUP BY  labels,  time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"tx_errors_rate.mean\"  FROM \"network/rx_errors_rate\"  WHERE  \"labels\" =~ /app:prometheus/ AND $timeFilter AND \"value\">0 GROUP BY  labels,  time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "G",
               "resultFormat": "time_series",
@@ -4499,7 +4499,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"tx_errors_rate.mean\"  FROM \"network/rx_errors_rate\"  WHERE  \"labels\" =~ /app:Prometheus/ AND $timeFilter AND \"value\">0 GROUP BY  labels,  time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"tx_errors_rate.mean\"  FROM \"network/rx_errors_rate\"  WHERE  \"labels\" =~ /app:prometheus/ AND $timeFilter AND \"value\">0 GROUP BY  labels,  time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "H",
               "resultFormat": "time_series",
@@ -4621,7 +4621,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"DISK_USAGE.mean \"  FROM \"filesystem/usage\" WHERE  \"labels\" =~ /data-Prometheus:true/ AND $timeFilter GROUP BY  time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"DISK_USAGE.mean \"  FROM \"filesystem/usage\" WHERE  \"labels\" =~ /data-prometheus:true/ AND $timeFilter GROUP BY  time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -4660,7 +4660,7 @@
               "hide": false,
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"DISK_USAGE.mean \"  FROM \"filesystem/usage\" WHERE  \"labels\" =~ /data-Prometheus:true/ AND $timeFilter GROUP BY  time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"DISK_USAGE.mean \"  FROM \"filesystem/usage\" WHERE  \"labels\" =~ /data-prometheus:true/ AND $timeFilter GROUP BY  time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -4699,7 +4699,7 @@
               "hide": false,
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"DISK_LIMIT.mean \"  FROM \"filesystem/limit\" WHERE  \"labels\" =~ /data-Prometheus:true/ AND $timeFilter GROUP BY  time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"DISK_LIMIT.mean \"  FROM \"filesystem/limit\" WHERE  \"labels\" =~ /data-prometheus:true/ AND $timeFilter GROUP BY  time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "C",
               "resultFormat": "time_series",
@@ -4738,7 +4738,7 @@
               "hide": false,
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"DISK_LIMIT.mean\"  FROM \"filesystem/limit\" WHERE  \"labels\" =~ /data-Prometheus:true/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"DISK_LIMIT.mean\"  FROM \"filesystem/limit\" WHERE  \"labels\" =~ /data-prometheus:true/ AND $timeFilter GROUP BY time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "D",
               "resultFormat": "time_series",
@@ -4860,7 +4860,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"FREE_INODES.mean \"  FROM \"filesystem/inodes_free\" WHERE  \"labels\" =~ /data-Prometheus:true/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"FREE_INODES.mean \"  FROM \"filesystem/inodes_free\" WHERE  \"labels\" =~ /data-prometheus:true/ AND $timeFilter GROUP BY time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -4899,7 +4899,7 @@
               "hide": false,
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"FREE_INODES.mean\"  FROM \"filesystem/inodes_free\" WHERE  \"labels\" =~ /data-Prometheus:true/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"FREE_INODES.mean\"  FROM \"filesystem/inodes_free\" WHERE  \"labels\" =~ /data-prometheus:true/ AND $timeFilter GROUP BY time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -4937,7 +4937,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"USED_INODES.mean \"  FROM \"filesystem/inodes\" WHERE  \"labels\" =~ /data-Prometheus:true/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"USED_INODES.mean \"  FROM \"filesystem/inodes\" WHERE  \"labels\" =~ /data-prometheus:true/ AND $timeFilter GROUP BY time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "C",
               "resultFormat": "time_series",
@@ -4975,7 +4975,7 @@
               ],
               "orderByTime": "ASC",
               "policy": "default",
-              "query": "SELECT mean(\"value\") as \"USED_INODES.mean\"  FROM \"filesystem/inodes\" WHERE  \"labels\" =~ /data-Prometheus:true/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+              "query": "SELECT mean(\"value\") as \"USED_INODES.mean\"  FROM \"filesystem/inodes\" WHERE  \"labels\" =~ /data-prometheus:true/ AND $timeFilter GROUP BY time($__interval) fill(null)",
               "rawQuery": true,
               "refId": "D",
               "resultFormat": "time_series",
@@ -5107,7 +5107,7 @@
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "conntrack_dialer_conn_failed on {{ instance }}",
-          "metric": "Prometheus_local_storage_chunk_ops_total",
+          "metric": "prometheus_local_storage_chunk_ops_total",
           "refId": "M",
           "step": 1800
         }
@@ -5159,7 +5159,7 @@
   "schemaVersion": 18,
   "style": "dark",
   "tags": [
-    "Prometheus"
+    "prometheus"
   ],
   "templating": {
     "list": [
@@ -5240,14 +5240,14 @@
         "allValue": null,
         "current": {},
         "datasource": "$datasource",
-        "definition": "label_values(Prometheus_build_info, instance)",
+        "definition": "label_values(prometheus_build_info, instance)",
         "hide": 0,
         "includeAll": false,
         "label": "Instance",
         "multi": false,
         "name": "instance",
         "options": [],
-        "query": "label_values(Prometheus_build_info, instance)",
+        "query": "label_values(prometheus_build_info, instance)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -5278,16 +5278,16 @@
       },
       {
         "current": {
-          "text": "Prometheus",
-          "value": "Prometheus"
+          "text": "prometheus",
+          "value": "prometheus"
         },
         "hide": 0,
         "includeAll": false,
-        "label": "Prometheus datasource",
+        "label": "prometheus datasource",
         "multi": false,
         "name": "datasource",
         "options": [],
-        "query": "Prometheus",
+        "query": "prometheus",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -5342,7 +5342,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "Prometheus2.0",
+  "title": "prometheus2.0",
   "uid": "pR9S1fkWz",
   "version": 14
 }

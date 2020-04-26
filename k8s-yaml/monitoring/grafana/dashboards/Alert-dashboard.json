@@ -2,11 +2,11 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
-      "pluginId": "Prometheus",
-      "pluginName": "Prometheus"
+      "pluginId": "prometheus",
+      "pluginName": "prometheus"
     }
   ],
   "__requires": [
@@ -24,8 +24,8 @@
     },
     {
       "type": "datasource",
-      "id": "Prometheus",
-      "name": "Prometheus",
+      "id": "prometheus",
+      "name": "prometheus",
       "version": "1.0.0"
     },
     {
@@ -54,7 +54,7 @@
       }
     ]
   },
-  "description": "Dashboard showing Prometheus Alertmanager metrics for observing status of the cluster and possible debbuging.\n\nAlertManager告警总览",
+  "description": "Dashboard showing prometheus Alertmanager metrics for observing status of the cluster and possible debbuging.\n\nAlertManager告警总览",
   "editable": false,
   "gnetId": 9681,
   "graphTooltip": 1,
@@ -903,7 +903,7 @@
   "style": "dark",
   "tags": [
     "alertmanager",
-    "Prometheus",
+    "prometheus",
     "alerting"
   ],
   "templating": {
@@ -932,16 +932,16 @@
       },
       {
         "current": {
-          "text": "Prometheus",
-          "value": "Prometheus"
+          "text": "prometheus",
+          "value": "prometheus"
         },
         "hide": 2,
         "includeAll": false,
-        "label": "Prometheus datasource",
+        "label": "prometheus datasource",
         "multi": false,
         "name": "datasource",
         "options": [],
-        "query": "Prometheus",
+        "query": "prometheus",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

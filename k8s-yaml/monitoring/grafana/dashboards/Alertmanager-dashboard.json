@@ -15,8 +15,8 @@
     },
     {
       "type": "datasource",
-      "id": "Prometheus",
-      "name": "Prometheus",
+      "id": "prometheus",
+      "name": "prometheus",
       "version": "1.0.0"
     },
     {
@@ -57,7 +57,7 @@
       }
     ]
   },
-  "description": "Dashboard showing Prometheus Alertmanager metrics for observing status of the cluster and possible debbuging.",
+  "description": "Dashboard showing prometheus Alertmanager metrics for observing status of the cluster and possible debbuging.",
   "editable": true,
   "gnetId": 9578,
   "graphTooltip": 1,
@@ -71,7 +71,7 @@
       "title": "Docs",
       "tooltip": "Official documentation of Alertmanager",
       "type": "link",
-      "url": "https://Prometheus.io/docs/alerting/alertmanager/"
+      "url": "https://prometheus.io/docs/alerting/alertmanager/"
     },
     {
       "icon": "info",
@@ -80,25 +80,25 @@
       "title": "GitHub",
       "tooltip": "Alertmanager sources on GitHub",
       "type": "link",
-      "url": "https://github.com/Prometheus/alertmanager"
+      "url": "https://github.com/prometheus/alertmanager"
     },
     {
       "icon": "info",
       "tags": [],
       "targetBlank": true,
       "title": "Twitter",
-      "tooltip": "Twitter account with Prometheus related info",
+      "tooltip": "Twitter account with prometheus related info",
       "type": "link",
-      "url": "https://twitter.com/PrometheusIO"
+      "url": "https://twitter.com/prometheusIO"
     },
     {
       "icon": "question",
       "tags": [],
       "targetBlank": true,
       "title": "Mailing list",
-      "tooltip": "Prometheus users mailing list",
+      "tooltip": "prometheus users mailing list",
       "type": "link",
-      "url": "https://groups.google.com/forum/#!forum/Prometheus-users"
+      "url": "https://groups.google.com/forum/#!forum/prometheus-users"
     },
     {
       "icon": "question",
@@ -107,7 +107,7 @@
       "title": "IRC",
       "tooltip": "Join IRC using Riot",
       "type": "link",
-      "url": "https://riot.im/app/#/room/#Prometheus:matrix.org"
+      "url": "https://riot.im/app/#/room/#prometheus:matrix.org"
     }
   ],
   "panels": [
@@ -1042,7 +1042,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "$datasource",
-      "description": "Number of received alerts from Prometheus by status `firing` on positive axis and `resolved` on negative axis.",
+      "description": "Number of received alerts from prometheus by status `firing` on positive axis and `resolved` on negative axis.",
       "fill": 1,
       "gridPos": {
         "h": 5,
@@ -11143,23 +11143,23 @@
   "style": "dark",
   "tags": [
     "alertmanager",
-    "Prometheus",
+    "prometheus",
     "alerting"
   ],
   "templating": {
     "list": [
       {
         "current": {
-          "text": "Prometheus",
-          "value": "Prometheus"
+          "text": "prometheus",
+          "value": "prometheus"
         },
         "hide": 0,
         "includeAll": false,
-        "label": "Prometheus datasource",
+        "label": "prometheus datasource",
         "multi": false,
         "name": "datasource",
         "options": [],
-        "query": "Prometheus",
+        "query": "prometheus",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

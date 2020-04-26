@@ -16,7 +16,7 @@
     {
       "type": "datasource",
       "id": "prometheus",
-      "name": "Prometheus",
+      "name": "prometheus",
       "version": "1.0.0"
     }
   ],
@@ -1633,7 +1633,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "Prometheus Remote Write",
+  "title": "prometheus Remote Write",
   "uid": "u6saL3BWk",
   "version": 1
 }

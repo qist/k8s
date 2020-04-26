@@ -2,11 +2,11 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
-      "pluginId": "Prometheus",
-      "pluginName": "Prometheus"
+      "pluginId": "prometheus",
+      "pluginName": "prometheus"
     }
   ],
   "__requires": [
@@ -24,8 +24,8 @@
     },
     {
       "type": "datasource",
-      "id": "Prometheus",
-      "name": "Prometheus",
+      "id": "prometheus",
+      "name": "prometheus",
       "version": "5.0.0"
     },
     {
@@ -54,7 +54,7 @@
       }
     ]
   },
-  "description": "Etcd Dashboard from Prometheus for clusters running etcd as processes (not containers)",
+  "description": "Etcd Dashboard from prometheus for clusters running etcd as processes (not containers)",
   "editable": true,
   "gnetId": 10322,
   "graphTooltip": 0,
