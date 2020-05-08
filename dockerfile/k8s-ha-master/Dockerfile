@@ -16,8 +16,8 @@ RUN apk update && \
 ENV NGINX_VERSION 1.17.9
 
 ENV OPENSSL_VERSION 1.1.1e
-ENV http_proxy http://192.168.0.151:1081
-ENV https_proxy http://192.168.0.151:1081
+# ENV http_proxy http://192.168.0.151:1081
+# ENV https_proxy http://192.168.0.151:1081
 
 # 编译安装NGINX
 
