@@ -27,7 +27,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: ingress-system
-          image: traefik:v2.2.0
+          image: traefik:v2.2.1
           args:
             - --api.insecure
             - --api.dashboard
@@ -37,7 +37,6 @@ spec:
             - --accessLog.fields.headers.defaultMode=redact
             - --entrypoints.web.Address=:80
             - --entrypoints.websecure.Address=:443
-            - --entrypoints.jaeger.Address=:16686
             - --providers.kubernetescrd
             - --metrics.prometheus
             - --metrics.prometheus.entrypoint=metrics
@@ -45,6 +44,7 @@ spec:
             - --entryPoints.metrics.address=:8082
             - --serverstransport.insecureskipverify=true
             - --providers.kubernetesingress.disablepasshostheaders=true
+            - --providers.kubernetescrd.ingressclass=traefik
             - --tracing.jaeger=true
             - --tracing.jaeger.samplingServerURL=http://jaeger-agent:5778/sampling
             - --tracing.jaeger.samplingType=const
@@ -90,9 +90,6 @@ metadata:
   labels:
     k8s-app: traefik
   annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/affinity: "true"
-    traefik.ingress.kubernetes.io/load-balancer-method: drr
     prometheus.io/port: "8082"
     prometheus.io/scrape: 'true'  
   name: traefik

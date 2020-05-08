@@ -27,7 +27,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: traefik
-          image: traefik:v2.2.0
+          image: traefik:v2.2.1
           args:
             - --api.insecure
             - --api.dashboard
@@ -37,11 +37,11 @@ spec:
             - --accessLog.fields.headers.defaultMode=redact
             - --entrypoints.web.Address=:80
             - --entrypoints.websecure.Address=:443
-            - --entrypoints.zipkin.Address=:16686
             - --providers.kubernetescrd
             - --metrics.prometheus
             - --metrics.prometheus.entrypoint=metrics
             - --metrics.prometheus.addEntryPointsLabels=true
+            - --providers.kubernetescrd.ingressclass=traefik
             - --entryPoints.metrics.address=:8082
             - --serverstransport.insecureskipverify=true
             - --providers.kubernetesingress.disablepasshostheaders=true
@@ -87,9 +87,6 @@ metadata:
   labels:
     k8s-app: traefik
   annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/affinity: "true"
-    traefik.ingress.kubernetes.io/load-balancer-method: drr
     prometheus.io/port: "8082"
     prometheus.io/scrape: 'true'     
   name: traefik
