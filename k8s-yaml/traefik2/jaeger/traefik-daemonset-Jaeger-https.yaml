@@ -44,7 +44,6 @@ spec:
             - --entryPoints.metrics.address=:8082
             - --serverstransport.insecureskipverify=true
             - --providers.kubernetesingress.disablepasshostheaders=true
-            - --providers.kubernetescrd.ingressclass=traefik
             - --tracing.jaeger=true
             - --tracing.jaeger.samplingServerURL=http://jaeger-agent:5778/sampling
             - --tracing.jaeger.samplingType=const
