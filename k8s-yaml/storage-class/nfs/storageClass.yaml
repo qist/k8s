@@ -5,8 +5,9 @@ metadata:
     storageclass.kubernetes.io/is-default-class: "true"   # true|false
   name: nfs-storage
   namespace: clusterstorage
+mountOptions:
+- rw,nolock,tcp
+- vers=4
 provisioner: fuseim.pri/ifs
 reclaimPolicy: Retain
-mountOptions:
-  - vers=4.0
-  - noresvport
+volumeBindingMode: Immediate
