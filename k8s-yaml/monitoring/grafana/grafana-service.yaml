@@ -9,12 +9,11 @@ metadata:
   annotations:
     prometheus.io/scrape: 'true'
 spec:
-  type: NodePort
+  type: ClusterIP
   externalTrafficPolicy: Cluster
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 30091
       protocol: TCP
       name: webui
   #externalIPs: 

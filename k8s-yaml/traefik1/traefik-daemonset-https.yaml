@@ -71,10 +71,6 @@ spec:
         - --tracing.jaeger.samplingType=const
         - --tracing.jaeger.samplingParam=1
         - --tracing.jaeger.localAgentHostPort=jaeger-agent:6831
-      tolerations:
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/master
-        operator: Equal
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
