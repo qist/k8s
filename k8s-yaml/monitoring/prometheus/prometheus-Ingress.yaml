@@ -14,7 +14,11 @@ spec:
     - name: prometheus-k8s
       port: 9090
       sticky:
-        cookie: {}
+        cookie:
+          httpOnly: true
+          name: cookie
+          secure: true
+          sameSite: none
       passHostHeader: true
       responseForwarding:
         flushInterval: 100ms
