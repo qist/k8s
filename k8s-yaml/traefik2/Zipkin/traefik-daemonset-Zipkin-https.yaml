@@ -71,12 +71,21 @@ spec:
               - ALL
               add:
               - NET_BIND_SERVICE
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
       #nodeSelector:
         #ingress: "yes"
       tolerations:
       - effect: NoSchedule
         key: node-role.kubernetes.io/ingress
         operator: Equal
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
