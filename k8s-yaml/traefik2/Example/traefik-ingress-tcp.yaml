@@ -16,7 +16,11 @@ spec:
       weight: 1
      # 开启粘性会话
       sticky:
-        cookie: {}
+        cookie:
+          httpOnly: true
+          name: cookie
+          secure: true
+          sameSite: none
       passHostHeader: true
       responseForwarding:
         flushInterval: 100ms
@@ -44,7 +48,11 @@ spec:
       weight: 1
       # 开启粘性会话
       sticky:
-        cookie: {}
+        cookie:
+          httpOnly: true
+          name: cookie
+          secure: true
+          sameSite: none
       passHostHeader: true
       responseForwarding:
         flushInterval: 100ms
