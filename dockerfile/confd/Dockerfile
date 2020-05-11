@@ -152,6 +152,10 @@ ADD conf.d /etc/confd/conf.d
 ADD templates /etc/confd/templates
 ADD nginx-proxy /usr/bin/nginx-proxy
 
+#添加执行权限
+RUN  chmod +x /usr/sbin/confd \
+     && chmod +x /usr/bin/nginx-proxy
+     
 STOPSIGNAL SIGTERM
 
 ENTRYPOINT ["/usr/bin/nginx-proxy"]
