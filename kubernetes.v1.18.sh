@@ -173,7 +173,7 @@ KUBE_API_QPS="100"
 #kube-api-burst 默认30
 KUBE_API_BURST="100"
 # pod-infra-container-image 地址
-POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause-amd64:3.1"
+POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause-amd64:3.2"
 # max-pods node 节点启动最多pod 数量
 MAX_PODS=100
 #每1核cpu最多运行pod数 默认0 关闭 
