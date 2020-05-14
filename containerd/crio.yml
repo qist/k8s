@@ -1,0 +1,7 @@
+- hosts: all
+  user: root
+  vars:
+    CRIO_PATH: /apps
+  roles:
+    - cni
+    - cri-o

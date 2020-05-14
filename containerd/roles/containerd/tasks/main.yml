@@ -1,0 +1,68 @@
+- name: Create containerd
+  file:
+    path: "{{ CRIO_PATH }}/containerd"
+    state: directory
+    mode: '0640'
+- name: Create {{ CRIO_PATH }}/containerd
+  file:
+    path: "{{ CRIO_PATH }}/containerd/conf"
+    state: directory
+    mode: '0640'
+- name: copy containerd
+  copy: 
+    src: bin 
+    dest: "{{ CRIO_PATH }}/containerd/" 
+    owner: root 
+    group: root 
+    mode: 0755
+- name: copy crictl
+  copy: 
+    src: crictl 
+    dest: "/usr/local/bin/" 
+    owner: root 
+    group: root 
+    mode: 0755
+- name:  containerd etc
+  template: 
+    src: '{{ item }}'
+    dest: "{{ CRIO_PATH }}/containerd/conf"
+    owner: root 
+    group: root
+  with_items:
+      - config.toml
+- name:  containers etc
+  copy: 
+    src: '{{ item }}'
+    dest: /etc
+    owner: root 
+    group: root
+  with_items:
+      - crictl.yaml
+- name: Create a symbolic link
+  file:
+    src: "{{ CRIO_PATH }}/containerd/bin/{{ item }}"
+    dest: '/usr/local/bin/{{ item }}'
+    owner: root
+    group: root
+    state: link
+    force: yes
+  with_items:
+      - containerd-shim
+      - runc
+- name:  copy to containerd service
+  template: 
+    src: '{{ item }}' 
+    dest: /lib/systemd/system/
+  with_items:
+      - containerd.service
+- name: Reload service daemon-reload
+  shell: systemctl daemon-reload
+- name: Enable service containerd, and not touch the state
+  service:
+    name: containerd
+    enabled: yes
+- name: Start service containerd, if not started
+  service:
+    name: containerd
+    state: restarted      
+  
