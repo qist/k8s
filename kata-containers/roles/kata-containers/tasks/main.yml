@@ -39,18 +39,18 @@
   when: ansible_facts.distribution == 'Ubuntu'
 #- name: add  http_proxy  https_proxy
 #  lineinfile: 
-#    dest: ~/.bashrc
+#    dest: /etc/environment
 #    line: '{{ item.key }}'
 #  with_items:
-#      - { key: 'export http_proxy=http://192.168.0.151:1081' }
-#      - { key: 'export https_proxy=http://192.168.0.151:1081' }
+#      - { key: 'http_proxy=http://192.168.0.151:1081' }
+#      - { key: 'https_proxy=http://192.168.0.151:1081' }
 - name: Install Kata Containers
   apt:
     name:
       - kata-runtime 
       - kata-proxy 
       - kata-shim
-    state: latest
+    state: present
   when: ansible_facts.distribution == 'Ubuntu'
 - name: CentOS  repo
   get_url:
@@ -68,9 +68,10 @@
   when: ansible_os_family == 'RedHat'
 #- name: Remove  http_proxy  https_proxy
 #  blockinfile:
-#    path: ~/.bashrc
+#    path: /etc/environment
 #    marker: '{{ item.key }}'
 #    block: ""
 #  with_items:
-#      - { key: 'export http_proxy=http://192.168.0.151:1081' }
-#      - { key: 'export https_proxy=http://192.168.0.151:1081' }
+#      - { key: 'http_proxy=http://192.168.0.151:1081' }
+#      - { key: 'https_proxy=http://192.168.0.151:1081' }
+
