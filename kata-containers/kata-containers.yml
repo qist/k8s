@@ -1,0 +1,4 @@
+- hosts: all
+  user: root
+  roles:
+    - kata-containers
