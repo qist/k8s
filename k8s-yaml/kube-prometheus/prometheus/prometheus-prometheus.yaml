@@ -1,0 +1,49 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  labels:
+    prometheus: k8s
+  name: k8s
+  namespace: monitoring
+spec:
+  alerting:
+    alertmanagers:
+    - name: alertmanager-main
+      namespace: monitoring
+      port: web
+  image: quay.io/prometheus/prometheus:v2.17.2
+  nodeSelector:
+    kubernetes.io/os: linux
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector: {}
+  replicas: 2
+  secrets:
+  - etcd-certs
+  - istio-certs
+  resources:
+    requests:
+      memory: 2048Mi
+  retention: 7d
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+  ruleSelector:
+    matchLabels:
+      prometheus: k8s
+      role: alert-rules
+  additionalScrapeConfigs:
+    name: additional-configs
+    key: prometheus-additional.yaml
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus-k8s
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  version: v2.17.2
