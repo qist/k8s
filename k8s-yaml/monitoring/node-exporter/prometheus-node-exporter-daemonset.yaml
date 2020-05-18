@@ -19,11 +19,12 @@ spec:
       containers:
       - image: prom/node-exporter:v0.18.1
         args:
-        - "--path.procfs=/host/proc"
-        - "--path.sysfs=/host/sys"
-        - "--path.rootfs=/host/root"
-        - "--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|/apps/docker/.+)($|/)"
-        - "--collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$"
+        - --path.procfs=/host/proc
+        - --path.sysfs=/host/sys
+        - --path.rootfs=/host/root
+        - --no-collector.wifi
+        - --no-collector.hwmon
+        - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|apps/docker/data/.+|apps/work/kubernetes/kubelet/pods/.+)($|/)
         name: node-exporter
         ports:
         - name: http
