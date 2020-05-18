@@ -8,6 +8,7 @@ tar -xv helm-v3.0.2-linux-amd64.tar.gz
 # 复制文件到/bin 目录
 cp ./linux-amd64/helm /bin
 # 下载istio 
+export ISTIO_VERSION=1.5.4 # 指定版本
 curl -L https://istio.io/downloadIstio | sh -
 # 等待下载完成 现在版本是1.4.2
 cd istio-1.4.2
