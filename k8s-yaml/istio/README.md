@@ -40,8 +40,19 @@ spec:
   sessionAffinity: None
   externalName: prometheus-k8s.monitoring.svc.cluster.local
 EOF
+cat <<EOF | kubectl create -f -
+kind: Service
+apiVersion: v1
+metadata:
+  name: grafana 
+  namespace: istio-system
+spec:
+  type: ExternalName
+  sessionAffinity: None
+  externalName: grafana.monitoring.svc.cluster.local
+EOF
 # 安装istio cniBinDir  cniConfDir 跟部署node节点目录一致
-helm install  install/kubernetes/helm/istio --name-template istio --namespace istio-system --timeout=300s  \
+helm install  install/kubernetes/helm/istio --name-template istio --namespace istio-system --timeout=300s --no-hooks  \
 --set gateways.istio-ingressgateway.type=ClusterIP   \
 --set gateways.istio-egressgateway.enabled=true \
 --set mixer.policy.enabled=true \
