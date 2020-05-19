@@ -2,7 +2,7 @@
 FROM alpine
 
 # 作者信息
-MAINTAINER nginx 1.17.9 Docker Maintainers "87984115@qq.com"
+MAINTAINER nginx 1.18.0 Docker Maintainers "87984115@qq.com"
 
 # 修改源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
@@ -13,9 +13,9 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV NGINX_VERSION 1.17.9
+ENV NGINX_VERSION 1.18.0
 
-ENV OPENSSL_VERSION 1.1.1e
+ENV OPENSSL_VERSION 1.1.1g
 # ENV http_proxy http://192.168.0.151:1081
 # ENV https_proxy http://192.168.0.151:1081
 
@@ -128,10 +128,13 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV NGINX_VERSION 1.17.9
+ENV NGINX_VERSION 1.18.0
 
-ENV OPENSSL_VERSION 1.1.1e
-
+ENV OPENSSL_VERSION 1.1.1g
+# nginx 进行使用cpu 数量
+ENV CPU_NUM 4
+# nginx 监听端口
+ENV HOST_PORT 6443
 RUN  mkdir -p /var/lib/nginx/cache \
      && apk add  --no-cache  \ 
            curl \
