@@ -11,7 +11,7 @@ events {
 stream {
         upstream kube_apiserver {
             {{ $servers := split (getenv "CP_HOSTS") "," }}{{range $servers}}
-            server {{.}};
+            server {{.}}:K8S_MASTER_PORT;
             {{end}}
         }
 
