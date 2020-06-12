@@ -1,6 +1,7 @@
 #!/bin/bash
 ##########################################################K8S一键自动安装##################################################################################################
 ###########################################################K8S 版本支持在v1.15.0 及以上版本################################################################################
+###########################################################在部署中会重启服务器及更新系统需要在全新环境部署不然重启对业务有影响############################################
 # 开启 下载代理 国内尽量配置
 Proxy() {
 # export http_proxy=http://127.0.0.1:7890/
@@ -91,6 +92,8 @@ KUBELET_IPV4=ansible_default_ipv4.address
 ETCD_IPV4=ansible_default_ipv4.address
 # POD 通信 网卡
 IFACE="eth0"
+# 是否更新系统及基本的内核修改 OFF 关闭 ON 开启 默认开启
+PACKAGE_SYSCTL=ON
 ########################################################################################################################################################################
 ######################################################### 负载均衡插件及镜像                                                   #########################################                                
 ########################################################################################################################################################################
@@ -6876,7 +6879,7 @@ checkK8SMaster(){
 }
 selectEnv(){
         if [ ${K8S_EVENTS} == ON ]; then
-        EVENTS_ETCD="##########  etcd EVENTS 部署 ansible-playbook -i ${ETCD_EVENTS_IPS}, package-sysctl.yml  events-etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}"
+        EVENTS_ETCD="##########  etcd EVENTS 部署 ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE}  events-etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}"
         fi
         if [ ${NET_PLUG} == "calico" ]; then
         NETPLUG=calico.yaml
@@ -6897,6 +6900,9 @@ selectEnv(){
         if [ ${IPTABLES_INSTALL} == "ON" ]; then
         IPTABLES_FILE=iptables.yml
         fi
+        if [ ${PACKAGE_SYSCTL} == "ON" ]; then
+            PACKAGE_SYSCTL_FILE=package-sysctl.yml
+        fi  
 }
 README.md(){
 colorEcho ${BLUE} "开启选择使用插件"
@@ -6911,14 +6917,14 @@ cat > ${HOST_PATH}/README.md << EOF
 ###################################################################################
 ##########  ansible 及ansible-playbook 单个ip ip结尾一点要添加“,”符号 ansible-playbook -i 192.168.0.1, xxx.yml
 ##########  source ${HOST_PATH}/environment.sh 设置环境变量生效方便后期新增证书等
-##########  etcd 部署 ansible-playbook -i ${ETCD_SERVER_IPS}, package-sysctl.yml etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+##########  etcd 部署 ansible-playbook -i ${ETCD_SERVER_IPS}, ${PACKAGE_SYSCTL_FILE} etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
 ${EVENTS_ETCD}
-##########  kube-apiserver 部署 ansible-playbook -i ${K8S_APISERVER_VIP}, package-sysctl.yml kube-apiserver.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+##########  kube-apiserver 部署 ansible-playbook -i ${K8S_APISERVER_VIP}, ${PACKAGE_SYSCTL_FILE} kube-apiserver.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
 ##########  部署完成验证集群 kubectl cluster-info  kubectl api-versions  kubectl get cs
 ##########  提交bootstrap到K8S集群 kubectl apply -f ${HOST_PATH}/yaml/bootstrap-secret.yaml
 ##########  提交授权到K8S集群 kubectl apply -f ${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml kubectl apply -f ${HOST_PATH}/yaml/kube-api-rbac.yaml 
 ##########  安装其它组件 ansible-playbook -i ${K8S_APISERVER_VIP}, ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-controller-manager.yml kube-scheduler.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
-##########  node 节点部署  ansible-playbook -i ${NODE_IP}, package-sysctl.yml ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+##########  node 节点部署  ansible-playbook -i ${NODE_IP}, ${PACKAGE_SYSCTL_FILE} ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
 ##########  部署网络插件 kubectl apply -f ${HOST_PATH}/yaml/${NETPLUG}
 ##########  部署coredns插件 kubectl apply -f ${HOST_PATH}/yaml/coredns.yaml
 ##########  查看node 节点是否注册到K8S kubectl get node kubectl get csr 如果有节点 
@@ -7091,7 +7097,7 @@ installK8SPackage(){
           checkAnsible # 检查ansible 连接是否需要输入密码
           colorEcho ${BLUE} "部署etcd 集群"
           ETCD_SERVER_IPS=`echo $ETCD_SERVER_IPS| sed  -e "s/\"//g"`
-          ansible-playbook -i ${ETCD_SERVER_IPS}, package-sysctl.yml etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+          ansible-playbook -i ${ETCD_SERVER_IPS}, ${PACKAGE_SYSCTL_FILE} etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
       if [[ $? -ne 0 ]]; then
          colorEcho ${RED} "${ETCD_SERVER_IPS} etcd  部署失败."
           exit $?
@@ -7101,7 +7107,7 @@ installK8SPackage(){
    if [ ${K8S_EVENTS} == "ON" ]; then
        ETCD_EVENTS_IPS=`echo $ETCD_EVENTS_IPS| sed  -e "s/\"//g"`
        colorEcho ${BLUE} "部署etcd events 集群"
-       ansible-playbook -i ${ETCD_EVENTS_IPS}, package-sysctl.yml events-etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+       ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE} events-etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
          if [[ $? -ne 0 ]]; then
          colorEcho ${RED} "${ETCD_EVENTS_IPS} etcd events  部署失败."
           exit $?
@@ -7113,7 +7119,7 @@ installK8SPackage(){
      checkETCD
      colorEcho ${BLUE} "部署 kube-apiserver"
       K8S_APISERVER_VIP=`echo $K8S_APISERVER_VIP| sed  -e "s/\"//g"`
-     ansible-playbook -i ${K8S_APISERVER_VIP}, package-sysctl.yml kube-apiserver.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+     ansible-playbook -i ${K8S_APISERVER_VIP}, ${PACKAGE_SYSCTL_FILE} kube-apiserver.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
          if [[ $? -ne 0 ]]; then
          colorEcho ${RED} "${K8S_APISERVER_VIP} kube-apiserver  部署失败."
           exit $?
@@ -7163,7 +7169,7 @@ installK8SPackage(){
      colorEcho ${GREEN} "kube-controller-manager kube-scheduler 部署成功."
      fi
    colorEcho ${BLUE} " node 节点部署."
-   ansible-playbook -i ${NODE_IP}, package-sysctl.yml ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+   ansible-playbook -i ${NODE_IP}, ${PACKAGE_SYSCTL_FILE} ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
       if [[ $? -ne 0 ]]; then
          colorEcho ${RED} "node 节点  部署失败."
           exit $?
