@@ -2778,7 +2778,7 @@ cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
 - name: Create a symbolic link
   file:
     src: "${CONTAINERD_PATH}/bin/{{ item }}"
-    dest: '/usr/local/bin/{{ item }}'
+    dest: '/usr/bin/{{ item }}'
     owner: root
     group: root
     state: link
