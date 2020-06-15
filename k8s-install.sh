@@ -1899,6 +1899,7 @@ User=k8s
 [Install]
 WantedBy=multi-user.target
 EOF
+if [[ ! -e ${HOST_PATH}/roles/kube-apiserver/files/config/encryption-config.yaml ]]; then
 # 生成encryption-config.yaml
 cat > ${HOST_PATH}/roles/kube-apiserver/files/config/encryption-config.yaml << EOF
 kind: EncryptionConfig
@@ -1913,6 +1914,7 @@ resources:
               secret: ${ENCRYPTION_KEY}
       - identity: {}
 EOF
+fi
 # 创建kube-apiserver playbook
 cat > ${HOST_PATH}/roles/kube-apiserver/tasks/main.yml << EOF
 - name: create groupadd k8s
