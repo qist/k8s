@@ -452,7 +452,7 @@ downloadK8S(){
     # 下载containerd
           wget -c  --tries=40 https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz \
                     -O $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz
-         if [[ $$? -ne 0 ]]; then
+         if [[ $? -ne 0 ]]; then
            colorEcho ${RED} "download  FATAL containerd."
            exit $?
          fi      
@@ -2306,7 +2306,13 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '8'   
+  when: ansible_distribution_major_version == '8'
+- name: Remove /etc/yum.repos.d/CentOS-AppStream.repo
+  file:
+    path: "/etc/yum.repos.d/CentOS-AppStream.repo"
+    state: absent
+  ignore_errors: True
+  when: ansible_distribution_major_version == '8'  
 - name: upgrade all packages
   yum:
     name: '*'
@@ -3379,7 +3385,7 @@ kubeletConfig(){
            colorEcho ${GREEN} '文件夹已经存在'
        fi
      if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet" ]] && [[ ! -e "${HOST_PATH}/roles/kubelet/files/bin/kubelet" ]]; then
+        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet" ]]; then
          # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
            mkdir -p ${HOST_PATH}/roles/kubelet/files/{bin,ssl}
            mkdir -p ${HOST_PATH}/roles/kubelet/files/ssl/k8s
@@ -4017,7 +4023,7 @@ cat > ${HOST_PATH}/roles/iptables/tasks/main.yml << EOF
     chdir: "${SOURCE_PATH}/iptables-${IPTABLES_VERSION}"
   when: iptables_configure.changed   
 EOF
-cat << EOF | tee ${HOST_PATH}/iptables.yml
+cat > ${HOST_PATH}/iptables.yml << EOF
 - hosts: all
   user: root
   roles:
@@ -4037,7 +4043,7 @@ controllerConfig(){
            colorEcho ${GREEN} '文件夹已经存在'
        fi
      if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager" ]] && [[ ! -e "${HOST_PATH}/roles/kube-controller-manager/files/bin/kube-controller-manager" ]]; then
+        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager" ]]; then
          # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
           mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/{ssl,bin}
           mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
@@ -4215,7 +4221,7 @@ schedulerConfig(){
            colorEcho ${GREEN} '文件夹已经存在'
        fi
      if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]] && [[ ! -e "${HOST_PATH}/roles/kube-scheduler/files/bin/kube-scheduler" ]]; then
+        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]]; then
          # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
           mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/bin
            \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
@@ -4356,7 +4362,7 @@ kubeProxyConfig(){
            colorEcho ${GREEN} '文件夹已经存在'
        fi
      if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy" ]] && [[ ! -e "${HOST_PATH}/roles/kube-proxy/files/bin/kube-proxy" ]]; then
+        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy" ]]; then
          # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
           mkdir -p ${HOST_PATH}/roles/kube-proxy/files/bin
            \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy ${HOST_PATH}/roles/kube-proxy/files/bin/
@@ -6469,7 +6475,7 @@ spec:
               value: "autodetect"
             # Enable IPIP
             - name: CALICO_IPV4POOL_IPIP
-              value: "Always"
+              value: "Never"
             # Enable or Disable VXLAN on the default IP pool.
             - name: CALICO_IPV4POOL_VXLAN
               value: "Never"
