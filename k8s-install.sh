@@ -7254,7 +7254,7 @@ main(){
        colorEcho ${RED} "手动部署请查看脚本当前目录README.md 文件进行部署"
     fi
    colorEcho ${RED} "手动部署请查看脚本当前目录README.md 文件进行部署"
-   colorEcho ${RED} "添加node 节点 多IP 192.168.3.10,192.168.3.11, 以 192.168.3.10 IP 为例： 直接执行 ansible-playbook -i 192.168.3.10, package-sysctl.yml ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args=\"-o StrictHostKeyChecking=no\" ${ASK_PASS} "
+   colorEcho ${RED} "添加node 节点 多IP 192.168.3.10,192.168.3.11, 以 192.168.3.10 IP 为例： 直接执行 ansible-playbook -i 192.168.3.10, ${PACKAGE_SYSCTL_FILE} ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args=\"-o StrictHostKeyChecking=no\" ${ASK_PASS} "
    return 0
 }
 main
