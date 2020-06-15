@@ -6957,9 +6957,9 @@ selectEnv(){
         fi  
 }
 README.md(){
-colorEcho ${BLUE} "开启选择使用插件"
+#colorEcho ${BLUE} "开启选择使用插件"
 selectEnv
-colorEcho ${BLUE} "ansible 连接服务器是否需求输入密码"
+#colorEcho ${BLUE} "验证ansible 连接服务器是否需求输入密码"
 checkAnsible # 检查ansible 连接是否需要输入密码
 cat > ${HOST_PATH}/README.md << EOF
 ########## mkdir -p /root/.kube
@@ -7145,7 +7145,7 @@ checkAnsible(){
 installK8SPackage(){
           colorEcho ${BLUE} "开启选择使用插件"
           selectEnv
-          colorEcho ${BLUE} "ansible 连接服务器是否需求输入密码"
+          colorEcho ${BLUE} " 验证ansible 连接服务器是否需求输入密码"
           checkAnsible # 检查ansible 连接是否需要输入密码
           colorEcho ${BLUE} "部署etcd 集群"
           ETCD_SERVER_IPS=`echo $ETCD_SERVER_IPS| sed  -e "s/\"//g"`
