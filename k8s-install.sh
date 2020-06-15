@@ -94,6 +94,12 @@ ETCD_IPV4=ansible_default_ipv4.address
 IFACE="eth0"
 # 是否更新系统及基本的内核修改 OFF 关闭 ON 开启 默认开启
 PACKAGE_SYSCTL=ON
+# 开启日志是否写文件 true 为不写入文件只写入系统日志 false 写入log-dir配置目录
+LOGTOSTDERR=true
+# 当logtostderr 为false alsologtostderr为 true 同时写入log文件及系统日志。当logtostderr 为true alsologtostderr 参数失效
+ALSOLOGTOSTDERR=true
+# 设置输出日志级别
+LEVEL_LOG="2"
 ########################################################################################################################################################################
 ######################################################### 负载均衡插件及镜像                                                   #########################################                                
 ########################################################################################################################################################################
@@ -206,10 +212,6 @@ ENDPOINTS="${ENDPOINTS} --etcd-servers-overrides=/events#https://${ETCD_EVENTS_M
 fi
 # kubernetes 相关配置
 # 公共配置
-# 设置输出日志级别
-LEVEL_LOG="2"
-# 开启日志是否写文件 true 为不写入文件只写入系统日志 false 写入log-dir配置目录
-LOGTOSTDERR=true
 # kube-apiserver 配置
 # K8S ETCD存储 目录名字
 ETCD_PREFIX="/registry" 
@@ -1829,7 +1831,7 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --event-ttl=1h \\
         ${FEATURE_GATES} \\
         --enable-bootstrap-token-auth=true \\
-        --alsologtostderr=true \\
+        --alsologtostderr=${ALSOLOGTOSTDERR} \\
         --log-dir=${K8S_PATH}/log \\
         --v=${LEVEL_LOG} \\
         --endpoint-reconciler-type=lease \\
@@ -3500,7 +3502,7 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --runtime-cgroups=/systemd/system.slice \\
               --root-dir=${POD_ROOT_DIR}/kubernetes/kubelet \\
               --log-dir=${K8S_PATH}/log \\
-              --alsologtostderr=true \\
+              --alsologtostderr=${ALSOLOGTOSTDERR} \\
               --config=${K8S_PATH}/conf/kubelet.yaml \\
               --logtostderr=${LOGTOSTDERR} \\
               --container-runtime=${CONTAINER_RUNTIME} \\
@@ -4039,7 +4041,7 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --node-monitor-period=5s \\
 --pod-eviction-timeout=5m0s \\
 --terminated-pod-gc-threshold=50 \\
---alsologtostderr=true \\
+--alsologtostderr=${ALSOLOGTOSTDERR} \\
 --cluster-signing-cert-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --cluster-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem  \\
 --deployment-controller-sync-period=10s \\
@@ -4203,7 +4205,7 @@ KUBE_SCHEDULER_OPTS=" \\
                    --kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authentication-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authorization-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
-                   --alsologtostderr=true \\
+                   --alsologtostderr=${ALSOLOGTOSTDERR} \\
                    --kube-api-qps=${KUBE_API_QPS} \\
                    --kube-api-burst=${KUBE_API_BURST} \\
                    --log-dir=${K8S_PATH}/log \\
@@ -4349,6 +4351,7 @@ ${FEATURE_GATES} \\
 --cluster-cidr=${CLUSTER_CIDR} \\
 --log-dir=${K8S_PATH}/log \\
 --metrics-bind-address=0.0.0.0 \\
+--alsologtostderr=${ALSOLOGTOSTDERR} \\
 --hostname-override={{ ansible_hostname }} \\
 --kubeconfig=${K8S_PATH}/conf/kube-proxy.kubeconfig"
 EOF
