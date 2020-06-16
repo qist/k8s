@@ -38,6 +38,7 @@ spec:
             - --entrypoints.web.Address=:80
             - --entrypoints.websecure.Address=:443
             - --providers.kubernetescrd
+            - --providers.kubernetesingress=true
             - --metrics.prometheus
             - --metrics.prometheus.entrypoint=metrics
             - --metrics.prometheus.addEntryPointsLabels=true
