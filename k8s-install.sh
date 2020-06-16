@@ -2307,12 +2307,12 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - epel-testing.repo
       - epel.repo
   when: ansible_distribution_major_version == '8'
-- name: Remove /etc/yum.repos.d/CentOS-AppStream.repo
-  file:
-    path: "/etc/yum.repos.d/CentOS-AppStream.repo"
-    state: absent
-  ignore_errors: True
-  when: ansible_distribution_major_version == '8'  
+#- name: Remove /etc/yum.repos.d/CentOS-AppStream.repo
+#  file:
+#    path: "/etc/yum.repos.d/CentOS-AppStream.repo"
+#    state: absent
+#  ignore_errors: True
+#  when: ansible_distribution_major_version == '8'  
 - name: upgrade all packages
   yum:
     name: '*'
