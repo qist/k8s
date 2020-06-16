@@ -2428,12 +2428,13 @@ runtimeConfig(){
                  else
                      colorEcho ${GREEN} '文件夹已经存在'
              fi
-             if [[ -e "$DOWNLOAD_PATH/docker-${DOCKER_VERSION}.tgz" ]]; then
-                 if [[ ! -e "$DOWNLOAD_PATH/docker/docker" ]] || [[ ! -e "${HOST_PATH}/roles/docker/files/bin/docker" ]]; then
+             if [[ -e "$DOWNLOAD_PATH/docker-${DOCKER_VERSION}.tgz" ]]|| [[ ! -e "${HOST_PATH}/roles/docker/files/bin/docker" ]]; then
+                 if [[ ! -e "$DOWNLOAD_PATH/docker-${DOCKER_VERSION}/docker/docker" ]] || [[ ! -e "${HOST_PATH}/roles/docker/files/bin/docker" ]]; then
               # cp 二进制 文件到 ansible 目录
                  mkdir -p ${HOST_PATH}/roles/docker/files/bin
-                 tar -xf ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}.tgz -C ${DOWNLOAD_PATH}
-                 \cp -pdr ${DOWNLOAD_PATH}/docker/* ${HOST_PATH}/roles/docker/files/bin/
+                 mkdir -p ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}
+                 tar -xf ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}.tgz -C ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}
+                 \cp -pdr ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}/docker/* ${HOST_PATH}/roles/docker/files/bin/
                  fi
             else
                 colorEcho ${RED} "docker no download."
