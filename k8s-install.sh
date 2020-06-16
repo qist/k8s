@@ -6912,8 +6912,7 @@ checkETCD(){
      colorEcho ${GREEN} "$var etcd events health is OK."   
      fi
         done
-    fi  
-    echo $?
+    fi
 return 0
 }
 checkK8SMaster(){
@@ -6938,7 +6937,7 @@ selectEnv(){
         elif [ ${NET_PLUG} == "flannel" ]; then
         NETPLUG=kube-flannel.yaml
         elif [ ${NET_PLUG} == "kube-router" ]; then
-        NETPLUG=kube—router.yaml
+        NETPLUG=kube-router.yaml
         elif [ ${NET_PLUG} == "calico-typha" ]; then
         NETPLUG=calico-typha.yaml
         fi
