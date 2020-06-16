@@ -2040,6 +2040,7 @@ cat > ${HOST_PATH}/roles/kube-ha-proxy/tasks/main.yml << EOF
     mode: 644
 - name: ${PULL_IMAGES} pull ${HA_PROXY_IMAGE}
   raw: ${PULL_IMAGES} pull ${HA_PROXY_IMAGE} && ${PULL_IMAGES} pull ${POD_INFRA_CONTAINER_IMAGE}
+  ignore_errors: True
 EOF
 cat > ${HOST_PATH}/kube-ha-proxy.yml << EOF
 - hosts: all
