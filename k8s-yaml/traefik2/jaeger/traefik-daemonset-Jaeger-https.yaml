@@ -20,9 +20,6 @@ spec:
     metadata:
       labels:
         k8s-app: traefik
-      #annotations:  # ipv6 模式有BUG
-      #  prometheus.io/scrape: 'true'
-      #  prometheus.io/port: "8082"
     spec:
       serviceAccountName: traefik
       terminationGracePeriodSeconds: 60
@@ -119,5 +116,4 @@ spec:
       name: http-metrics
       port: 8082
   selector:
-    matchLabels:
-      k8s-app: traefik
+    k8s-app: traefik
