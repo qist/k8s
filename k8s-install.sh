@@ -640,7 +640,6 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_1_HOSTNAMES}.json << EOF
   "hosts": [
     "127.0.0.1",
     "${ETCD_MEMBER_1_IP}",
-    "${ETCD_MEMBER_1_IP6}",
     "${ETCD_MEMBER_1_HOSTNAMES}"
   ],
   "key": {
@@ -665,7 +664,6 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_2_HOSTNAMES}.json << EOF
   "hosts": [
     "127.0.0.1",
     "${ETCD_MEMBER_2_IP}",
-    "${ETCD_MEMBER_2_IP6}",
     "${ETCD_MEMBER_2_HOSTNAMES}"
   ],
   "key": {
@@ -690,7 +688,6 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_3_HOSTNAMES}.json << EOF
   "hosts": [
     "127.0.0.1",
     "${ETCD_MEMBER_3_IP}",
-    "${ETCD_MEMBER_3_IP6}",
     "${ETCD_MEMBER_3_HOSTNAMES}"
   ],
   "key": {
@@ -741,7 +738,6 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_1_HOSTNAMES}.json << EOF
   "hosts": [
     "127.0.0.1",
     "${ETCD_EVENTS_MEMBER_1_IP}",
-    "${ETCD_EVENTS_MEMBER_1_IP6}",
     "${ETCD_EVENTS_MEMBER_1_HOSTNAMES}"
   ],
   "key": {
@@ -766,7 +762,6 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_2_HOSTNAMES}.json << EOF
   "hosts": [
     "127.0.0.1",
     "${ETCD_EVENTS_MEMBER_2_IP}",
-    "${ETCD_EVENTS_MEMBER_2_IP6}",
     "${ETCD_EVENTS_MEMBER_2_HOSTNAMES}"
   ],
   "key": {
@@ -790,9 +785,7 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_3_HOSTNAMES}.json << EOF
   "CN": "etcd",
   "hosts": [
     "127.0.0.1",
-     "::1",
     "${ETCD_EVENTS_MEMBER_3_IP}",
-    "${ETCD_EVENTS_MEMBER_3_IP6}",
     "${ETCD_EVENTS_MEMBER_3_HOSTNAMES}"
   ],
   "key": {
