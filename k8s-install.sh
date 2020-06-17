@@ -4260,6 +4260,7 @@ KUBE_SCHEDULER_OPTS=" \\
                    --authorization-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --alsologtostderr=${ALSOLOGTOSTDERR} \\
                    --kube-api-qps=${KUBE_API_QPS} \\
+                   --authentication-tolerate-lookup-failure=false \\
                    --kube-api-burst=${KUBE_API_BURST} \\
                    --log-dir=${K8S_PATH}/log \\
                    --v=${LEVEL_LOG}"
