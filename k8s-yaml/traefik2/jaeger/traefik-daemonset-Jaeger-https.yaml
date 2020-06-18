@@ -40,9 +40,6 @@ spec:
             - --providers.kubernetescrd
             - --providers.kubernetesingress=true
             - --metrics.prometheus
-            - --metrics.prometheus.entrypoint=metrics
-            - --metrics.prometheus.addEntryPointsLabels=true
-            - --entryPoints.metrics.address=:8082
             - --serverstransport.insecureskipverify=true
             - --providers.kubernetesingress.disablepasshostheaders=true
             - --tracing.jaeger=true
@@ -63,9 +60,6 @@ spec:
             - name: admin
               containerPort: 8080
               hostPort: 8080
-            - name: http-metrics
-              containerPort: 8082
-              hostPort: 8082
           securityContext:
             capabilities:
               drop:
@@ -113,8 +107,5 @@ spec:
     - protocol: TCP
       name: websecure
       port: 443
-    - protocol: TCP
-      name: http-metrics
-      port: 8082
   selector:
     k8s-app: traefik

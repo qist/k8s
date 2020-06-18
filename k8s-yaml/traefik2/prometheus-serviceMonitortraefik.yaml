@@ -9,7 +9,7 @@ spec:
   endpoints:
   - honorLabels: true
     interval: 15s
-    port: http-metrics
+    port: admin
   jobLabel: k8s-app
   selector:
     matchLabels:
