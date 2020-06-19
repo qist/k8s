@@ -132,7 +132,7 @@ export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
 export CFSSL_VERSION=1.4.1
 # docker 版本
-export DOCKER_VERSION=19.03.9
+export DOCKER_VERSION=19.03.11
 # containerd 版本
 export CONTAINERD_VERSION=1.3.4
 # crictl 版本
@@ -2514,6 +2514,7 @@ cat > ${HOST_PATH}/roles/docker/templates/daemon.json << EOF
     "log-driver": "${LOG_DRIVER}",
     "bridge": "${NET_BRIDGE}",
     "oom-score-adjust": -1000,
+    "live-restore": true,
     "debug": false,
     "registry-mirrors": [
         "https://docker.mirrors.ustc.edu.cn",
