@@ -2,7 +2,7 @@
 FROM alpine
 
 # 作者信息
-MAINTAINER nginx 1.19.0 Docker Maintainers "87984115@qq.com"
+MAINTAINER Qist Docker Maintainers "87984115@qq.com"
 
 # 修改源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
@@ -16,8 +16,8 @@ RUN apk update && \
 ENV NGINX_VERSION 1.19.0
 
 ENV OPENSSL_VERSION 1.1.1g
-# ENV http_proxy http://192.168.0.151:1081
-# ENV https_proxy http://192.168.0.151:1081
+# ENV http_proxy http://192.168.0.151:7890
+# ENV https_proxy http://192.168.0.151:7890
 
 # 编译安装NGINX
 
@@ -117,7 +117,7 @@ RUN NGINX_CONFIG="\
 
 FROM alpine 
 # 作者信息
-MAINTAINER nginx 1.19.0 Docker Maintainers "87984115@qq.com"
+MAINTAINER Qist Docker Maintainers "87984115@qq.com"
 
 # 修改源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
@@ -136,7 +136,7 @@ ENV CPU_NUM 4
 # nginx 监听端口
 ENV HOST_PORT 6443
 # kube-apiserver 端口 
-ENV K8S_MASTER_PORT 5443
+ENV BACKEND_PORT 5443
 RUN  mkdir -p /var/lib/nginx/cache \
      && apk add  --no-cache  \ 
            curl \

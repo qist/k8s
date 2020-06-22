@@ -17,8 +17,8 @@ ENV HAPROXY_VERSION 2.1.7
 ENV HAPROXY_URL https://www.haproxy.org/download/2.1/src/haproxy-2.1.7.tar.gz
 
 # 代理
-ENV http_proxy http://192.168.0.151:7890
-ENV https_proxy http://192.168.0.151:7890
+# ENV http_proxy http://192.168.0.151:7890
+# ENV https_proxy http://192.168.0.151:7890
 # 工作目录
 WORKDIR /tmp
 
