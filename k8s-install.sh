@@ -106,8 +106,8 @@ LEVEL_LOG="2"
 ## kube-apiserver ha proxy 配置
 # nginx 启动进程数 auto 当前机器cpu 核心数的进程数
 CPU_NUM=4
-# 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master
-HA_PROXY_IMAGE="juestnow/kube-ha-proxy:1.19.0"
+# 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者haproxy juestnow/haproxy-proxy:2.1.7
+HA_PROXY_IMAGE="juestnow/nginx-proxy:1.19.0"
 # 网络插件镜像选择
 FLANNEL_VERSION="quay.io/coreos/flannel:v0.12.0-amd64"
 # pod-infra-container-image 地址
@@ -2008,7 +2008,7 @@ spec:
     env:
     - name: CPU_NUM
       value: "${CPU_NUM}"
-    - name: K8S_MASTER_PORT
+    - name: BACKEND_PORT
       value: "${SECURE_PORT}"
     - name: HOST_PORT
       value: "${K8S_VIP_PORT}"
