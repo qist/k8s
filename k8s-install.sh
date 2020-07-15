@@ -2515,6 +2515,9 @@ cat > ${HOST_PATH}/roles/docker/templates/daemon.json << EOF
     "bridge": "${NET_BRIDGE}",
     "oom-score-adjust": -1000,
     "live-restore": true,
+    "exec-opts": ["native.cgroupdriver=cgroupfs"],
+    "storage-driver": "overlay2",
+    "storage-opts":["overlay2.override_kernel_check=true"],
     "debug": false,
     "registry-mirrors": [
         "https://docker.mirrors.ustc.edu.cn",
