@@ -37,6 +37,8 @@ spec:
             - --accessLog.fields.headers.defaultMode=redact
             - --entrypoints.web.Address=:80
             - --entrypoints.websecure.Address=:443
+            - --entryPoints.web.forwardedHeaders.insecure
+            - --entryPoints.websecure.forwardedHeaders.insecure
             - --providers.kubernetescrd
             - --providers.kubernetesingress=true
             - --metrics.prometheus
