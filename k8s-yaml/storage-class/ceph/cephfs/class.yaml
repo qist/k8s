@@ -4,6 +4,7 @@ metadata:
   name: cephfs
 provisioner: ceph.com/cephfs
 reclaimPolicy: Retain
+allowVolumeExpansion: true
 parameters:
     monitors: 10.10.10.6,10.10.10.7,10.10.10.5:6789
     adminId: admin
