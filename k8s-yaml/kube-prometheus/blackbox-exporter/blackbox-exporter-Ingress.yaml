@@ -1,0 +1,14 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1beta1
+metadata:
+  name: blackbox-exporter
+  namespace: monitoring
+spec:
+  rules:
+    - host: blackbox.tycng.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: blackbox-exporter
+              servicePort: http

@@ -1,0 +1,20 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: blackbox-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/instance: blackbox
+    app.kubernetes.io/name: blackbox-exporter
+  annotations:
+    prometheus.io/probe: 'true'
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 9115
+  selector:
+    app.kubernetes.io/instance: blackbox
+    app.kubernetes.io/name: blackbox-exporter
+  type: ClusterIP
