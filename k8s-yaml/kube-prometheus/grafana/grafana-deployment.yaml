@@ -35,6 +35,8 @@ spec:
             value: "true"
           - name: GF_AUTH_ANONYMOUS_ENABLED
             value: "false"
+          - name: GF_INSTALL_PLUGINS
+            value: "grafana-clock-panel,grafana-piechart-panel"
           # - name: GF_AUTH_ANONYMOUS_ORG_ROLE
           #   value: Admin
           # does not really work, because of template variables in exported dashboards:
