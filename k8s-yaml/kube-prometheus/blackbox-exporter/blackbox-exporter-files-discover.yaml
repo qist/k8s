@@ -1,0 +1,13 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: prometheus-files-discover
+  namespace: monitoring
+data:
+  probe.yaml: |
+    - targets:
+      - https://www.sina.com.cn
+      - http://www.ifeng.com
+      - http://www.cctv.com
+      - http://news.2345.com/wuli

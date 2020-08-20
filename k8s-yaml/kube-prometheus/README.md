@@ -47,4 +47,5 @@ spec:
             backend:
               serviceName: blackbox-exporter
               servicePort: http
+# blackbox-exporter-files-discover.yaml 批量 站点监控配置文件
 ```
