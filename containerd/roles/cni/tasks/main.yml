@@ -1,0 +1,22 @@
+- name: Create cni
+  file:
+    path: '{{ item }}'
+    state: directory
+    mode: '0640'
+  with_items:
+      - "{{ CRIO_PATH }}/cni"
+      - "{{ CRIO_PATH }}/cni/etc/net.d"
+- name: copy to cni
+  copy: 
+    src: bin 
+    dest: "{{ CRIO_PATH }}/cni/"
+    owner: root
+    group: root
+    mode: 755
+- name: Create a symbolic link
+  file:
+    src: "{{ CRIO_PATH }}/cni/etc"
+    dest: /etc/cni
+    owner: root
+    group: root
+    state: link

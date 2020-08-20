@@ -1,0 +1,7 @@
+[home_katacontainers_releases_x86_64_master]
+name=Branch project for Kata Containers branch master (CentOS_7)
+type=rpm-md
+baseurl=http://download.opensuse.org/repositories/home:/katacontainers:/releases:/x86_64:/master/CentOS_7/
+gpgcheck=1
+gpgkey=http://download.opensuse.org/repositories/home:/katacontainers:/releases:/x86_64:/master/CentOS_7/repodata/repomd.xml.key
+enabled=1

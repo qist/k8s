@@ -1,0 +1,77 @@
+- name: kata-containers.list  
+  copy: 
+    src: kata-containers.list
+    dest: /etc/apt/sources.list.d/kata-containers.list
+    owner: root 
+    group: root 
+    mode: 640
+  when: ansible_facts.distribution == 'Ubuntu'
+- name: Install gnupg
+  apt:
+    name:
+      - gnupg
+      - gnupg2
+      - gnupg1
+    state: latest 
+  when: ansible_facts.distribution == 'Ubuntu'
+- name: katacontainers.key
+  copy: 
+    src: katacontainers.key
+    dest: /tmp/katacontainers.key
+    owner: root 
+    group: root 
+    mode: 640
+  when: ansible_facts.distribution == 'Ubuntu'
+- name: Add Apt signing key on remote server to keyring
+  apt_key:
+    id: 9FDC0CB63708CF803696E2DCD0B37B826063F3ED
+    file: /tmp/katacontainers.key
+    state: present
+  when: ansible_facts.distribution == 'Ubuntu'
+- name: Remove katacontainers.key
+  file:
+    path: /tmp/katacontainers.key
+    state: absent
+  when: ansible_facts.distribution == 'Ubuntu'
+- name: Only run "update_cache=yes"
+  apt:
+    update_cache: yes
+  when: ansible_facts.distribution == 'Ubuntu'
+#- name: add  http_proxy  https_proxy
+#  lineinfile: 
+#    dest: /etc/environment
+#    line: '{{ item.key }}'
+#  with_items:
+#      - { key: 'http_proxy=http://192.168.0.151:1081' }
+#      - { key: 'https_proxy=http://192.168.0.151:1081' }
+- name: Install Kata Containers
+  apt:
+    name:
+      - kata-runtime 
+      - kata-proxy 
+      - kata-shim
+    state: present
+  when: ansible_facts.distribution == 'Ubuntu'
+- name: CentOS  repo
+  get_url:
+    url: http://download.opensuse.org/repositories/home:/katacontainers:/releases:/x86_64:/master/CentOS_7/home:katacontainers:releases:x86_64:master.repo
+    dest: /etc/yum.repos.d/home:katacontainers:releases:x86_64:master.repo
+    force: yes
+  when: ansible_os_family == 'RedHat'
+- name: install kata-containers
+  yum:
+    name: 
+      - kata-runtime 
+      - kata-proxy 
+      - kata-shim
+    state: present
+  when: ansible_os_family == 'RedHat'
+#- name: Remove  http_proxy  https_proxy
+#  blockinfile:
+#    path: /etc/environment
+#    marker: '{{ item.key }}'
+#    block: ""
+#  with_items:
+#      - { key: 'http_proxy=http://192.168.0.151:1081' }
+#      - { key: 'https_proxy=http://192.168.0.151:1081' }
+

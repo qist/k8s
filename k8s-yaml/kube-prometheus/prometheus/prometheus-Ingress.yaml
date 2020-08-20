@@ -1,0 +1,16 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: prometheus-dashboard
+  namespace: monitoring
+
+spec:
+  rules:
+  - host: prometheus.tycng.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: prometheus-k8s
+          servicePort: 9090

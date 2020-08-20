@@ -11,3 +11,4 @@ mountOptions:
 provisioner: fuseim.pri/ifs
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
+allowVolumeExpansion: true

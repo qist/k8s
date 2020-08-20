@@ -1,0 +1,6 @@
+[template]
+src = "haproxy.tmpl"
+dest = "/etc/haproxy/haproxy.conf"
+keys = [
+    "CP_HOSTS",
+]

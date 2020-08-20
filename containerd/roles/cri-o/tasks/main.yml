@@ -1,0 +1,59 @@
+- name: copy crio
+  copy: 
+    src: crio 
+    dest: "{{ CRIO_PATH }}/" 
+    owner: root 
+    group: root 
+    mode: 0755
+- name: copy crictl
+  copy: 
+    src: crictl 
+    dest: "/usr/local/bin/" 
+    owner: root 
+    group: root 
+    mode: 0755
+- name: Create hooks.d
+  file:
+    path: "{{ CRIO_PATH }}/crio/containers/oci/hooks.d"
+    state: directory
+    mode: '0640'
+- name: Create {{ CRIO_PATH }}/crio
+  file:
+    path: "{{ CRIO_PATH }}/crio/etc"
+    state: directory
+    mode: '0640'
+- name:  cri-o etc
+  template: 
+    src: '{{ item }}'
+    dest: "{{ CRIO_PATH }}/crio/etc"
+    owner: root 
+    group: root
+  with_items:
+      - crio.conf
+      - crio-umount.conf
+- name:  containers etc
+  copy: 
+    src: '{{ item }}'
+    dest: /etc
+    owner: root 
+    group: root
+  with_items:
+      - containers
+      - crictl.yaml
+- name:  copy to crio service
+  template: 
+    src: '{{ item }}' 
+    dest: /lib/systemd/system/
+  with_items:
+      - crio.service
+- name: Reload service daemon-reload
+  shell: systemctl daemon-reload
+- name: Enable service crio, and not touch the state
+  service:
+    name: crio
+    enabled: yes
+- name: Start service crio, if not started
+  service:
+    name: crio
+    state: restarted      
+  

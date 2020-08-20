@@ -20,9 +20,6 @@ spec:
     metadata:
       labels:
         k8s-app: traefik
-      annotations:
-        prometheus.io/port: "8082"
-        prometheus.io/scrape: 'true'
     spec:
       serviceAccountName: traefik
       terminationGracePeriodSeconds: 60
@@ -40,11 +37,11 @@ spec:
             - --accessLog.fields.headers.defaultMode=redact
             - --entrypoints.web.Address=:80
             - --entrypoints.websecure.Address=:443
+            - --entryPoints.web.forwardedHeaders.insecure
+            - --entryPoints.websecure.forwardedHeaders.insecure
             - --providers.kubernetescrd
+            - --providers.kubernetesingress=true
             - --metrics.prometheus
-            - --metrics.prometheus.entrypoint=metrics
-            - --metrics.prometheus.addEntryPointsLabels=true
-            - --entryPoints.metrics.address=:8082
             - --serverstransport.insecureskipverify=true
             - --providers.kubernetesingress.disablepasshostheaders=true
             - --tracing.jaeger=true
@@ -65,9 +62,6 @@ spec:
             - name: admin
               containerPort: 8080
               hostPort: 8080
-            - name: http-metrics
-              containerPort: 8082
-              hostPort: 8082
           securityContext:
             capabilities:
               drop:
@@ -115,8 +109,5 @@ spec:
     - protocol: TCP
       name: websecure
       port: 443
-    - protocol: TCP
-      name: http-metrics
-      port: 8082
   selector:
     k8s-app: traefik

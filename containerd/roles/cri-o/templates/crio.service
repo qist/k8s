@@ -1,0 +1,17 @@
+[Unit]
+Description=OCI-based implementation of Kubernetes Container Runtime Interface
+Documentation=https://github.com/github.com/cri-o/cri-o
+
+[Service]
+ExecStartPre=-/sbin/modprobe br_netfilter
+ExecStartPre=-/sbin/modprobe overlay
+ExecStart={{ CRIO_PATH }}/crio/bin/crio-static --config {{ CRIO_PATH }}/crio/etc/crio.conf --log-level info 
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=1024000
+LimitNPROC=1024000
+LimitCORE=infinity
+LimitMEMLOCK=infinity
+KillMode=process
+[Install]
+WantedBy=multi-user.target

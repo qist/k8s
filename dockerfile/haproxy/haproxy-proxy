@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Modify backend forwarding port
+sed -i "s/BACKEND_PORT/${BACKEND_PORT}/g" /etc/confd/templates/haproxy.tmpl
+
+# Run confd
+confd -onetime -backend env
+
+# Start haproxy
+haproxy -W -f /etc/haproxy/haproxy.conf -p /run/haproxy.pid

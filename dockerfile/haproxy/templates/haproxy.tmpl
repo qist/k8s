@@ -1,0 +1,50 @@
+ global
+                maxconn 65535
+                chroot /usr
+                user haproxy
+                group haproxy
+                pidfile /run/haproxy.pid
+                stats socket /run/haproxy.sock mode 600 level admin
+                log             127.0.0.1 local2
+
+                nbproc 4
+                cpu-map 1 0
+                cpu-map 2 1
+                cpu-map 3 2
+                cpu-map 4 3
+                stats bind-process 4
+
+defaults
+                log     global
+                mode    tcp
+                option  tcplog
+                option  dontlognull
+                option  redispatch
+                retries 3
+                maxconn 65535
+                timeout connect     30000
+                timeout client      50000
+                timeout server 50000
+
+listen admin_stat
+        bind :::57590
+        mode http
+        stats refresh 30s
+        stats uri /admin?stats
+        stats realm Haproxy\ Statistics
+        stats auth admin:admin
+        stats enable
+        bind-process 4
+
+frontend frontend-tcp
+  mode tcp
+  {{ $servers := split (getenv "HOST_PORT") "," }}{{range $servers}}
+  bind :::{{.}}
+  {{end}}
+  default_backend frontend-tcp
+backend frontend-tcp
+  mode tcp
+  balance roundrobin
+  {{ $servers := split (getenv "CP_HOSTS") "," }}{{range $servers}}
+  server {{.}}-api {{.}}:BACKEND_PORT check
+  {{end}}

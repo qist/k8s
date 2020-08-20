@@ -1,33 +1,44 @@
-```
-########## mkdir -p /root/.kube
-##########复制admin kubeconfig 到root用户作为kubectl 工具默认密钥文件
-########## \cp -pdr /opt/aaa/kubeconfig/admin.kubeconfig /root/.kube/config
-###################################################################################
-##########  ansible 及ansible-playbook 单个ip ip结尾一点要添加“,”符号例如： ansible-playbook -i 192.168.0.1, xxx.yml
-##########  source /opt/aaa/environment.sh 设置环境变量生效方便后期新增证书等
-##########  etcd 部署 ansible-playbook -i "192.168.2.247","192.168.2.248","192.168.2.249" etcd.yml
-##########  etcd EVENTS 部署 ansible-playbook -i "192.168.2.250","192.168.2.251","192.168.2.252", events-etcd.yml
-##########  kube-apiserver 部署 ansible-playbook -i "192.168.2.247","192.168.2.248","192.168.2.249","192.168.2.250","192.168.2.251", kube-apiserver.yml 
-##########  haproxy 部署 ansible-playbook -i "192.168.2.247","192.168.2.248","192.168.2.249","192.168.2.250","192.168.2.251", haproxy.yml
-##########  keepalived 节点IP "192.168.2.247","192.168.2.248","192.168.2.249","192.168.2.250","192.168.2.251" 安装keepalived使用IP 如果大于三个节点安装keepalived 记得HA1_ID 唯一的也就是priority的值
-##########  keepalived 也可以全部部署为BACKUP STATE_x 可以使用默认值 IFACE 网卡名字默认ens3 ROUTER_ID 全局唯一ID   HA1_ID为priority值  
-##########  keepalived 部署 节点1 ansible-playbook -i 节点ip1, keepalived.yml -e IFACE=ens3 -e ROUTER_ID=HA1 -e HA1_ID=100 -e HA2_ID=110 -e HA3_ID=120 -e STATE_3=MASTER
-##########  keepalived 部署 节点2 ansible-playbook -i 节点ip2, keepalived.yml -e IFACE=ens3 -e ROUTER_ID=HA2 -e HA1_ID=110 -e HA2_ID=120 -e HA3_ID=100 -e STATE_2=MASTER
-##########  keepalived 部署 节点3 ansible-playbook -i 节点ip3, keepalived.yml -e IFACE=ens3 -e ROUTER_ID=HA3 -e HA1_ID=120 -e HA2_ID=100 -e HA3_ID=110 -e STATE_1=MASTER
-##########  kube-controller-manager kube-scheduler  ansible-playbook -i "192.168.2.247","192.168.2.248","192.168.2.249","192.168.2.250","192.168.2.251", kube-controller-manager.yml kube-scheduler.yml
-##########  部署完成验证集群 kubectl cluster-info  kubectl api-versions  kubectl get cs 1.16 kubectl 显示不正常 
-##########  提交bootstrap 跟授权到K8S 集群 kubectl apply -f /opt/aaa/yaml/bootstrap-secret.yaml 
-##########  提交授权到K8S集群 kubectl apply -f /opt/aaa/yaml/kubelet-bootstrap-rbac.yaml kubectl apply -f /opt/aaa/yaml/kube-api-rbac.yaml
-##########  系统版本为centos7 或者 ubuntu18 请先升级 iptables ansible-playbook -i  要安装node ip列表, iptables.yml
-##########  安装K8S node 使用kube-router ansible部署 ansible-playbook -i 要安装node ip列表 package.yml cni.yml lxcfs.yml docker.yml kubelet.yml
-##########  安装K8S node 使用 flannel 网络插件ansible部署ansible-playbook -i 要安装node ip列表 package.yml cni.yml lxcfs.yml docker.yml kubelet.yml kube-proxy.yml
-##########  部署自动挂载日期与lxcfs 到pod的 PodPreset  kubectl apply -f /opt/aaa/yaml/allow-lxcfs-tz-env.yaml -n kube-system  " kube-system 命名空间名字"PodPreset 只是当前空间生效所以需要每个命名空间执行
-##########  查看node 节点是否注册到K8S kubectl get node kubectl get csr 如果有节点 kube-router 方式部署 kubectl apply -f /opt/aaa/yaml/kube-router.yaml 等待容器部署完成查看node ip a | grep kube-bridge
-##########  flannel 网络插件部署 kubectl apply -f /opt/aaa/yaml/flannel.yaml 等待容器部署完成查看node 节点网络 ip a| grep flannel.1
-##########  给 master ingress 添加污点 防止其它服务使用这些节点:kubectl taint nodes  k8s-master-01 node-role.kubernetes.io/master=:NoSchedule kubectl taint nodes  k8s-ingress-01 node-role.kubernetes.io/ingress=:NoSchedule
-##########  calico 网络插件部署 50节点内 wget https://docs.projectcalico.org/v3.10/manifests/calico.yaml  大于50节点 wget https://docs.projectcalico.org/v3.10/manifests/calico-typha.yaml
-########## 如果cni配置没放到默认路径请创建软链 ln -s /apps/cni/etc /etc/cni 同时修改yaml hostPath路径 同时修改CALICO_IPV4POOL_CIDR 参数为 10.80.0.0/12 CALICO_IPV4POOL_IPIP: Never 启用bgp模式
-##########  windows 证书访问 openssl pkcs12 -export -inkey k8s-apiserver-admin-key.pem -in k8s_apiserver-admin.pem -out client.p12
-########## kubectl proxy --port=8001 &  把kube-apiserver 端口映射成本地 8001 端口      
-########## 查看kubelet节点配置信息 NODE_NAME="k8s-node-04"; curl -sSL "http://localhost:8001/api/v1/nodes/${NODE_NAME}/proxy/configz" | jq '.kubeletconfig|.kind="KubeletConfiguration"|.apiVersion="kubelet.config.k8s.io/v1beta1"' > kubelet_configz_${NODE_NAME}
-```
+# 项目说明
+### YAMLFormatspecification  项目 K8S yaml 参数说明
+
+### containerd K8S 容器运行时部署 ansible 模式部署
+
+### dockerfile 一些常见的dockerfile 文件
+
+### ipv4andipv6 K8S 双栈部署脚本 生成ansible 可部署脚本
+
+### k8s-kernel-sysctl K8S 宿主机相关优化
+
+### k8s-yaml K8S 一些常规yaml
+ 
+### kata-containers kata-containers ansible 部署脚本
+
+### podsecuritypolicy K8S 开启 psp 部署脚本
+
+### k8s-install.sh 一键自动ansible 部署 K8S 集群支持1.15及以上的版本
+
+### kubens 命名空间切换脚本
+
+### 其它shell 文件根据版本生成ansible 可部署脚本
+
+> API设计原则
+对于云计算系统，系统API实际上处于系统设计的统领地位。Kubernetes集群系统每支持一项新功能，引入一项新技术，一定会新引入对应的API对象，支持对该功能的管理操作。理解掌握的API，就好比抓住了K8s系统的牛鼻子。Kubernetes系统API的设计有以下几条原则：
+所有API应该是声明式的。声明式的操作，相对于命令式操作，对于重复操作的效果是稳定的，这对于容易出现数据丢失或重复的分布式环境来说是很重要的。另外，声明式操作更容易被用户使用，可以使系统向用户隐藏实现的细节，同时也保留了系统未来持续优化的可能性。此外，声明式的API还隐含了所有的API对象都是名词性质的，例如Service、Volume这些API都是名词，这些名词描述了用户所期望得到的一个目标对象。 
+API对象是彼此互补而且可组合的。这实际上鼓励API对象尽量实现面向对象设计时的要求，即“高内聚，松耦合”，对业务相关的概念有一个合适的分解，提高分解出来的对象的可重用性。 
+高层API以操作意图为基础设计。如何能够设计好API，跟如何能用面向对象的方法设计好应用系统有相通的地方，高层设计一定是从业务出发，而不是过早的从技术实现出发。因此，针对Kubernetes的高层API设计，一定是以K8s的业务为基础出发，也就是以系统调度管理容器的操作意图为基础设计。 
+低层API根据高层API的控制需要设计。设计实现低层API的目的，是为了被高层API使用，考虑减少冗余、提高重用性的目的，低层API的设计也要以需求为基础，要尽量抵抗受技术实现影响的诱惑。 
+尽量避免简单封装，不要有在外部API无法显式知道的内部隐藏的机制。简单的封装，实际没有提供新的功能，反而增加了对所封装API的依赖性。内部隐藏的机制也是非常不利于系统维护的设计方式，例如StatefulSet和ReplicaSet，本来就是两种Pod集合，那么Kubernetes就用不同API对象来定义它们，而不会说只用同一个ReplicaSet，内部通过特殊的算法再来区分这个ReplicaSet是有状态的还是无状态。 
+API操作复杂度与对象数量成正比。这一条主要是从系统性能角度考虑，要保证整个系统随着系统规模的扩大，性能不会迅速变慢到无法使用，那么最低的限定就是API的操作复杂度不能超过O(N)，N是对象的数量，否则系统就不具备水平伸缩性了。 
+API对象状态不能依赖于网络连接状态。由于众所周知，在分布式环境下，网络连接断开是经常发生的事情，因此要保证API对象状态能应对网络的不稳定，API对象的状态就不能依赖于网络连接状态。 
+尽量避免让操作机制依赖于全局状态，因为在分布式系统中要保证全局状态的同步是非常困难的。
+
+> Kubernetes系统API的设原则
+
+> 所有API应该是声明式的
+API对象是彼此互补而且可组合的
+高层API以操作意图为基础设计
+低层API根据高层API的控制需要设计
+尽量避免简单封装，不要有在外部API无法显式知道的内部隐藏的机制
+API操作复杂度与对象数量成正比
+API对象状态不能依赖于网络连接状态
+尽量避免让操作机制依赖于全局状态，因为在分布式系统中要保证全局状态的同步是非常困难的

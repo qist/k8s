@@ -1,0 +1,69 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: blackbox-exporter-baidu
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/instance: blackbox
+    app.kubernetes.io/name: blackbox-exporter
+spec:
+  endpoints:
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: 30s
+    scrapeTimeout: 30s
+    params:
+      module:
+      - http_2xx
+      target:
+      - http://www.baidu.com
+      - https://www.baidu.com
+    metricRelabelings:
+      - targetLabel: instance
+        replacement:  http://www.baidu.com
+      - targetLabel: target
+        replacement:  baidu
+  jobLabel: blackbox
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: blackbox
+      app.kubernetes.io/name: blackbox-exporter
+  namespaceSelector:
+    matchNames:
+      - monitoring
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: blackbox-exporter-qq
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/instance: blackbox
+    app.kubernetes.io/name: blackbox-exporter
+spec:
+  endpoints:
+  - port: http
+    scheme: http
+    path: "/probe"
+    interval: 30s
+    scrapeTimeout: 30s
+    params:
+      module:
+      - http_2xx
+      target:
+      - https://www.qq.com
+    metricRelabelings:
+      - targetLabel: instance
+        replacement:  https://www.qq.com
+      - targetLabel: target
+        replacement:  qq
+  jobLabel: blackbox
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: blackbox
+      app.kubernetes.io/name: blackbox-exporter
+  namespaceSelector:
+    matchNames:
+      - monitoring

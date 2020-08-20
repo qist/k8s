@@ -9,7 +9,7 @@ metadata:
   annotations:
     prometheus.io/scrape: 'true'
 spec:
-  type: ClusterIP
+  type: NodePort
   externalTrafficPolicy: Cluster
   ports:
     - port: 3000

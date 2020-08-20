@@ -64,8 +64,8 @@ spec:
         - --accessLog.fields.headers.defaultMode=redact
         - --insecureskipverify=true
         - --defaultentrypoints=http,https
-        - --entrypoints=Name:https Address::443 TLS
-        - --entrypoints=Name:http Address::80
+        - --entrypoints=Name:https Address::443 TLS forwardedHeaders
+        - --entrypoints=Name:http Address::80 forwardedHeaders
         - --tracing.jaeger=true
         - --tracing.jaeger.samplingServerURL=http://jaeger-agent:5778/sampling
         - --tracing.jaeger.samplingType=const
