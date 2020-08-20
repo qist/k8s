@@ -1,5 +1,5 @@
 ```
-########## mkdir -p /root/.kube
+########## mkdir -p /root/.kube 
 ##########复制admin kubeconfig 到root用户作为kubectl 工具默认密钥文件
 ########## \cp -pdr /opt/aaa/kubeconfig/admin.kubeconfig /root/.kube/config
 ###################################################################################
