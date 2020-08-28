@@ -236,11 +236,25 @@ MAX_MUTATING_REQUESTS_INFLIGHT="500"
 MAX_REQUESTS_INFLIGHT="1500"
 # 内存配置选项和node数量的关系，单位是MB： target-ram-mb=node_nums * 60
 TARGET_RAM_MB="300"
-# kube-controller-manager kube-scheduler 培训
+# 指示notReady:NoExecute的容忍秒数，默认情况下添加到没有这种容忍的每个pod中。 默认 300
+DEFAULT_NOT_READY_TOLERATION_SECONDS=30
+# 指示对不可到达的:NoExecute的容忍秒数,默认情况下添加到没有这种容忍的每个pod中。默认 300
+DEFAULT_UNREACHABLE_TOLERATION_SECONDS=30
+# kube-controller-manager kube-scheduler 配置
 # 与 apiserver 通信的每秒查询数（QPS） 值 默认50
 KUBE_API_QPS="100"
 #每秒发送到 apiserver 的请求数量上限 默认30
 KUBE_API_BURST="100"
+# 我们允许运行的节点在标记为不健康之前没有响应的时间。必须是kubelet的nodeStatusUpdateFrequency的N倍， 其中N表示允许kubelet发布节点状态的重试次数默认40s。
+NODE_MONITOR_GRACE_PERIOD=30s
+#在NodeController中同步节点状态的周期。默认5s
+NODE_MONITOR_PERIOD=5s
+# 删除失败节点上的pods的宽限期。默认5m 
+POD_EVICTION_TIMEOUT=1m0s
+# 我们允许启动节点在标记为不健康之前没有响应的时间。，默认1m0s。
+NODE_STARTUP_GRACE_PERIOD=20s
+# 默认,exit状态的pod回收阀值 12500
+TERMINATED_POD_GC_THRESHOLD=50
 # kubelet 配置
 # max-pods node 节点启动最多pod 数量
 MAX_PODS=55
@@ -1855,6 +1869,8 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --audit-log-maxage=30 \\
         --audit-log-maxbackup=3 \\
         --audit-log-maxsize=100 \\
+        --default-not-ready-toleration-seconds=${DEFAULT_NOT_READY_TOLERATION_SECONDS} \\
+        --default-unreachable-toleration-seconds=${DEFAULT_UNREACHABLE_TOLERATION_SECONDS} \\
         --audit-log-truncate-enabled \\
         ${AUDIT_POLICY_FILE} \\
         --audit-log-path=${K8S_PATH}/log/api-server-audit.log \\
@@ -4089,10 +4105,11 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --use-service-account-credentials=true \\
 --client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --requestheader-client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
---node-monitor-grace-period=40s \\
---node-monitor-period=5s \\
---pod-eviction-timeout=5m0s \\
---terminated-pod-gc-threshold=50 \\
+--node-monitor-grace-period=${NODE_MONITOR_GRACE_PERIOD} \\
+--node-monitor-period=${NODE_MONITOR_PERIOD} \\
+--pod-eviction-timeout=${POD_EVICTION_TIMEOUT} \\
+--node-startup-grace-period=${NODE_STARTUP_GRACE_PERIOD} \\
+--terminated-pod-gc-threshold=${TERMINATED_POD_GC_THRESHOLD} \\
 --alsologtostderr=${ALSOLOGTOSTDERR} \\
 --cluster-signing-cert-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --cluster-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem  \\
