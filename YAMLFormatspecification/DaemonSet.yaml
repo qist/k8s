@@ -29,6 +29,7 @@ spec: # 资源规范字段
     matchLabels: # 匹配标签
       app: demo
       version: stable
+  #minReadySeconds: 5 # 最小就绪时间 默认值0 如果在 DaemonSet 中指定了 .spec.minReadySeconds，主控节点和工作节点之间的时钟偏差会使 DaemonSet 无法检测到正确的滚动更新进度。
   updateStrategy: # 更新策略 
     type: RollingUpdate
     rollingUpdate:
