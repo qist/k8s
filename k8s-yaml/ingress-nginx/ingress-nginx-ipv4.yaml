@@ -511,6 +511,10 @@ webhooks:
         resources:
           - ingresses
     failurePolicy: Fail
+    sideEffects: None
+    admissionReviewVersions:
+      - v1
+      - v1beta1    
     clientConfig:
       service:
         namespace: ingress-nginx
