@@ -1027,6 +1027,12 @@ data:
          target_label: service
          replacement: $1
          action: replace
+       - source_labels: [__meta_kubernetes_service_name]
+         separator: ;
+         regex: (.*)
+         target_label: job
+         replacement: $1
+         action: replace
        - source_labels: [__meta_kubernetes_pod_name]
          separator: ;
          regex: (.*)
@@ -1081,6 +1087,12 @@ data:
          separator: ;
          regex: (.*)
          target_label: service
+         replacement: $1
+         action: replace
+       - source_labels: [__meta_kubernetes_service_name]
+         separator: ;
+         regex: (.*)
+         target_label: job
          replacement: $1
          action: replace
        - source_labels: [__meta_kubernetes_pod_name]
