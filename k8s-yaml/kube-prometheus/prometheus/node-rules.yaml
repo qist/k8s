@@ -46,13 +46,13 @@ spec:
           annotations:
             summary: "{{$labels.instance}} High memory usage"
             description: '{{$labels.instance }} Memory greater than 90%(Currently used:{{$value}}%)'
-    - name: InstanceDown
+    - name: Instance Down
       rules:
         - alert: InstanceDown
           expr: up == 0
           for: 2m
           labels:
-            severity: page
+            severity: high
           annotations:
             summary: "Instance {{ $labels.instance }} down"
             description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minute."
