@@ -16,16 +16,16 @@ spec:
           labels:
             status: high
           annotations:
-            summary: "{{$labels.mountpoint}} Partition utilization too high"
-            description: "{{$labels.mountpoint }} Partition usage greater than 90%(Currently used:{{$value}}%)"
+            summary: "{{$labels.instance}} Partition utilization too high"
+            description: "{{$labels.instance }} Partition usage greater than 90%(Currently used:{{$value}}%)"
         - alert: DiskSIOPerformance
           expr: 100-(avg(irate(node_disk_io_time_seconds_total[1m])) by(instance)* 100) < 60
           for: 1m
           labels:
             status: high
           annotations:
-            summary: "{{$labels.mountpoint}} The IO utilization rate of incoming disk is too high"
-            description: "{{$labels.mountpoint }} The incoming disk IO is greater than 60%(Currently used:{{$value}})"
+            summary: "{{$labels.instance}} The IO utilization rate of incoming disk is too high"
+            description: "{{$labels.instance }} The incoming disk IO is greater than 60%(Currently used:{{$value}})"
     - name: linux Cpu
       rules:
         - alert: CpuUsage
@@ -34,18 +34,18 @@ spec:
           labels:
             status: warning
           annotations:
-            summary: "{{$labels.mountpoint}} CPU The utilization rate is too high"
-            description: "{{$labels.mountpoint }} CPU Use greater than 60%(Currently used:{{$value}}%)"
+            summary: "{{$labels.instance}} CPU The utilization rate is too high"
+            description: "{{$labels.instance }} CPU Use greater than 60%(Currently used:{{$value}}%)"
     - name: linux Memory
       rules:
         - alert:  MemoryLow
-          expr: 100 - (node_memory_MemTotal_bytes - (node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes)) / node_memory_MemTotal_bytes * 100 < 10
+          expr: (1 - (node_memory_MemAvailable_bytes / (node_memory_MemTotal_bytes))) * 100 > 90
           for: 1m
           labels:
             status: high
           annotations:
-            summary: "{{$labels.mountpoint}} High memory usage"
-            description: "{{$labels.mountpoint }} Memory remaining 10%(Currently used:{{$value}}%)"
+            summary: "{{$labels.instance}} High memory usage"
+            description: '{{$labels.instance }} Memory greater than 90%(Currently used:{{$value}}%)'
     - name: InstanceDown
       rules:
         - alert: InstanceDown
