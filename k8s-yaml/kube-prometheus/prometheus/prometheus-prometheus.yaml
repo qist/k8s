@@ -11,7 +11,7 @@ spec:
     - name: alertmanager-main
       namespace: monitoring
       port: web
-  image: quay.io/prometheus/prometheus:v2.20.0
+  image: quay.io/prometheus/prometheus:v2.21.0
   nodeSelector:
     kubernetes.io/os: linux
   podMonitorNamespaceSelector: {}
@@ -30,13 +30,15 @@ spec:
   #- prometheus-files-discover
   resources:
     requests:
-      memory: 2048Mi
+      memory: 4096Mi
   retention: 7d
   #storage:  #使用外部存储 请取消注释
   #  volumeClaimTemplate:
   #    spec:
   #      accessModes:
   #      - ReadWriteOnce
+  #      storageClassName:
+  #      - alicloud-disk-ssd
   #      resources:
   #        requests:
   #          storage: 50Gi
@@ -54,4 +56,4 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
-  version: v2.20.0
+  version: v2.21.0
