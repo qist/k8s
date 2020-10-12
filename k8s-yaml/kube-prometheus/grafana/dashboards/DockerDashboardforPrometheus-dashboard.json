@@ -47,7 +47,7 @@
   "gnetId": 11558,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1601343344785,
+  "iteration": 1602490612743,
   "links": [],
   "panels": [
     {
@@ -98,7 +98,7 @@
           "link": true,
           "linkTargetBlank": true,
           "linkTooltip": "点击查看详情",
-          "linkUrl": "/d/docker/docker?orgId=1&refresh=10s&var-server=${__cell_2}:7080",
+          "linkUrl": "/d/docker/docker?orgId=1&refresh=10s&var-server=${__cell_2}:.*",
           "mappingType": 2,
           "pattern": "ip",
           "preserveFormat": false,
@@ -565,7 +565,7 @@
           "expr": "sum(rate(container_cpu_usage_seconds_total{instance=~\"$server:.*\",name=~\".+\"}[$interval])) by (name) * 100",
           "format": "table",
           "hide": false,
-          "instant": false,
+          "instant": true,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -574,7 +574,7 @@
           "expr": "sum(container_memory_rss{instance=~\"$server:.*\",name=~\".+\"}) by (name)",
           "format": "table",
           "hide": false,
-          "instant": false,
+          "instant": true,
           "interval": "",
           "legendFormat": "",
           "refId": "B"
@@ -583,7 +583,7 @@
           "expr": "sum(rate(container_network_receive_bytes_total{instance=~\"$server:.*\",name=~\".+\"}[$interval])) by (name)",
           "format": "table",
           "hide": false,
-          "instant": false,
+          "instant": true,
           "interval": "10s",
           "legendFormat": "",
           "refId": "H"
@@ -592,12 +592,16 @@
           "expr": "sum(rate(container_network_transmit_bytes_total{instance=~\"$server:.*\",name=~\".+\"}[$interval])) by (name)",
           "format": "table",
           "hide": false,
-          "instant": false,
+          "instant": true,
           "interval": "10s",
           "legendFormat": "",
           "refId": "I"
         },
         {
+          "expr": "",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
           "refId": "J"
         }
       ],
@@ -756,5 +760,5 @@
   "timezone": "",
   "title": "Docker Dashboard for Prometheus",
   "uid": "FRVE0VbWz",
-  "version": 5
+  "version": 8
 }

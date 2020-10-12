@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.2.0"
+      "version": "7.0.0"
     },
     {
       "type": "panel",
@@ -32,6 +32,12 @@
       "type": "panel",
       "id": "singlestat",
       "name": "Singlestat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
       "version": ""
     },
     {
@@ -57,11 +63,11 @@
     ]
   },
   "description": "Docker container metrics. (cAdvisor/Prometheus)",
-  "editable": true,
+  "editable": false,
   "gnetId": 11600,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1601343626219,
+  "iteration": 1602490575690,
   "links": [],
   "panels": [
     {
@@ -90,11 +96,11 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 4,
+        "w": 3,
         "x": 0,
         "y": 0
       },
-      "id": 22,
+      "id": 24,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -173,6 +179,104 @@
       "valueName": "avg"
     },
     {
+      "cacheTimeout": null,
+      "datasource": "${DS_PROMETHEUS}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [
+            {
+              "$$hashKey": "object:216",
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "nullValueMode": "connected",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 3,
+        "y": 0
+      },
+      "id": 22,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "limit": 1,
+          "values": true
+        }
+      },
+      "pluginVersion": "7.0.0",
+      "targets": [
+        {
+          "bucketAggs": [
+            {
+              "field": "@timestamp",
+              "id": "2",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": 0,
+                "trimEdges": 0
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "expr": "sum(container_fs_usage_bytes{instance=~\"$node\",image!=\"\"})",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "metrics": [
+            {
+              "field": "select field",
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "query": "count(container_last_seen{instance=~\"$node\",job=~\"$job\",image!=\"\"})",
+          "refId": "A",
+          "timeField": "@timestamp"
+        }
+      ],
+      "title": "Total Disk Usage",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
       "aliasColors": {
         "{id=\"/\",instance=\"cadvisor:8080\",job=\"prometheus\"}": "#BA43A9"
       },
@@ -194,8 +298,8 @@
       "grid": {},
       "gridPos": {
         "h": 6,
-        "w": 8,
-        "x": 4,
+        "w": 6,
+        "x": 7,
         "y": 0
       },
       "hiddenSeries": false,
@@ -215,7 +319,8 @@
       "links": [],
       "nullPointMode": "null as zero",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "dataLinks": []
       },
       "percentage": false,
       "pluginVersion": "7.2.0",
@@ -337,8 +442,8 @@
       "grid": {},
       "gridPos": {
         "h": 6,
-        "w": 12,
-        "x": 12,
+        "w": 11,
+        "x": 13,
         "y": 0
       },
       "hiddenSeries": false,
@@ -358,7 +463,8 @@
       "links": [],
       "nullPointMode": "null as zero",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "dataLinks": []
       },
       "percentage": false,
       "pluginVersion": "7.2.0",
@@ -469,7 +575,8 @@
       "links": [],
       "nullPointMode": "null as zero",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "dataLinks": []
       },
       "percentage": false,
       "pluginVersion": "7.2.0",
@@ -589,7 +696,8 @@
       "links": [],
       "nullPointMode": "null as zero",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "dataLinks": []
       },
       "percentage": false,
       "pluginVersion": "7.2.0",
@@ -703,7 +811,8 @@
       "links": [],
       "nullPointMode": "null as zero",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "dataLinks": []
       },
       "percentage": false,
       "pluginVersion": "7.2.0",
@@ -814,7 +923,8 @@
       "links": [],
       "nullPointMode": "null as zero",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "dataLinks": []
       },
       "percentage": false,
       "pluginVersion": "7.2.0",
@@ -920,7 +1030,8 @@
       "links": [],
       "nullPointMode": "null as zero",
       "options": {
-        "alertThreshold": true
+        "alertThreshold": true,
+        "dataLinks": []
       },
       "percentage": false,
       "pluginVersion": "7.2.0",
@@ -1099,7 +1210,7 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 26,
+  "schemaVersion": 25,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -1302,7 +1413,6 @@
   },
   "timepicker": {
     "refresh_intervals": [
-      "5s",
       "10s",
       "30s",
       "1m",
@@ -1328,5 +1438,5 @@
   "timezone": "browser",
   "title": "Docker Container",
   "uid": "4dMaCsRZz",
-  "version": 4
+  "version": 6
 }
