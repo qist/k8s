@@ -37,11 +37,11 @@ spec:
   #    spec:
   #      accessModes:
   #      - ReadWriteOnce
-  #      storageClassName:
-  #      - alicloud-disk-ssd
   #      resources:
   #        requests:
   #          storage: 50Gi
+  #      storageClassName: alicloud-disk-ssd
+  #      volumeMode: Filesystem
   ruleSelector:
     matchLabels:
       prometheus: k8s
