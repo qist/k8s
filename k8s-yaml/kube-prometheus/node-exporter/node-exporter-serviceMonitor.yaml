@@ -11,7 +11,7 @@ spec:
     port: http
     relabelings:
     - action: replace
-      regex: (.+);(.+)
+      regex: (.+);(.*):.*
       replacement: $1-$2
       sourceLabels:
       - __meta_kubernetes_service_name
