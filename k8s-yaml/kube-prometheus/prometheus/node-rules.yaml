@@ -11,7 +11,7 @@ spec:
     - name: linux Disk Alerts
       rules:
         - alert: DiskSpaceUsage
-          expr: 100 - (node_filesystem_avail_bytes{fstype=~"ext4|xfs"} / node_filesystem_size_bytes{fstype=~"ext4|xfs"} * 100) > 90
+          expr: 100 - (node_filesystem_avail_bytes{fstype=~"ext.?|xfs"} / node_filesystem_size_bytes{fstype=~"ext.?|xfs"} * 100) > 90
           for: 1m
           labels:
             severity: critical
