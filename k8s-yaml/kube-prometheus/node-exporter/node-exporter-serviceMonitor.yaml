@@ -2,7 +2,8 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: node-exporter
+    app.kubernetes.io/name: node-exporter
+    app.kubernetes.io/version: v1.0.1
   name: node-exporter
   namespace: monitoring
 spec:
@@ -18,7 +19,7 @@ spec:
       - __address__
       targetLabel: service_name
     scheme: http
-  jobLabel: k8s-app
+  jobLabel: app.kubernetes.io/name
   selector:
     matchLabels:
-      k8s-app: node-exporter
+      app.kubernetes.io/name: node-exporter
