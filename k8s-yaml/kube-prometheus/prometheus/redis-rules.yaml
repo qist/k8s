@@ -18,39 +18,6 @@ spec:
       annotations:
         description: " Instance {{ $labels.instance }} rdb_last_bgsave_status  "
         summary: "last create rdb failed"
-    - alert: NodeCPUIOWAIT
-      expr: (irate(node_cpu_seconds_total{job="kubernetes-endpoints",mode="iowait"}[5m])) * 100 > 25
-      for: 2m
-      labels:
-        severity: warning
-      annotations:
-        summary: "{{$labels.instance}}: High CPU IO WAIT usage detected"
-        description: "{{$labels.instance}}: CPU IO WAIT is above 25% (current value is: {{ $value }})"
-    - alert: NodeDiskUseage
-      expr: (node_filesystem_free_bytes{device="/dev/vdb",fstype="xfs",job="kubernetes-endpoints"}) / (node_filesystem_size_bytes) * 100 < 20
-      for: 2m
-      labels:
-        severity: warning
-      annotations:
-        summary: "{{$labels.instance}}: Node free Disk less than 20%"
-        description: "{{$labels.instance}}: Node Disk free less than 20% (current value is: {{ $value }})"
-    - alert: NodeCPUUsage
-      expr: (100 - (irate(node_cpu_seconds_total{job="kubernetes-endpoints",mode="idle"}[5m])) * 100) > 75
-      for: 2m
-      labels:
-        severity: page
-      annotations:
-        summary: "{{$labels.instance}}: High CPU usage detected"
-        description: "{{$labels.instance}}: CPU usage is above 75% (current value is: {{ $value }})"
-    - alert: NodeMemoryUsage
-      expr: (1-(node_memory_MemAvailable_bytes{job="kubernetes-endpoints"}/ (node_memory_MemTotal_bytes{job="kubernetes-endpoints"})))* 100 > 75
-      for: 2m
-      labels:
-        severity: page
-      annotations:
-        summary: "{{$labels.instance}}: High memory usage detected"
-        description: "{{$labels.instance}}: Memory usage is above 75% (current value is: {{ $value }})"
-        ###
     - alert: RedisTooManyClients
       expr: redis_connected_clients > 2000
       for: 5m
