@@ -387,6 +387,27 @@ spec:
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      initContainers:
+        - name: init-sysctl
+          image: 'busybox:1.24'
+          command:
+            - /bin/sh
+            - '-c'
+            - |
+              mount -o remount rw /proc/sys
+              sysctl -w net.core.somaxconn=65535
+              sysctl -w net.ipv4.ip_local_port_range="1024 65535"
+              sysctl -w fs.file-max=1048576
+              sysctl -w fs.inotify.max_user_instances=16384
+              sysctl -w fs.inotify.max_user_watches=524288
+              sysctl -w fs.inotify.max_queued_events=16384
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            capabilities:
+              add:
+                - SYS_ADMIN
+              drop:
+                - ALL
       containers:
         - name: controller
           image: juestnow/controller:v0.35.0
