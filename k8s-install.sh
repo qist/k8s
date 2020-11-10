@@ -2152,7 +2152,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - { key: 'net.bridge.bridge-nf-call-iptables', value: '1' }
       - { key: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
       - { key: 'net.bridge.bridge-nf-call-arptables',value: '1' }
-      - { key: 'net.ipv4.tcp_rmem', value: '4096 12582912 16777216' }         
+      - { key: 'net.ipv4.tcp_rmem', value: '4096 12582912 16777216' }
       - { key: 'vm.swappiness', value: '0' }
       - { key: 'kernel.sysrq', value: '1' }
       - { key: 'net.ipv4.neigh.default.gc_stale_time', value: '120' }
@@ -2172,6 +2172,12 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - { key: 'net.ipv4.tcp_keepalive_time', value: '600' }
       - { key: 'net.ipv4.tcp_keepalive_probes', value: '10' }
       - { key: 'net.ipv4.tcp_keepalive_intvl', value: '30' }
+      - { key: 'net.nf_conntrack_max', value: '25000000' }
+      - { key: 'net.netfilter.nf_conntrack_max', value: '25000000' }
+      - { key: 'net.netfilter.nf_conntrack_tcp_timeout_established', value: '180' }
+      - { key: 'net.netfilter.nf_conntrack_tcp_timeout_time_wait', value: '120' }
+      - { key: 'net.netfilter.nf_conntrack_tcp_timeout_close_wait', value: '60' }
+      - { key: 'net.netfilter.nf_conntrack_tcp_timeout_fin_wait', value: '12' }
 - name: Add or modify hard nofile limits for wildcard domain
   pam_limits:
     domain: '*'
