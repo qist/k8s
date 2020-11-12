@@ -1,0 +1,67 @@
+- hosts: all
+  user: root
+  tasks:
+    - name: disable service all
+      service:
+        name: '{{ item }}'
+        enabled: no
+      with_items:
+          - kubelet
+          - docker
+          - crio
+          - containerd
+          - kube-proxy
+          - kube-scheduler
+          - kube-controller-manager
+          - kube-apiserver
+          - etcd
+      ignore_errors: True
+    - name: Reboot system
+      reboot:
+        reboot_timeout: 3600
+    - name: Remove file (delete file)
+      file:
+        path: "/lib/systemd/system/{{ item }}.service"
+        state: absent
+      with_items:
+          - kubelet
+          - docker
+          - crio
+          - containerd
+          - kube-proxy
+          - kube-scheduler
+          - kube-controller-manager
+          - kube-apiserver
+          - etcd
+      ignore_errors: True
+    - name: Remove file (delete file)
+      file:
+        path: "/usr/bin/{{ item }}"
+        state: absent
+      with_items:
+          - crictl
+          - docker
+          - docker
+          - docker-init
+          - docker-proxy
+          - containerd-shim
+          - runc
+          - ctr
+          - containerd
+      ignore_errors: True
+    - name: Remove file (delete file)
+      file:
+        path: "/etc/{{ item }}"
+        state: absent
+      with_items:
+          - crictl.yaml
+          - containers
+          - containerd
+          - docker
+          - cni
+      ignore_errors: True
+    - name: Remove file (delete file)
+      file:
+        path: "/apps/"
+        state: absent
+      ignore_errors: True
