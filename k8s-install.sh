@@ -76,7 +76,7 @@ INSTALL_K8S=ON
 # 配置容器运行时 DOCKER,CONTAINERD,CRIO 默认docker
 RUNTIME=DOCKER
 # 网络插件 选择 calico ,flannel,kube-router,calico-typha(大于50节点建议使用，calico-typha及kube-router)  默认 flannel 
-NET_PLUG=calico
+NET_PLUG=flannel
 #K8S events 存储ETCD 集群 默认关闭OFF ON开启
 K8S_EVENTS=OFF
 # 是否升级iptables OFF 关闭 ON 开启
@@ -101,15 +101,13 @@ ALSOLOGTOSTDERR=true
 # 设置输出日志级别
 LEVEL_LOG="2"
 ########################################################################################################################################################################
-######################################################### 负载均衡插件及镜像                                                   #########################################                                
+######################################################### 负载均衡插件及镜像   尽量下载使用私有仓库镜像地址这样部署很快        #########################################                                
 ########################################################################################################################################################################
 ## kube-apiserver ha proxy 配置
 # nginx 启动进程数 auto 当前机器cpu 核心数的进程数
 CPU_NUM=4
 # 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者haproxy juestnow/haproxy-proxy:2.1.7
 HA_PROXY_IMAGE="juestnow/nginx-proxy:1.19.0"
-# 网络插件镜像选择
-FLANNEL_VERSION="quay.io/coreos/flannel:v0.12.0-amd64"
 # pod-infra-container-image 地址
 POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause-amd64:3.2"
 #########################################################################################################################################################################
@@ -141,10 +139,25 @@ export CRICTL_VERSION=v1.18.0
 export RUNC_VERSION=v1.0.0-rc90
 # cri-o 版本
 export CRIO_VERSION=v1.18.1
-#calico版本号
+# 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
+# flannel 插件选择
+FLANNEL_VERSION="quay.io/coreos/flannel:v0.12.0-amd64"
+# calico版本号
 CALICO_VERSION=v3.13.1
 # 50 节点一个副本根据集群大小填写 calico-typha 副本数配置
 POD_REPLICAS=1
+# calico 50 节点以上配置镜像
+CALICO_TYPHA_IMAGE="calico/typha:${CALICO_VERSION}"
+# calico 网络插件
+CALICO_CIN_IMAGE="calico/cni:${CALICO_VERSION}"
+CALICO_FLEXVOL_IMAGE="calico/pod2daemon-flexvol:${CALICO_VERSION}"
+CALICO_NODE_IMAGE="calico/node:${CALICO_VERSION}"
+CALICO_CONTROLLERS_IMAGE="calico/kube-controllers:${CALICO_VERSION}"
+# kube-router 镜像
+KUBE_ROUTER_INIT=busybox
+KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
+# coredns 镜像
+COREDNS_IMAGE=coredns/coredns
 # 应用部署目录 选择硬盘空间比较大的
 TOTAL_PATH=/apps
 # etcd 部署目录
@@ -5194,7 +5207,7 @@ spec:
         # It can be deleted if this is a fresh installation, or if you have already
         # upgraded to use calico-ipam.
         - name: upgrade-ipam
-          image: calico/cni:${CALICO_VERSION}
+          image: ${CALICO_CIN_IMAGE}
           command: ["/opt/cni/bin/calico-ipam", "-upgrade"]
           env:
             - name: KUBERNETES_NODE_NAME
@@ -5216,7 +5229,7 @@ spec:
         # This container installs the CNI binaries
         # and CNI network config file on each node.
         - name: install-cni
-          image: calico/cni:${CALICO_VERSION}
+          image: ${CALICO_CIN_IMAGE}
           command: ["/install-cni.sh"]
           env:
             # Name of the CNI config file to create.
@@ -5252,7 +5265,7 @@ spec:
         # Adds a Flex Volume Driver that creates a per-pod Unix Domain Socket to allow Dikastes
         # to communicate with Felix over the Policy Sync API.
         - name: flexvol-driver
-          image: calico/pod2daemon-flexvol:${CALICO_VERSION}
+          image: ${CALICO_FLEXVOL_IMAGE}
           volumeMounts:
           - name: flexvol-driver-host
             mountPath: /host/driver
@@ -5263,7 +5276,7 @@ spec:
         # container programs network policy and routes on each
         # host.
         - name: calico-node
-          image: calico/node:${CALICO_VERSION}
+          image: ${CALICO_NODE_IMAGE}
           env:
             # Use Kubernetes API as the backing datastore.
             - name: DATASTORE_TYPE
@@ -5443,7 +5456,7 @@ spec:
       priorityClassName: system-cluster-critical
       containers:
         - name: calico-kube-controllers
-          image: calico/kube-controllers:${CALICO_VERSION}
+          image: ${CALICO_CONTROLLERS_IMAGE}
           env:
             # Choose which controllers to run.
             - name: ENABLED_CONTROLLERS
@@ -5546,7 +5559,7 @@ spec:
       serviceAccount: kube-router
       containers:
       - name: kube-router
-        image: docker.io/cloudnativelabs/kube-router
+        image: ${KUBE_ROUTER_IMAGE}
         imagePullPolicy: Always
         args:
         - --run-router=true 
@@ -5595,7 +5608,7 @@ spec:
           mountPath: /etc/cni/net.d
       initContainers:
       - name: install-cni
-        image: busybox
+        image: ${KUBE_ROUTER_INIT}
         imagePullPolicy: Always
         command:
         - /bin/sh
@@ -6281,7 +6294,7 @@ spec:
       securityContext:
         fsGroup: 65534
       containers:
-      - image: calico/typha:${CALICO_VERSION}
+      - image: ${CALICO_TYPHA_IMAGE}
         name: calico-typha
         ports:
         - containerPort: 5473
@@ -6396,7 +6409,7 @@ spec:
         # It can be deleted if this is a fresh installation, or if you have already
         # upgraded to use calico-ipam.
         - name: upgrade-ipam
-          image: calico/cni:${CALICO_VERSION}
+          image: ${CALICO_CIN_IMAGE}
           command: ["/opt/cni/bin/calico-ipam", "-upgrade"]
           env:
             - name: KUBERNETES_NODE_NAME
@@ -6418,7 +6431,7 @@ spec:
         # This container installs the CNI binaries
         # and CNI network config file on each node.
         - name: install-cni
-          image: calico/cni:${CALICO_VERSION}
+          image: ${CALICO_CIN_IMAGE}
           command: ["/install-cni.sh"]
           env:
             # Name of the CNI config file to create.
@@ -6454,7 +6467,7 @@ spec:
         # Adds a Flex Volume Driver that creates a per-pod Unix Domain Socket to allow Dikastes
         # to communicate with Felix over the Policy Sync API.
         - name: flexvol-driver
-          image: calico/pod2daemon-flexvol:${CALICO_VERSION}
+          image: ${CALICO_FLEXVOL_IMAGE}
           volumeMounts:
           - name: flexvol-driver-host
             mountPath: /host/driver
@@ -6465,7 +6478,7 @@ spec:
         # container programs network policy and routes on each
         # host.
         - name: calico-node
-          image: calico/node:${CALICO_VERSION}
+          image: ${CALICO_NODE_IMAGE}
           env:
             # Use Kubernetes API as the backing datastore.
             - name: DATASTORE_TYPE
@@ -6654,7 +6667,7 @@ spec:
       priorityClassName: system-cluster-critical
       containers:
         - name: calico-kube-controllers
-          image: calico/kube-controllers:${CALICO_VERSION}
+          image: ${CALICO_CONTROLLERS_IMAGE}
           env:
             # Choose which controllers to run.
             - name: ENABLED_CONTROLLERS
@@ -6807,7 +6820,7 @@ spec:
         beta.kubernetes.io/os: linux
       containers:
       - name: coredns
-        image: coredns/coredns
+        image: ${COREDNS_IMAGE}
         imagePullPolicy: Always
         resources:
           limits:
