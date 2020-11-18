@@ -3579,8 +3579,8 @@ EOF
 cat > ${HOST_PATH}/roles/kubelet/templates/kubelet << EOF
 KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --network-plugin=cni \\
-              --cni-conf-dir=/apps/cni/etc/net.d \\
-              --cni-bin-dir=/apps/cni/bin \\
+              --cni-conf-dir=${CNI_CONF_DIR} \\
+              --cni-bin-dir=${CNI_BIN_DIR} \\
               --kubeconfig=${K8S_PATH}/conf/kubelet.kubeconfig \\
               --node-ip={{ ${KUBELET_IPV4} }} \\
               --hostname-override={{ ansible_hostname }} \\
