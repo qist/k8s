@@ -102,6 +102,12 @@ spec: # 资源规范字段
         #也可以用这种方法   
         #tcpSocket: # 通过tcpSocket检查健康  
         #  port: number 
+        startupProbe: # pod 使用启动探测器保护慢启动容器
+          httpGet:
+            path: /healthCheck
+            port: 8080
+          failureThreshold: 30 # 失败门槛，连接失败5次，pod杀掉，重启一个新的pod
+          periodSeconds: 10 # 检查间隔时间
         ports:
           - name: http # 名称
             containerPort: 8080 # 容器开发对外的端口 

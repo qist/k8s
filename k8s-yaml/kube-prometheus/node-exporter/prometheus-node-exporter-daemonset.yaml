@@ -3,7 +3,7 @@ kind: DaemonSet
 metadata:
   labels:
     app.kubernetes.io/name: node-exporter
-    app.kubernetes.io/version: v0.18.1
+    app.kubernetes.io/version: v1.0.1
   name: node-exporter
   namespace: monitoring
 spec:
@@ -14,19 +14,22 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: node-exporter
-        app.kubernetes.io/version: v0.18.1  
+        app.kubernetes.io/version: v1.0.1  
     spec:
       hostNetwork: true
       hostPID: true
       containers:
-      - image: prom/node-exporter:v0.18.1
+      - image: quay.io/prometheus/node-exporter:v1.0.1
         args:
         - --path.procfs=/host/proc
         - --path.sysfs=/host/sys
         - --path.rootfs=/host/root
         - --no-collector.wifi
-        - --no-collector.hwmon
-        - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|apps/docker/data/.+|apps/work/kubernetes/kubelet/pods/.+)($|/)
+        - --collector.processes 
+        - --collector.systemd 
+        - --collector.tcpstat 
+        - --collector.ksmd 
+        - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/pods/.+|apps/docker/data/.+|apps/work/kubernetes/kubelet/pods/.+)($|/)
         name: node-exporter
         ports:
         - name: http
@@ -42,11 +45,13 @@ spec:
             cpu: 250m
         volumeMounts:
         - name: proc
-          readOnly:  false
+          readOnly:  true
           mountPath: /host/proc
+          mountPropagation: HostToContainer
         - name: sys
-          readOnly: false
+          readOnly: true
           mountPath: /host/sys
+          mountPropagation: HostToContainer
         - name: root
           readOnly: true
           mountPath: /host/root

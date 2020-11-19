@@ -11,12 +11,18 @@ spec:
     - name: alertmanager-main
       namespace: monitoring
       port: web
-  image: quay.io/prometheus/prometheus:v2.17.2
+  image: quay.io/prometheus/prometheus:v2.21.0
   nodeSelector:
     kubernetes.io/os: linux
   podMonitorNamespaceSelector: {}
   podMonitorSelector: {}
   replicas: 2
+  # 取消系统生成 external_labels
+  replicaExternalLabelName: ""
+  prometheusExternalLabelName: ""
+  # 配置外部标签多环境报警使用
+  externalLabels:
+    environment: k8s
   #secrets:  # 添加etcd 跟istio https 监控请取消注释
   #- etcd-certs
   #- istio-certs
@@ -24,7 +30,7 @@ spec:
   #- prometheus-files-discover
   resources:
     requests:
-      memory: 2048Mi
+      memory: 4096Mi
   retention: 7d
   #storage:  #使用外部存储 请取消注释
   #  volumeClaimTemplate:
@@ -34,6 +40,8 @@ spec:
   #      resources:
   #        requests:
   #          storage: 50Gi
+  #      storageClassName: alicloud-disk-ssd
+  #      volumeMode: Filesystem
   ruleSelector:
     matchLabels:
       prometheus: k8s
@@ -48,4 +56,4 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
-  version: v2.17.2
+  version: v2.21.0

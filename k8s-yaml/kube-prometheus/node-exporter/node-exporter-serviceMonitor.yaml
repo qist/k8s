@@ -3,6 +3,7 @@ kind: ServiceMonitor
 metadata:
   labels:
     app.kubernetes.io/name: node-exporter
+    app.kubernetes.io/version: v1.0.1
   name: node-exporter
   namespace: monitoring
 spec:
@@ -11,11 +12,12 @@ spec:
     port: http
     relabelings:
     - action: replace
-      regex: (.*)
-      replacement: $1
+      regex: (.+);(.*):.*
+      replacement: $1-$2
       sourceLabels:
-      - __meta_kubernetes_pod_node_name
-      targetLabel: instance
+      - __meta_kubernetes_service_name
+      - __address__
+      targetLabel: service_name
     scheme: http
   jobLabel: app.kubernetes.io/name
   selector:

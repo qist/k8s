@@ -17,7 +17,7 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-      - image: juestnow/process-exporter:v0.5.0
+      - image: juestnow/process-exporter:v0.7.2
         args:
         - "-procfs=/host/proc"
         - "-config.path=/etc/process-exporter/process-exporter.yaml"

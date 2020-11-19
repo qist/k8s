@@ -38,7 +38,7 @@ spec:
             value: '60000'
           - name: I18N_LOCALE
             value: zh-CN
-          - name: xpack.monitoring.ui.container.elasticsearch.enabled
+          - name: XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED
             value: "true"
         ports:
         - containerPort: 5601

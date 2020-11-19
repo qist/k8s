@@ -1,4 +1,4 @@
-# 授权全部全是到单个命名空间
+# 授权全部权限到单个命名空间
 cat << EOF | kubectl apply -f -
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
