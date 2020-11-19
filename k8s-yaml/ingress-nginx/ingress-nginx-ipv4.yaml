@@ -408,6 +408,10 @@ spec:
                 - SYS_ADMIN
               drop:
                 - ALL
+      #tolerations: #允许master上运行
+      #  - operator: "Exists"
+      #nodeSelector:  #选取节点
+      #  canruningress: run
       containers:
         - name: controller
           image: juestnow/controller:v0.41.2
