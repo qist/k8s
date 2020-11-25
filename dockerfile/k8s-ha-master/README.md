@@ -8,29 +8,12 @@ docker run -tid --net=host -e "CP_HOSTS=192.168.2.175,192.168.2.176,192.168.2.17
 ```
 # 添加外部访问健康检测
 ```
-http {
-    server {
-        listen 8099;
+8404 端口监控端口
+http://ip:8404/stats
+prometheus 监控
+http://ip:8404/metrics
 
-        # status interface
-        location /status {
-            healthcheck_status;
-        }
-    }
-}
-http://ip+prot/status
-templates/nginx.tmpl 打开注释
-healthcheck_status 默认 html / json / csv / prometheus
-healthcheck_status prometheus;  #prometheus 监控
-http {
-    server {
-        listen 9099;
-
-        # metrics interface
-        location /metrics {
-            healthcheck_status;
-        }
-    }
-}
-http://ip+prot/metrics
+- job_name: 'nginx'
+  static_configs:
+  - targets: ['ip:8404']
 ```

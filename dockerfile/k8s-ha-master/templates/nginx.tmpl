@@ -29,13 +29,17 @@ stream {
 
 }
 
-#http {
-#    server {
-#        listen 8099;
-#
-#        # status interface
-#        location /status {
-#            healthcheck_status;
-#        }
-#    }
-#}
+http {
+    server {
+        listen 8404;
+
+        # stats interface
+        location /stats {
+            healthcheck_status;
+        }
+        # metrics interface
+        location /metrics {
+            healthcheck_status prometheus;
+        }
+    }
+}
