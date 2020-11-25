@@ -4,8 +4,8 @@ FROM alpine
 # 作者信息
 MAINTAINER Qist Docker Maintainers "87984115@qq.com"
 
-# 修改源
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+# 修改源 国内开启
+#RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 # 安装ca 证书
 RUN apk update && \
@@ -13,9 +13,9 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV NGINX_VERSION 1.19.0
+ENV NGINX_VERSION 1.19.5
 
-ENV OPENSSL_VERSION 1.1.1g
+ENV OPENSSL_VERSION 1.1.1h
 # ENV http_proxy http://192.168.0.151:7890
 # ENV https_proxy http://192.168.0.151:7890
 
@@ -68,6 +68,7 @@ RUN NGINX_CONFIG="\
       --with-stream_ssl_module \
       --with-stream_ssl_preread_module \
       --with-ld-opt=-Wl,--as-needed \
+      --add-module=../ngx_healthcheck_module \
      " \
      && addgroup -S nginx \
      && adduser -D -S -h /www -s /sbin/nologin -G nginx nginx \
@@ -106,9 +107,11 @@ RUN NGINX_CONFIG="\
         && curl -fSL  https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz -o /tmp/openssl-$OPENSSL_VERSION.tar.gz \
         && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o /tmp/nginx-$NGINX_VERSION.tar.gz \
         && cd /tmp \
+        && git clone https://github.com/zhouchangxun/ngx_healthcheck_module.git /tmp/ngx_healthcheck_module \
         && tar -xzf openssl-$OPENSSL_VERSION.tar.gz \
         && tar -xzf nginx-$NGINX_VERSION.tar.gz \
         && cd  /tmp/nginx-$NGINX_VERSION \
+        && git apply ../ngx_healthcheck_module/nginx_healthcheck_for_nginx_1.16+.patch \
         && ./configure $NGINX_CONFIG \
         && make -j$(getconf _NPROCESSORS_ONLN) \
         && make install

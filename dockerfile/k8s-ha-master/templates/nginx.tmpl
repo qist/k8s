@@ -13,6 +13,7 @@ stream {
             {{ $servers := split (getenv "CP_HOSTS") "," }}{{range $servers}}
             server {{.}}:BACKEND_PORT;
             {{end}}
+            check interval=1000 rise=2 fall=5 timeout=2000 default_down=true type=tcp;
         }
 
         server {
