@@ -131,9 +131,9 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV NGINX_VERSION 1.19.0
+ENV NGINX_VERSION 1.19.5
 
-ENV OPENSSL_VERSION 1.1.1g
+ENV OPENSSL_VERSION 1.1.1h
 # nginx 进行使用cpu 数量
 ENV CPU_NUM 4
 # nginx 监听端口
