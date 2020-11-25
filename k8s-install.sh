@@ -106,8 +106,8 @@ LEVEL_LOG="2"
 ## kube-apiserver ha proxy 配置
 # nginx 启动进程数 auto 当前机器cpu 核心数的进程数
 CPU_NUM=4
-# 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者haproxy juestnow/haproxy-proxy:2.1.7
-HA_PROXY_IMAGE="juestnow/nginx-proxy:1.19.0"
+# 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者haproxy juestnow/haproxy-proxy:2.3.1
+HA_PROXY_IMAGE="juestnow/nginx-proxy:1.19.5"
 # pod-infra-container-image 地址
 POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause-amd64:3.2"
 #########################################################################################################################################################################
@@ -2025,6 +2025,9 @@ metadata:
   labels:
     component: kube-apiserver-ha-proxy
     tier: control-plane
+  annotations:
+    prometheus.io/port: "8404"
+    prometheus.io/scrape: "true"    
   name: kube-apiserver-ha-proxy
   namespace: kube-system
 spec:
