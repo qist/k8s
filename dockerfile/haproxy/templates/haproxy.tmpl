@@ -26,16 +26,26 @@ defaults
                 timeout client      50000
                 timeout server 50000
 
-listen admin_stat
-        bind :::57590
-        mode http
-        stats refresh 30s
-        stats uri /admin?stats
-        stats realm Haproxy\ Statistics
-        stats auth admin:admin
-        stats enable
-        bind-process 4
+#listen admin_stat
+#        bind :::57590
+#        mode http
+#        stats refresh 30s
+#        stats uri /admin?stats
+#        stats realm Haproxy\ Statistics
+#        stats auth admin:admin
+#        stats enable
+#        bind-process 4
 
+frontend stats
+   bind :::8404
+   mode http
+   option http-use-htx
+   http-request use-service prometheus-exporter if { path /metrics }
+   stats enable
+   stats uri /stats
+   stats refresh 10s
+   bind-process 4
+   
 frontend frontend-tcp
   mode tcp
   {{ $servers := split (getenv "HOST_PORT") "," }}{{range $servers}}
