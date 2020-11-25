@@ -18,5 +18,19 @@ http {
         }
     }
 }
+http://ip+prot/status
 templates/nginx.tmpl 打开注释
+healthcheck_status 默认 html / json / csv / prometheus
+healthcheck_status prometheus;  #prometheus 监控
+http {
+    server {
+        listen 9099;
+
+        # metrics interface
+        location /metrics {
+            healthcheck_status;
+        }
+    }
+}
+http://ip+prot/metrics
 ```
