@@ -16,6 +16,9 @@ spec:
   selector:
     matchLabels:
       k8s-app: metrics-server
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0      
   template:
     metadata:
       name: metrics-server
@@ -23,6 +26,7 @@ spec:
         k8s-app: metrics-server
     spec:
       serviceAccountName: metrics-server
+      priorityClassName: system-cluster-critical
       tolerations:
         - effect: NoSchedule
           key: node.kubernetes.io/unschedulable
@@ -38,16 +42,22 @@ spec:
         secret:
           secretName: metrics-server-certs
       containers:
-      - name: metrics-server
-        image: juestnow/metrics-server:v0.3.7
-        imagePullPolicy: Always
-        command:
-        - /metrics-server
-        - --tls-cert-file=/certs/metrics-server.pem
-        - --tls-private-key-file=/certs/metrics-server-key.pem
-        - --kubelet-preferred-address-types=InternalIP,Hostname,InternalDNS,ExternalDNS,ExternalIP
+      - args:
+        - --cert-dir=/tmp
+        - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname,InternalDNS,ExternalDNS
         - --secure-port=4443
+        - --kubelet-use-node-status-port
         - --kubelet-insecure-tls
+        image: juestnow/metrics-server:v0.4.1
+        imagePullPolicy: IfNotPresent        
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /livez
+            port: https
+            scheme: HTTPS
+          periodSeconds: 10 
+        name: metrics-server          
         volumeMounts:
         - name: tmp-dir
           mountPath: /tmp
@@ -58,10 +68,12 @@ spec:
           containerPort: 4443
           protocol: TCP
         readinessProbe:
+          failureThreshold: 3
           httpGet:
-            path: /healthz
-            port: main-port
+            path: /readyz
+            port: https
             scheme: HTTPS
+          periodSeconds: 10
         securityContext:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
