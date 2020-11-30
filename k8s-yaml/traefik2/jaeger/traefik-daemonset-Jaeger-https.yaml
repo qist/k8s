@@ -27,7 +27,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: ingress-system
-          image: traefik:v2.3.2
+          image: traefik:v2.3.4
           args:
             - --api.insecure
             - --api.dashboard

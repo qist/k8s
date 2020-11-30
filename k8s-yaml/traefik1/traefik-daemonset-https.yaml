@@ -32,7 +32,7 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet      
       containers:
-      - image: traefik:v1.7.22
+      - image: traefik:v1.7.26
         name: traefik
         imagePullPolicy: Always
         ports:
