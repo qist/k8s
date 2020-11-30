@@ -64,7 +64,7 @@ spec:
         - name: metrics-server-certs
           mountPath: /certs
         ports:
-        - name: main-port
+        - name: https
           containerPort: 4443
           protocol: TCP
         readinessProbe:

@@ -56,7 +56,7 @@ spec:
           periodSeconds: 10 
         name: metrics-server          
         ports:
-        - name: main-port
+        - name: https
           containerPort: 4443
           protocol: TCP
         readinessProbe:
