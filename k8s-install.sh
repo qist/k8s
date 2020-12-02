@@ -225,6 +225,8 @@ ENDPOINTS="${ENDPOINTS} --etcd-servers-overrides=/events#https://${ETCD_EVENTS_M
 fi
 # kubernetes 相关配置
 # 公共配置
+# 配置tls 加密套件 etcd k8s 组件配置
+TLS_CIPHER="TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_GCM_SHA256"
 # kube-apiserver 配置
 # K8S ETCD存储 目录名字
 ETCD_PREFIX="/registry" 
@@ -258,6 +260,12 @@ DEFAULT_UNREACHABLE_TOLERATION_SECONDS=30
 KUBE_API_QPS="100"
 #每秒发送到 apiserver 的请求数量上限 默认30
 KUBE_API_BURST="100"
+# 可以并发同步的 Service 对象个数。数值越大，服务管理的响应速度越快，不过对 CPU （和网络）的占用也越高。 默认1
+CONCURRENT_SERVICE_SYNCS=2
+# 可以并发同步的 Deployment 对象个数。数值越大意味着对 Deployment 的响应越及时，同时也意味着更大的 CPU（和网络带宽）压力。默认5
+CONCURRENT_DEPLOYMENT_SYNCS=10
+# 可以并发同步的垃圾收集工作线程个数。 默认20
+CONCURRENT_GC_SYNCS=30
 # 我们允许运行的节点在标记为不健康之前没有响应的时间。必须是kubelet的nodeStatusUpdateFrequency的N倍， 其中N表示允许kubelet发布节点状态的重试次数默认40s。
 NODE_MONITOR_GRACE_PERIOD=30s
 #在NodeController中同步节点状态的周期。默认5s
@@ -444,8 +452,8 @@ downloadK8S(){
       fi 
     if [ ${IPTABLES_INSTALL} == "ON" ]; then      
     # 下载iptables 
-       wget -c  --tries=40  https://www.netfilter.org/projects/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2 \
-                     -O $DOWNLOAD_PATH/iptables-${IPTABLES_VERSION}.tar.bz2
+       curl -C -  https://www.netfilter.org/projects/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2 \
+                     -o $DOWNLOAD_PATH/iptables-${IPTABLES_VERSION}.tar.bz2
       if [[ $? -ne 0 ]]; then
         colorEcho ${RED} "download  FATAL iptables."
         exit $?
@@ -1551,6 +1559,7 @@ ETCD_OPTS="--name={{ ansible_hostname }} \\
            --peer-cert-file=${ETCD_PATH}/ssl/{{ ETCD_MEMBER }}-{{ ansible_hostname }}.pem \\
            --peer-key-file=${ETCD_PATH}/ssl/{{ ETCD_MEMBER }}-{{ ansible_hostname }}-key.pem \\
            --peer-client-cert-auth \\
+           --cipher-suites=${TLS_CIPHER} \\
            --enable-v2=true \\
            --peer-trusted-ca-file=${ETCD_PATH}/ssl/{{ ca }}.pem"
 EOF
@@ -1895,6 +1904,7 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --alsologtostderr=${ALSOLOGTOSTDERR} \\
         --log-dir=${K8S_PATH}/log \\
         --v=${LEVEL_LOG} \\
+        --tls-cipher-suites=${TLS_CIPHER} \\
         --endpoint-reconciler-type=lease \\
         --max-mutating-requests-inflight=${MAX_MUTATING_REQUESTS_INFLIGHT} \\
         --max-requests-inflight=${MAX_REQUESTS_INFLIGHT} \\
@@ -3465,15 +3475,7 @@ httpCheckFrequency: 20s
 address: {{ ${KUBELET_IPV4} }}
 port: 10250
 readOnlyPort: 0
-tlsCipherSuites:
-- TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
-- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-- TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
-- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-- TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
-- TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
-- TLS_RSA_WITH_AES_256_GCM_SHA384
-- TLS_RSA_WITH_AES_128_GCM_SHA256
+tlsCipherSuites: [${TLS_CIPHER}]
 rotateCertificates: true
 authentication:
   x509:
@@ -4114,8 +4116,13 @@ controllerConfig(){
 # 创建kube-controller-manager 启动配置文件
 cat > ${HOST_PATH}/roles/kube-controller-manager/templates/kube-controller-manager << EOF
 KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
+--profiling \\
+--concurrent-service-syncs=${CONCURRENT_SERVICE_SYNCS} \\
+--concurrent-deployment-syncs=${CONCURRENT_DEPLOYMENT_SYNCS} \\
+--concurrent-gc-syncs=${CONCURRENT_GC_SYNCS} \\
 --leader-elect=true \\
---address=0.0.0.0 \\
+--bind-address={{ $KUBELET_IPV4 }} \\
+--address=127.0.0.1 \\
 --service-cluster-ip-range=${SERVICE_CIDR} \\
 --cluster-cidr=${CLUSTER_CIDR} \\
 --node-cidr-mask-size=24 \\
@@ -4127,6 +4134,11 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --use-service-account-credentials=true \\
 --client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --requestheader-client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
+--requestheader-client-ca-file=/apps/k8s/ssl/k8s/k8s-ca.pem \\
+--requestheader-allowed-names=aggregator \\
+--requestheader-extra-headers-prefix=X-Remote-Extra- \\
+--requestheader-group-headers=X-Remote-Group \\
+--requestheader-username-headers=X-Remote-User \\
 --node-monitor-grace-period=${NODE_MONITOR_GRACE_PERIOD} \\
 --node-monitor-period=${NODE_MONITOR_PERIOD} \\
 --pod-eviction-timeout=${POD_EVICTION_TIMEOUT} \\
@@ -4149,6 +4161,7 @@ ${FEATURE_GATES} \\
 --tls-private-key-file=${K8S_PATH}/ssl/k8s/k8s-controller-manager-key.pem \\
 --kube-api-qps=${KUBE_API_QPS} \\
 --kube-api-burst=${KUBE_API_BURST} \\
+--tls-cipher-suites=${TLS_CIPHER} \\
 --log-dir=${K8S_PATH}/log \\
 --v=${LEVEL_LOG}"
 EOF
@@ -4261,19 +4274,25 @@ schedulerConfig(){
      if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
         if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]]; then
          # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
-          mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/bin
+          mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/{ssl,bin}
+          mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
            \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
            # 复制kube-scheduler.kubeconfig 文件
            \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/
+            # 复制ssl
+            \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-scheduler*.pem,k8s-ca.pem} ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
           elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]] || [[ ! -e "${HOST_PATH}/roles/kube-scheduler/files/bin/kube-scheduler" ]]; then
              # cp 二进制文件及ssl 文件到 ansible 目录
               mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
               tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
-              # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
-              mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/bin
+               # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
+                mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/{ssl,bin}
+                mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
                \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
                  # 复制kube-scheduler.kubeconfig 文件
-               \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/  
+               \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/
+                # 复制ssl
+                \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-scheduler*.pem,k8s-ca.pem} ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s 
        fi
      else
       colorEcho ${RED} "kubernetes no download."
@@ -4288,17 +4307,26 @@ schedulerConfig(){
 cat > ${HOST_PATH}/roles/kube-scheduler/templates/kube-scheduler << EOF
 KUBE_SCHEDULER_OPTS=" \\
                    --logtostderr=${LOGTOSTDERR} \\
-                   --address=0.0.0.0 \\
+                   --address=127.0.0.1 \\
+                   --bind-address={{ $KUBELET_IPV4 }} \\
                    --leader-elect=true \\
                    ${FEATURE_GATES} \\
                    --kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authentication-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authorization-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
+                   --tls-cert-file=${K8S_PATH}/ssl/k8s/k8s-scheduler.pem \\
+                   --tls-private-key-file=${K8S_PATH}/ssl/k8s/k8s-scheduler-key.pem \\
+                   --client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
+                   --requestheader-allowed-names= \\
+                   --requestheader-extra-headers-prefix=X-Remote-Extra- \\
+                   --requestheader-group-headers=X-Remote-Group \\
+                   --requestheader-username-headers=X-Remote-User \\                   
                    --alsologtostderr=${ALSOLOGTOSTDERR} \\
                    --kube-api-qps=${KUBE_API_QPS} \\
                    --authentication-tolerate-lookup-failure=false \\
                    --kube-api-burst=${KUBE_API_BURST} \\
                    --log-dir=${K8S_PATH}/log \\
+                   --tls-cipher-suites=${TLS_CIPHER} \\
                    --v=${LEVEL_LOG}"
 EOF
 # 创建kube-scheduler 启动文件
@@ -4352,6 +4380,14 @@ cat > ${HOST_PATH}/roles/kube-scheduler/tasks/main.yml << EOF
     owner: k8s 
     group: root 
     mode: 0755
+- name: copy  ssl
+  copy: 
+    src: '{{ item }}'
+    dest: ${K8S_PATH}/ 
+    owner: k8s 
+    group: root
+  with_items:
+      - ssl
 - name: kube-scheduler conf
   template: 
     src: kube-scheduler 
