@@ -85,7 +85,7 @@ IPTABLES_INSTALL=OFF
 DYNAMICAUDITING=false
 # k8s 17号版本及以上的版本配置
 # 拓扑感知服务路由配置 false 关闭 true 开启
-SERVICETOPOLOGY=false
+SERVICETOPOLOGY=true
 # k8s 网络互联接口 ansible_eth0.ipv4.address 单网卡使用ansible_default_ipv4.address 多个网卡请指定使用的网卡名字
 KUBELET_IPV4=ansible_default_ipv4.address
 # ETCD 集群通讯网卡
@@ -100,6 +100,9 @@ LOGTOSTDERR=true
 ALSOLOGTOSTDERR=true
 # 设置输出日志级别
 LEVEL_LOG="2"
+# 启用特性 处于Alpha 或者Beta 阶段 https://kubernetes.io/zh/docs/reference/command-line-tools-reference/feature-gates/
+FEATURE_GATES_OPT="ServiceTopology=true,EndpointSlice=true"
+
 ########################################################################################################################################################################
 ######################################################### 负载均衡插件及镜像   尽量下载使用私有仓库镜像地址这样部署很快        #########################################                                
 ########################################################################################################################################################################
@@ -1639,17 +1642,23 @@ KubeApiserverConfig(){
       colorEcho ${RED} "kubernetes no download."
       exit 1
     fi  
-   if [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "false" ]]; then
+   if [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "false" ]] && [[ `expr ${KUBERNETES_VER} \< 1.19.0` -eq 1 ]]; then
       FEATURE_GATES="--feature-gates=DynamicAuditing=true"
       AUDIT_DYNAMIC_CONFIGURATION="--audit-dynamic-configuration"
-      elif [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \> 1.17.0` -eq 1 ]] ; then
-      FEATURE_GATES="--feature-gates=DynamicAuditing=true,ServiceTopology=true,EndpointSlice=true"
+      elif [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.19.0` -eq 1 ]]; then
+      FEATURE_GATES="--feature-gates=DynamicAuditing=true,${FEATURE_GATES_OPT}"
       AUDIT_DYNAMIC_CONFIGURATION="--audit-dynamic-configuration"
-      elif [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \< 1.17.0` -eq 1 ]] ; then
+      elif [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \< 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.19.0` -eq 1 ]]; then
       FEATURE_GATES="--feature-gates=DynamicAuditing=true"
       AUDIT_DYNAMIC_CONFIGURATION="--audit-dynamic-configuration"
-      elif [[ "$DYNAMICAUDITING" == "false" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \> 1.17.0` -eq 1 ]] ; then
-      FEATURE_GATES="--feature-gates=ServiceTopology=true,EndpointSlice=true"
+      elif [[ "$DYNAMICAUDITING" == "false" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]]; then
+      AUDIT_DYNAMIC_CONFIGURATION=""
+      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
+      elif  [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "false" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]]; then
+      AUDIT_DYNAMIC_CONFIGURATION=""
+      elif  [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]]; then
+      AUDIT_DYNAMIC_CONFIGURATION=""
+      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
       else
       FEATURE_GATES=""
    fi
@@ -3458,8 +3467,9 @@ kubeletConfig(){
       colorEcho ${RED} "kubernetes no download."
       exit 1
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \> 1.17.0` -eq 1 ]] ; then
-      FEATURE_GATES=`echo -e "featureGates:\n  EndpointSlice: true\n  ServiceTopology: true"`
+      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] ; then
+      #FEATURE_GATES=`echo -e "featureGates:\n  EndpointSlice: true\n  ServiceTopology: true"`
+      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
       else
       FEATURE_GATES="" 
    fi
@@ -3554,7 +3564,6 @@ enableControllerAttachDetach: true
 makeIPTablesUtilChains: true
 iptablesMasqueradeBit: 14
 iptablesDropBit: 15
-${FEATURE_GATES}
 failSwapOn: false
 containerLogMaxSize: 100Mi
 containerLogMaxFiles: 10
@@ -3602,6 +3611,7 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --pod-infra-container-image=${POD_INFRA_CONTAINER_IMAGE} \\
               --image-pull-progress-deadline=${IMAGE_PULL_PROGRESS_DEADLINE} \\
               --v=${LEVEL_LOG} \\
+              ${FEATURE_GATES} \\
               --volume-plugin-dir=${K8S_PATH}/kubelet-plugins/volume"
 EOF
 # 生成 kubelet  配置文件
@@ -4108,8 +4118,8 @@ controllerConfig(){
       colorEcho ${RED} "kubernetes no download."
       exit 1
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \> 1.17.0` -eq 1 ]] ; then
-      FEATURE_GATES="--feature-gates=ServiceTopology=true,EndpointSlice=true"
+      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] ; then
+      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
       else
       FEATURE_GATES=""
    fi
@@ -4298,8 +4308,8 @@ schedulerConfig(){
       colorEcho ${RED} "kubernetes no download."
       exit 1
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \> 1.17.0` -eq 1 ]] ; then
-      FEATURE_GATES="--feature-gates=ServiceTopology=true,EndpointSlice=true"
+      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] ; then
+      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
       else
       FEATURE_GATES=""
    fi
@@ -4457,8 +4467,8 @@ kubeProxyConfig(){
       colorEcho ${RED} "kubernetes no download."
       exit 1
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \> 1.17.0` -eq 1 ]] ; then
-      FEATURE_GATES="--feature-gates=ServiceTopology=true,EndpointSlice=true"
+      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] ; then
+      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
       else
       FEATURE_GATES=""
    fi
@@ -7004,9 +7014,6 @@ checkK8SMaster(){
    return 0
 }
 selectEnv(){
-        if [ ${K8S_EVENTS} == ON ]; then
-        EVENTS_ETCD="##########  etcd EVENTS 部署 ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE}  events-etcd.yml --ssh-common-args=\"-o StrictHostKeyChecking=no\" ${ASK_PASS}"
-        fi
         if [ ${NET_PLUG} == "calico" ]; then
         NETPLUG=calico.yaml
         elif [ ${NET_PLUG} == "flannel" ]; then
@@ -7028,7 +7035,10 @@ selectEnv(){
         fi
         if [ ${PACKAGE_SYSCTL} == "ON" ]; then
             PACKAGE_SYSCTL_FILE=package-sysctl.yml
-        fi  
+        fi
+        if [ ${K8S_EVENTS} == ON ]; then
+        EVENTS_ETCD="##########  etcd EVENTS 部署 ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE}  events-etcd.yml --ssh-common-args=\"-o StrictHostKeyChecking=no\" ${ASK_PASS}"
+        fi        
 }
 README.md(){
 #colorEcho ${BLUE} "开启选择使用插件"
