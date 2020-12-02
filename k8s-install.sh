@@ -7005,7 +7005,7 @@ checkK8SMaster(){
 }
 selectEnv(){
         if [ ${K8S_EVENTS} == ON ]; then
-        EVENTS_ETCD="##########  etcd EVENTS 部署 ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE}  events-etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}"
+        EVENTS_ETCD="##########  etcd EVENTS 部署 ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE}  events-etcd.yml --ssh-common-args=\"-o StrictHostKeyChecking=no\" ${ASK_PASS}"
         fi
         if [ ${NET_PLUG} == "calico" ]; then
         NETPLUG=calico.yaml
