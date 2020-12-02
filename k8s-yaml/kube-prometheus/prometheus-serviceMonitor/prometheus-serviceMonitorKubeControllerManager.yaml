@@ -7,7 +7,9 @@ metadata:
   namespace: monitoring
 spec:
   endpoints:
-  - interval: 30s
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    honorLabels: true
+    interval: 30s
     metricRelabelings:
     - action: drop
       regex: kubelet_(pod_worker_latency_microseconds|pod_start_latency_microseconds|cgroup_manager_latency_microseconds|pod_worker_start_latency_microseconds|pleg_relist_latency_microseconds|pleg_relist_interval_microseconds|runtime_operations|runtime_operations_latency_microseconds|runtime_operations_errors|eviction_stats_age_microseconds|device_plugin_registration_count|device_plugin_alloc_latency_microseconds|network_plugin_operations_latency_microseconds)
@@ -45,7 +47,10 @@ spec:
       regex: etcd_(debugging|disk|request|server).*
       sourceLabels:
       - __name__
-    port: http-metrics
+    port: https-metrics
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true    
   jobLabel: k8s-app
   namespaceSelector:
     matchNames:
@@ -64,10 +69,10 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  - name: http-metrics
-    port: 10252
+  - name: https-metrics
+    port: 10257
     protocol: TCP
-    targetPort: 10252
+    targetPort: 10257
   sessionAffinity: None
   type: ClusterIP
 ---
@@ -84,6 +89,6 @@ subsets:
   - ip: 192.168.2.176
   - ip: 192.168.2.177
   ports:
-  - name: http-metrics
-    port: 10252
+  - name: https-metrics
+    port: 10257
     protocol: TCP
