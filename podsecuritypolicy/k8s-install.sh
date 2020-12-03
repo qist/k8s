@@ -3790,7 +3790,77 @@ stringData:
   # Extra groups to authenticate the token as. Must start with "system:bootstrappers:"
   auth-extra-groups: system:bootstrappers:worker,system:bootstrappers:ingress
 EOF
+# 创建kube-system 命名空间全局psp
+cat > ${HOST_PATH}/yaml/kube-system-psp.yaml << EOF 
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: privileged
+  annotations:
+    kubernetes.io/description: 'privileged allows full unrestricted access to
+      pod features, as if the PodSecurityPolicy controller was not enabled.'
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+  labels:
+    kubernetes.io/cluster-service: "true"
+spec:
+  privileged: true
+  allowPrivilegeEscalation: true
+  allowedCapabilities:
+  - '*'
+  volumes:
+  - '*'
+  hostNetwork: true
+  hostPorts:
+  - min: 0
+    max: 65535
+  hostIPC: true
+  hostPID: true
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'
+  readOnlyRootFilesystem: false
 
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: podsecuritypolicy:privileged
+  labels:
+    kubernetes.io/cluster-service: "true"
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - privileged
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: podsecuritypolicy:authenticated
+  annotations:
+    kubernetes.io/description: 'Allow all authenticated users to create privileged pods.'
+  labels:
+    kubernetes.io/cluster-service: "true"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: podsecuritypolicy:privileged
+subjects:
+  - kind: Group
+    apiGroup: rbac.authorization.k8s.io
+    name: system:authenticated
+EOF
 # 创建kubelet-bootstrap 授权
 cat > ${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml << EOF
 ---
@@ -7308,7 +7378,7 @@ cat > ${HOST_PATH}/README.md << EOF
 ${EVENTS_ETCD}
 ##########  kube-apiserver 部署 ansible-playbook -i ${K8S_APISERVER_VIP}, ${PACKAGE_SYSCTL_FILE} kube-apiserver.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
 ##########  部署完成验证集群 kubectl cluster-info  kubectl api-versions  kubectl get cs
-##########  提交bootstrap到K8S集群 kubectl apply -f ${HOST_PATH}/yaml/bootstrap-secret.yaml
+##########  提交bootstrap到K8S集群 kubectl apply -f ${HOST_PATH}/yaml/bootstrap-secret.yaml kubectl apply -f ${HOST_PATH}/yaml/kube-system-psp.yaml
 ##########  提交授权到K8S集群 kubectl apply -f ${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml kubectl apply -f ${HOST_PATH}/yaml/kube-api-rbac.yaml 
 ##########  安装其它组件 ansible-playbook -i ${K8S_APISERVER_VIP}, ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-controller-manager.yml kube-scheduler.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
 ##########  node 节点部署  ansible-playbook -i ${NODE_IP}, ${PACKAGE_SYSCTL_FILE} ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
@@ -7544,10 +7614,18 @@ installK8SPackage(){
        else    
      colorEcho ${GREEN} "${HOST_PATH}/yaml/kube-api-rbac.yaml 部署成功."
      fi
+    colorEcho ${BLUE} "创建kube-system psp 绑定全局授权"
+    $kubectl apply -f ${HOST_PATH}/yaml/kube-system-psp.yaml
+         if [[ $? -ne 0 ]]; then
+         colorEcho ${RED} "${HOST_PATH}/yaml/kube-system-psp.yaml  部署失败."
+          exit $?
+       else    
+     colorEcho ${GREEN} "${HOST_PATH}/yaml/kube-system-psp.yaml 部署成功."
+     fi
     else
     colorEcho ${RED} "kubectl 文件不可用."
      exit $?
-    fi
+    fi    
     colorEcho ${BLUE} " 部署K8S  kube-controller-manager kube-scheduler 服务器组件"
     ansible-playbook -i ${K8S_APISERVER_VIP}, ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-controller-manager.yml kube-scheduler.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
     if [[ $? -ne 0 ]]; then
