@@ -123,25 +123,25 @@ export HOST_PATH=`pwd`
 export DOWNLOAD_PATH=${HOST_PATH}/download
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.4.9
+export ETCD_VERSION=v3.4.14
 # kubernetes 版本
 export KUBERNETES_VERSION=v1.15.12
 # cni 版本
-export CNI_VERSION=v0.8.6
+export CNI_VERSION=v0.8.7
 # iptables
 export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
 export CFSSL_VERSION=1.4.1
 # docker 版本
-export DOCKER_VERSION=19.03.11
+export DOCKER_VERSION=19.03.14
 # containerd 版本
-export CONTAINERD_VERSION=1.3.4
+export CONTAINERD_VERSION=1.4.3
 # crictl 版本
-export CRICTL_VERSION=v1.18.0
+export CRICTL_VERSION=v1.19.0
 # runc 版本
-export RUNC_VERSION=v1.0.0-rc90
+export RUNC_VERSION=v1.0.0-rc92
 # cri-o 版本
-export CRIO_VERSION=v1.18.1
+export CRIO_VERSION=v1.19.0
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel 插件选择
 FLANNEL_VERSION="quay.io/coreos/flannel:v0.12.0-amd64"
@@ -496,7 +496,7 @@ downloadK8S(){
          fi      
     elif [[ ${RUNTIME} == "CRIO" ]]; then
     # 下载crio
-          wget -c  --tries=40 https://github.com/cri-o/cri-o/releases/download/${CRIO_VERSION}/crio-${CRIO_VERSION}.tar.gz \
+          wget -c  --tries=40 https://storage.googleapis.com/k8s-conform-cri-o/artifacts/crio-${CRIO_VERSION}.tar.gz \
                     -O $DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz
          if [[ $? -ne 0 ]]; then
            colorEcho ${RED} "download  FATAL crio."
@@ -2882,7 +2882,7 @@ EOF
                      colorEcho ${GREEN} '文件夹已经存在'
              fi
              if [[ -e "$DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz" ]]; then
-                 if [[ ! -e "$DOWNLOAD_PATH/crio-${CRIO_VERSION}/bin/crio-static" ]] || [[ ! -e "${HOST_PATH}/roles/crio/files/bin/crio-static" ]]; then
+                 if [[ ! -e "$DOWNLOAD_PATH/crio-${CRIO_VERSION}/bin/crio" ]] || [[ ! -e "${HOST_PATH}/roles/crio/files/bin/crio" ]]; then
               # cp 二进制 文件到 ansible 目录
                  tar -xf $DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz -C ${DOWNLOAD_PATH}
                  \cp -pdr $DOWNLOAD_PATH/crio-${CRIO_VERSION}/bin ${HOST_PATH}/roles/crio/files/
@@ -3046,15 +3046,18 @@ cgroup_manager = "cgroupfs"
 # only the capabilities defined in the containers json file by the user/kube
 # will be added.
 default_capabilities = [
-	"CHOWN",
-	"DAC_OVERRIDE",
-	"FSETID",
-	"FOWNER",
-	"SETGID",
-	"SETUID",
-	"SETPCAP",
-	"NET_BIND_SERVICE",
-	"KILL",
+    "CHOWN",
+    "DAC_OVERRIDE",
+    "NET_ADMIN",
+    "NET_RAW",
+    "SYS_CHROOT",
+    "FSETID",
+    "FOWNER",
+    "SETGID",
+    "SETUID",
+    "SETPCAP",
+    "NET_BIND_SERVICE",
+    "KILL",
 ]
 
 # List of default sysctls. If it is empty or commented out, only the sysctls
@@ -3286,9 +3289,10 @@ Description=OCI-based implementation of Kubernetes Container Runtime Interface
 Documentation=https://github.com/github.com/cri-o/cri-o
 
 [Service]
+Environment=CONTAINER_CONMON_CGROUP=pod
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
-ExecStart=${CRIO_PATH}/bin/crio-static --config ${CRIO_PATH}/etc/crio.conf --log-level info 
+ExecStart=${CRIO_PATH}/bin/crio --config ${CRIO_PATH}/etc/crio.conf --log-level info 
 Restart=on-failure
 RestartSec=5
 LimitNOFILE=${HARD_SOFT}
