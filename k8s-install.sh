@@ -101,7 +101,7 @@ ALSOLOGTOSTDERR=true
 # 设置输出日志级别
 LEVEL_LOG="2"
 # 启用特性 处于Alpha 或者Beta 阶段 https://kubernetes.io/zh/docs/reference/command-line-tools-reference/feature-gates/
-FEATURE_GATES_OPT="ServiceTopology=true,EndpointSlice=true"
+FEATURE_GATES_OPT="ServiceTopology=true,EndpointSlice=true,TTLAfterFinished=true"
 
 ########################################################################################################################################################################
 ######################################################### 负载均衡插件及镜像   尽量下载使用私有仓库镜像地址这样部署很快        #########################################                                

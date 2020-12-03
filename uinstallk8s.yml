@@ -21,18 +21,19 @@
         reboot_timeout: 3600
     - name: Remove file (delete file)
       file:
-        path: "/lib/systemd/system/{{ item }}.service"
+        path: "/lib/systemd/system/{{ item }}"
         state: absent
       with_items:
-          - kubelet
-          - docker
-          - crio
-          - containerd
-          - kube-proxy
-          - kube-scheduler
-          - kube-controller-manager
-          - kube-apiserver
-          - etcd
+          - kubelet.service
+          - docker.service
+          - crio.service
+          - containerd.service
+          - kube-proxy.service
+          - kube-scheduler.service
+          - kube-controller-manager.service
+          - kube-apiserver.service
+          - etcd.service
+          - docker.socket
       ignore_errors: True
     - name: Remove file (delete file)
       file:
@@ -62,6 +63,14 @@
       ignore_errors: True
     - name: Remove file (delete file)
       file:
-        path: "/apps/"
+        path: "/apps/{{ item }}"
         state: absent
+      with_items:
+          - etcd
+          - k8s
+          - work
+          - docker
+          - cni
+          - crio
+          - containerd          
       ignore_errors: True
