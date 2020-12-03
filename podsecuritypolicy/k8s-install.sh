@@ -4561,11 +4561,61 @@ netPlugConfig(){
 # 创建flannel yaml
 cat > ${HOST_PATH}/yaml/kube-flannel.yaml << EOF
 ---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: psp.flannel.unprivileged
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: docker/default
+    #apparmor.security.beta.kubernetes.io/allowedProfileNames: runtime/default # centos 系列注释apparmor 不然会一直部署不成功
+    #apparmor.security.beta.kubernetes.io/defaultProfileName: runtime/default
+spec:
+  privileged: false
+  volumes:
+    - configMap
+    - secret
+    - emptyDir
+    - hostPath
+  allowedHostPaths:
+    - pathPrefix: "${CNI_CONF_DIR}"
+    - pathPrefix: "/run/flannel"
+  readOnlyRootFilesystem: false
+  # Users and groups
+  runAsUser:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  # Privilege Escalation
+  allowPrivilegeEscalation: false
+  defaultAllowPrivilegeEscalation: false
+  # Capabilities
+  allowedCapabilities: ['NET_ADMIN']
+  defaultAddCapabilities: []
+  requiredDropCapabilities: []
+  # Host namespaces
+  hostPID: false
+  hostIPC: false
+  hostNetwork: true
+  hostPorts:
+  - min: 0
+    max: 65535
+  # SELinux
+  seLinux:
+    # SELinux is unused in CaaSP
+    rule: 'RunAsAny'
+---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: flannel
 rules:
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames: ['psp.flannel.unprivileged']
   - apiGroups:
       - ""
     resources:
@@ -4989,6 +5039,59 @@ spec:
     singular: networkset
 
 ---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: psp.calico.unprivileged
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: docker/default
+    #apparmor.security.beta.kubernetes.io/allowedProfileNames: runtime/default # centos 系列注释apparmor 不然会一直部署不成功
+    #apparmor.security.beta.kubernetes.io/defaultProfileName: runtime/default
+spec:
+  privileged: false
+  volumes:
+    - configMap
+    - secret
+    - emptyDir
+    - hostPath
+  allowedHostPaths:
+    - pathPrefix: "/var/run/calico"
+    - pathPrefix: "/lib/modules"
+    - pathPrefix: "/var/lib/calico"
+    - pathPrefix: "/run/xtables.lock"
+    - pathPrefix: "${CNI_BIN_DIR}"
+    - pathPrefix: "${CNI_CONF_DIR}"
+    - pathPrefix: "/var/lib/cni/networks"
+    - pathPrefix: "/var/run/nodeagent"
+    - pathPrefix: "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/nodeagent~uds"
+    - pathPrefix: "/etc/cni/net.d"
+  readOnlyRootFilesystem: false
+  # Users and groups
+  runAsUser:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  # Privilege Escalation
+  allowPrivilegeEscalation: false
+  defaultAllowPrivilegeEscalation: false
+  # Capabilities
+  allowedCapabilities: ['NET_ADMIN']
+  defaultAddCapabilities: []
+  requiredDropCapabilities: []
+  # Host namespaces
+  hostPID: false
+  hostIPC: false
+  hostNetwork: true
+  hostPorts:
+  - min: 0
+    max: 65535
+  # SELinux
+  seLinux:
+    # SELinux is unused in CaaSP
+    rule: 'RunAsAny'
 ---
 # Source: calico/templates/rbac.yaml
 
@@ -4999,6 +5102,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: calico-kube-controllers
 rules:
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames: ['psp.calico.unprivileged']
   # Nodes are watched to monitor for deletions.
   - apiGroups: [""]
     resources:
@@ -5059,6 +5166,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: calico-node
 rules:
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames: ['psp.calico.unprivileged']
   # The CNI plugin needs to get pods, nodes, and namespaces.
   - apiGroups: [""]
     resources:
@@ -5629,8 +5740,7 @@ spec:
         - --enable-overlay=true 
         - --nodeport-bindon-all-ip=false 
         - --nodes-full-mesh=true 
-        - --enable-pod-egress=true 
-        - --cluster-cidr=${CLUSTER_CIDR}
+        - --enable-pod-egress=true
         - --v=${LEVEL_LOG}
         env:
         - name: NODE_NAME
@@ -5665,14 +5775,10 @@ spec:
         - /bin/sh
         - -c
         - set -e -x;
-          if [ ! -f /etc/cni/net.d/10-kuberouter.conflist ]; then
-            if [ -f /etc/cni/net.d/*.conf ]; then
-              rm -f /etc/cni/net.d/*.conf;
-            fi;
+            rm -f /etc/cni/net.d/*.conf;
             TMP=/etc/cni/net.d/.tmp-kuberouter-cfg;
             cp /etc/kube-router/cni-conf.json \${TMP};
             mv \${TMP} /etc/cni/net.d/10-kuberouter.conflist;
-          fi
         volumeMounts:
         - name: cni-conf-dir
           mountPath: /etc/cni/net.d
@@ -5712,12 +5818,55 @@ metadata:
   name: kube-router
   namespace: kube-system
 ---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: psp.kube-router.privileged
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: docker/default
+    #apparmor.security.beta.kubernetes.io/allowedProfileNames: runtime/default # centos 系列注释apparmor 不然会一直部署不成功
+    #apparmor.security.beta.kubernetes.io/defaultProfileName: runtime/default
+spec:
+  privileged: true
+  volumes:
+    - configMap
+    - secret
+    - emptyDir
+    - hostPath
+  allowedHostPaths:
+    - pathPrefix: "${CNI_CONF_DIR}"
+    - pathPrefix: "/lib/modules"
+  readOnlyRootFilesystem: false
+  # Users and groups
+  runAsUser:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  # Host namespaces
+  hostPID: false
+  hostIPC: false
+  hostNetwork: true
+  hostPorts:
+  - min: 0
+    max: 65535
+  # SELinux
+  seLinux:
+    # SELinux is unused in CaaSP
+    rule: 'RunAsAny'
+---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: kube-router
   namespace: kube-system
 rules:
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames: ['psp.kube-router.privileged']
   - apiGroups:
     - ""
     resources:
@@ -6036,6 +6185,59 @@ spec:
     singular: networkset
 
 ---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: psp.calico.unprivileged
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: docker/default
+    #apparmor.security.beta.kubernetes.io/allowedProfileNames: runtime/default # centos 系列注释apparmor 不然会一直部署不成功
+    #apparmor.security.beta.kubernetes.io/defaultProfileName: runtime/default
+spec:
+  privileged: false
+  volumes:
+    - configMap
+    - secret
+    - emptyDir
+    - hostPath
+  allowedHostPaths:
+    - pathPrefix: "/var/run/calico"
+    - pathPrefix: "/lib/modules"
+    - pathPrefix: "/var/lib/calico"
+    - pathPrefix: "/run/xtables.lock"
+    - pathPrefix: "${CNI_BIN_DIR}"
+    - pathPrefix: "${CNI_CONF_DIR}"
+    - pathPrefix: "/var/lib/cni/networks"
+    - pathPrefix: "/var/run/nodeagent"
+    - pathPrefix: "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/nodeagent~uds"
+    - pathPrefix: "/etc/cni/net.d"
+  readOnlyRootFilesystem: false
+  # Users and groups
+  runAsUser:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  # Privilege Escalation
+  allowPrivilegeEscalation: false
+  defaultAllowPrivilegeEscalation: false
+  # Capabilities
+  allowedCapabilities: ['NET_ADMIN']
+  defaultAddCapabilities: []
+  requiredDropCapabilities: []
+  # Host namespaces
+  hostPID: false
+  hostIPC: false
+  hostNetwork: true
+  hostPorts:
+  - min: 0
+    max: 65535
+  # SELinux
+  seLinux:
+    # SELinux is unused in CaaSP
+    rule: 'RunAsAny'
 ---
 # Source: calico/templates/rbac.yaml
 
@@ -6046,6 +6248,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: calico-kube-controllers
 rules:
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames: ['psp.calico.unprivileged']
   # Nodes are watched to monitor for deletions.
   - apiGroups: [""]
     resources:
@@ -6129,6 +6335,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: calico-node
 rules:
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames: ['psp.calico.unprivileged']
   # The CNI plugin needs to get pods, nodes, and namespaces.
   - apiGroups: [""]
     resources:
@@ -6761,6 +6971,37 @@ metadata:
       kubernetes.io/cluster-service: "true"
       addonmanager.kubernetes.io/mode: Reconcile
 ---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: psp.coredns.unprivileged  
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+spec:
+  privileged: false
+  volumes:
+    - configMap
+    - secret
+  readOnlyRootFilesystem: true
+  # Users and groups
+  runAsUser:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  # Privilege Escalation
+  allowPrivilegeEscalation: false
+  defaultAllowPrivilegeEscalation: false
+  # Capabilities
+  allowedCapabilities: ['NET_BIND_SERVICE']
+  defaultAddCapabilities: []
+  requiredDropCapabilities: []
+  # SELinux
+  seLinux:
+    # SELinux is unused in CaaSP
+    rule: 'RunAsAny'
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -6769,6 +7010,10 @@ metadata:
     addonmanager.kubernetes.io/mode: Reconcile
   name: system:coredns
 rules:
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs: ['use']
+  resourceNames: ['psp.coredns.unprivileged']
 - apiGroups:
   - ""
   resources:
@@ -7063,13 +7308,14 @@ ${EVENTS_ETCD}
 ##########  提交授权到K8S集群 kubectl apply -f ${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml kubectl apply -f ${HOST_PATH}/yaml/kube-api-rbac.yaml 
 ##########  安装其它组件 ansible-playbook -i ${K8S_APISERVER_VIP}, ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-controller-manager.yml kube-scheduler.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
 ##########  node 节点部署  ansible-playbook -i ${NODE_IP}, ${PACKAGE_SYSCTL_FILE} ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+##########  批准kubelet server 数字证书 kubectl get csr |grep system:node | grep Pending| while read name number; do  kubectl  certificate approve  \$name ; done
 ##########  部署网络插件 kubectl apply -f ${HOST_PATH}/yaml/${NETPLUG}
 ##########  部署coredns插件 kubectl apply -f ${HOST_PATH}/yaml/coredns.yaml
 ##########  查看node 节点是否注册到K8S kubectl get node kubectl get csr 如果有节点 
 ##########  给 master ingress 添加污点 防止其它服务使用这些节点:kubectl taint nodes  k8s-master-01 node-role.kubernetes.io/master=:NoSchedule kubectl taint nodes  k8s-ingress-01 node-role.kubernetes.io/ingress=:NoSchedule
 ##########  windows 证书访问 openssl pkcs12 -export -inkey k8s-apiserver-admin-key.pem -in k8s_apiserver-admin.pem -out client.p12
-########## kubectl proxy --port=8001 &  把kube-apiserver 端口映射成本地 8001 端口      
-########## 查看kubelet节点配置信息 NODE_NAME="k8s-node-04"; curl -sSL "http://localhost:8001/api/v1/nodes/\${NODE_NAME}/proxy/configz" | jq '.kubeletconfig|.kind="KubeletConfiguration"|.apiVersion="kubelet.config.k8s.io/v1beta1"' > kubelet_configz_\${NODE_NAME} 
+##########  kubectl proxy --port=8001 &  把kube-apiserver 端口映射成本地 8001 端口      
+##########  查看kubelet节点配置信息 NODE_NAME="k8s-node-04"; curl -sSL "http://localhost:8001/api/v1/nodes/\${NODE_NAME}/proxy/configz" | jq '.kubeletconfig|.kind="KubeletConfiguration"|.apiVersion="kubelet.config.k8s.io/v1beta1"' > kubelet_configz_\${NODE_NAME} 
 EOF
 return 0        
 }
@@ -7313,7 +7559,9 @@ installK8SPackage(){
           exit $?
        else    
      colorEcho ${GREEN} "node 节点 部署成功."
-     fi 
+     fi
+     colorEcho ${BLUE} "批准kubelet server 数字证书"
+     $kubectl get csr |grep system:node | grep Pending| while read name number; do  $kubectl  certificate approve  $name ; done
      colorEcho ${BLUE} "网络插件部署"
       $kubectl apply -f  ${HOST_PATH}/yaml/${NETPLUG} 
          if [[ $? -ne 0 ]]; then
@@ -7323,6 +7571,7 @@ installK8SPackage(){
      colorEcho ${GREEN} "kubectl apply -f ${HOST_PATH}/yaml/${NETPLUG} 部署成功."
      fi
      colorEcho ${BLUE} "coredns 部署"
+      $kubectl get csr |grep system:node | grep Pending| while read name number; do  $kubectl  certificate approve  $name ; done
       $kubectl apply -f ${HOST_PATH}/yaml/coredns.yaml
          if [[ $? -ne 0 ]]; then
          colorEcho ${RED} "kubectl apply -f ${HOST_PATH}/yaml/coredns.yaml  部署失败."

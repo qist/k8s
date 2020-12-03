@@ -5627,8 +5627,7 @@ spec:
         - --enable-overlay=true 
         - --nodeport-bindon-all-ip=false 
         - --nodes-full-mesh=true 
-        - --enable-pod-egress=true 
-        - --cluster-cidr=${CLUSTER_CIDR}
+        - --enable-pod-egress=true
         - --v=${LEVEL_LOG}
         env:
         - name: NODE_NAME
@@ -5663,14 +5662,10 @@ spec:
         - /bin/sh
         - -c
         - set -e -x;
-          if [ ! -f /etc/cni/net.d/10-kuberouter.conflist ]; then
-            if [ -f /etc/cni/net.d/*.conf ]; then
-              rm -f /etc/cni/net.d/*.conf;
-            fi;
+            rm -f /etc/cni/net.d/*.conf;
             TMP=/etc/cni/net.d/.tmp-kuberouter-cfg;
             cp /etc/kube-router/cni-conf.json \${TMP};
             mv \${TMP} /etc/cni/net.d/10-kuberouter.conflist;
-          fi
         volumeMounts:
         - name: cni-conf-dir
           mountPath: /etc/cni/net.d
