@@ -33,6 +33,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -45,6 +46,7 @@
                         "min": true,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -228,6 +230,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -240,6 +243,7 @@
                         "min": true,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -543,7 +547,7 @@
             "30d"
         ]
     },
-    "timezone": "",
+    "timezone": "UTC",
     "title": "Kubernetes / Persistent Volumes",
     "uid": "919b92a8e8041bd567af9edab12c840c",
     "version": 0

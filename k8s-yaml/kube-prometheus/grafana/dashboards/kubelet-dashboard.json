@@ -169,7 +169,7 @@
                     "tableColumn": "",
                     "targets": [
                         {
-                            "expr": "sum(kubelet_running_pod_count{cluster=\"$cluster\", job=\"kubelet\", metrics_path=\"/metrics\", instance=~\"$instance\"})",
+                            "expr": "sum(kubelet_running_pods{cluster=\"$cluster\", job=\"kubelet\", metrics_path=\"/metrics\", instance=~\"$instance\"})",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{instance}}",
@@ -253,7 +253,7 @@
                     "tableColumn": "",
                     "targets": [
                         {
-                            "expr": "sum(kubelet_running_container_count{cluster=\"$cluster\", job=\"kubelet\", metrics_path=\"/metrics\", instance=~\"$instance\"})",
+                            "expr": "sum(kubelet_running_containers{cluster=\"$cluster\", job=\"kubelet\", metrics_path=\"/metrics\", instance=~\"$instance\"})",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{instance}}",
@@ -550,6 +550,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -562,6 +563,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -641,6 +643,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -653,6 +656,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -745,6 +749,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -757,6 +762,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -849,6 +855,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -861,6 +868,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -947,6 +955,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -959,6 +968,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -1058,6 +1068,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1072,6 +1083,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -1151,6 +1163,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1165,6 +1178,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -1257,6 +1271,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1271,6 +1286,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -1363,6 +1379,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1375,6 +1392,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -1454,6 +1472,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1466,6 +1485,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -1559,6 +1579,7 @@
                     "datasource": "$datasource",
                     "description": "Pod lifecycle event generator",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1571,6 +1592,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -1650,6 +1672,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1662,6 +1685,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -1754,6 +1778,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1766,6 +1791,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -1858,6 +1884,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1870,6 +1897,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -1983,6 +2011,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1995,6 +2024,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -2018,7 +2048,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_latency_seconds_bucket{cluster=\"$cluster\",job=\"kubelet\", metrics_path=\"/metrics\", instance=~\"$instance\"}[5m])) by (instance, verb, url, le))",
+                            "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_duration_seconds_bucket{cluster=\"$cluster\",job=\"kubelet\", metrics_path=\"/metrics\", instance=~\"$instance\"}[5m])) by (instance, verb, url, le))",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{instance}} {{verb}} {{url}}",
@@ -2087,6 +2117,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -2099,6 +2130,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -2178,6 +2210,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -2190,6 +2223,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -2269,6 +2303,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -2281,6 +2316,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -2467,7 +2503,7 @@
             "30d"
         ]
     },
-    "timezone": "",
+    "timezone": "UTC",
     "title": "Kubernetes / Kubelet",
     "uid": "3138fa155d5915769fbded898ac09fd9",
     "version": 0

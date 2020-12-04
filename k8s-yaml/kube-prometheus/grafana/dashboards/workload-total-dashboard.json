@@ -57,6 +57,7 @@
             "dashes": false,
             "datasource": "$datasource",
             "fill": 2,
+            "fillGradient": 0,
             "gridPos": {
                 "h": 9,
                 "w": 12,
@@ -74,6 +75,7 @@
                 "min": false,
                 "rightSide": true,
                 "show": true,
+                "sideWidth": null,
                 "sort": "current",
                 "sortDesc": true,
                 "total": false,
@@ -101,7 +103,7 @@
             "steppedLine": false,
             "targets": [
                 {
-                    "expr": "sort_desc(sum(irate(container_network_receive_bytes_total{namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                    "expr": "sort_desc(sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                     "format": "time_series",
                     "intervalFactor": 1,
                     "legendFormat": "{{ pod }}",
@@ -158,6 +160,7 @@
             "dashes": false,
             "datasource": "$datasource",
             "fill": 2,
+            "fillGradient": 0,
             "gridPos": {
                 "h": 9,
                 "w": 12,
@@ -175,6 +178,7 @@
                 "min": false,
                 "rightSide": true,
                 "show": true,
+                "sideWidth": null,
                 "sort": "current",
                 "sortDesc": true,
                 "total": false,
@@ -202,7 +206,7 @@
             "steppedLine": false,
             "targets": [
                 {
-                    "expr": "sort_desc(sum(irate(container_network_transmit_bytes_total{namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                    "expr": "sort_desc(sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                     "format": "time_series",
                     "intervalFactor": 1,
                     "legendFormat": "{{ pod }}",
@@ -270,6 +274,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 2,
+                    "fillGradient": 0,
                     "gridPos": {
                         "h": 9,
                         "w": 12,
@@ -287,6 +292,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "sort": "current",
                         "sortDesc": true,
                         "total": false,
@@ -314,7 +320,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sort_desc(avg(irate(container_network_receive_bytes_total{namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                            "expr": "sort_desc(avg(irate(container_network_receive_bytes_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                             "format": "time_series",
                             "intervalFactor": 1,
                             "legendFormat": "{{ pod }}",
@@ -371,6 +377,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 2,
+                    "fillGradient": 0,
                     "gridPos": {
                         "h": 9,
                         "w": 12,
@@ -388,6 +395,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "sort": "current",
                         "sortDesc": true,
                         "total": false,
@@ -415,7 +423,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sort_desc(avg(irate(container_network_transmit_bytes_total{namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                            "expr": "sort_desc(avg(irate(container_network_transmit_bytes_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                             "format": "time_series",
                             "intervalFactor": 1,
                             "legendFormat": "{{ pod }}",
@@ -502,6 +510,7 @@
             "dashes": false,
             "datasource": "$datasource",
             "fill": 2,
+            "fillGradient": 0,
             "gridPos": {
                 "h": 9,
                 "w": 12,
@@ -519,6 +528,7 @@
                 "min": false,
                 "rightSide": false,
                 "show": true,
+                "sideWidth": null,
                 "total": false,
                 "values": false
             },
@@ -544,7 +554,7 @@
             "steppedLine": false,
             "targets": [
                 {
-                    "expr": "sort_desc(sum(irate(container_network_receive_bytes_total{namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                    "expr": "sort_desc(sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                     "format": "time_series",
                     "intervalFactor": 1,
                     "legendFormat": "{{pod}}",
@@ -601,6 +611,7 @@
             "dashes": false,
             "datasource": "$datasource",
             "fill": 2,
+            "fillGradient": 0,
             "gridPos": {
                 "h": 9,
                 "w": 12,
@@ -618,6 +629,7 @@
                 "min": false,
                 "rightSide": false,
                 "show": true,
+                "sideWidth": null,
                 "total": false,
                 "values": false
             },
@@ -643,7 +655,7 @@
             "steppedLine": false,
             "targets": [
                 {
-                    "expr": "sort_desc(sum(irate(container_network_transmit_bytes_total{namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                    "expr": "sort_desc(sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                     "format": "time_series",
                     "intervalFactor": 1,
                     "legendFormat": "{{pod}}",
@@ -711,6 +723,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 2,
+                    "fillGradient": 0,
                     "gridPos": {
                         "h": 9,
                         "w": 12,
@@ -728,6 +741,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -753,7 +767,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sort_desc(sum(irate(container_network_receive_packets_total{namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                            "expr": "sort_desc(sum(irate(container_network_receive_packets_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                             "format": "time_series",
                             "intervalFactor": 1,
                             "legendFormat": "{{pod}}",
@@ -810,6 +824,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 2,
+                    "fillGradient": 0,
                     "gridPos": {
                         "h": 9,
                         "w": 12,
@@ -827,6 +842,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -852,7 +868,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sort_desc(sum(irate(container_network_transmit_packets_total{namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                            "expr": "sort_desc(sum(irate(container_network_transmit_packets_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                             "format": "time_series",
                             "intervalFactor": 1,
                             "legendFormat": "{{pod}}",
@@ -929,6 +945,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 2,
+                    "fillGradient": 0,
                     "gridPos": {
                         "h": 9,
                         "w": 12,
@@ -946,6 +963,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -971,7 +989,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sort_desc(sum(irate(container_network_receive_packets_dropped_total{namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                            "expr": "sort_desc(sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                             "format": "time_series",
                             "intervalFactor": 1,
                             "legendFormat": "{{pod}}",
@@ -1028,6 +1046,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 2,
+                    "fillGradient": 0,
                     "gridPos": {
                         "h": 9,
                         "w": 12,
@@ -1045,6 +1064,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -1070,7 +1090,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sort_desc(sum(irate(container_network_transmit_packets_dropped_total{namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                            "expr": "sort_desc(sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[$interval:$resolution])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                             "format": "time_series",
                             "intervalFactor": 1,
                             "legendFormat": "{{pod}}",
@@ -1156,6 +1176,32 @@
                 "type": "datasource"
             },
             {
+                "allValue": null,
+                "current": {
+
+                },
+                "datasource": "$datasource",
+                "hide": 2,
+                "includeAll": false,
+                "label": null,
+                "multi": false,
+                "name": "cluster",
+                "options": [
+
+                ],
+                "query": "label_values(kube_pod_info, cluster)",
+                "refresh": 1,
+                "regex": "",
+                "sort": 0,
+                "tagValuesQuery": "",
+                "tags": [
+
+                ],
+                "tagsQuery": "",
+                "type": "query",
+                "useTags": false
+            },
+            {
                 "allValue": ".+",
                 "auto": false,
                 "auto_count": 30,
@@ -1165,7 +1211,7 @@
                     "value": "kube-system"
                 },
                 "datasource": "$datasource",
-                "definition": "label_values(container_network_receive_packets_total, namespace)",
+                "definition": "label_values(container_network_receive_packets_total{cluster=\"$cluster\"}, namespace)",
                 "hide": 0,
                 "includeAll": true,
                 "label": null,
@@ -1174,7 +1220,7 @@
                 "options": [
 
                 ],
-                "query": "label_values(container_network_receive_packets_total, namespace)",
+                "query": "label_values(container_network_receive_packets_total{cluster=\"$cluster\"}, namespace)",
                 "refresh": 1,
                 "regex": "",
                 "skipUrlSync": false,
@@ -1197,7 +1243,7 @@
                     "value": ""
                 },
                 "datasource": "$datasource",
-                "definition": "label_values(mixin_pod_workload{namespace=~\"$namespace\"}, workload)",
+                "definition": "label_values(namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\"}, workload)",
                 "hide": 0,
                 "includeAll": false,
                 "label": null,
@@ -1206,7 +1252,7 @@
                 "options": [
 
                 ],
-                "query": "label_values(mixin_pod_workload{namespace=~\"$namespace\"}, workload)",
+                "query": "label_values(namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\"}, workload)",
                 "refresh": 1,
                 "regex": "",
                 "skipUrlSync": false,
@@ -1229,7 +1275,7 @@
                     "value": "deployment"
                 },
                 "datasource": "$datasource",
-                "definition": "label_values(mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\"}, workload_type)",
+                "definition": "label_values(namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\"}, workload_type)",
                 "hide": 0,
                 "includeAll": false,
                 "label": null,
@@ -1238,7 +1284,7 @@
                 "options": [
 
                 ],
-                "query": "label_values(mixin_pod_workload{namespace=~\"$namespace\", workload=~\"$workload\"}, workload_type)",
+                "query": "label_values(namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\",namespace=~\"$namespace\", workload=~\"$workload\"}, workload_type)",
                 "refresh": 1,
                 "regex": "",
                 "skipUrlSync": false,
@@ -1362,7 +1408,7 @@
             "30d"
         ]
     },
-    "timezone": "",
+    "timezone": "UTC",
     "title": "Kubernetes / Networking / Workload",
     "uid": "728bf77cc1166d2f3133bf25846876cc",
     "version": 0

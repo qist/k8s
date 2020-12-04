@@ -33,6 +33,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -45,6 +46,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -125,6 +127,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 0,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -137,6 +140,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -250,6 +254,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -262,6 +267,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -414,7 +420,7 @@
                     "tableColumn": "",
                     "targets": [
                         {
-                            "expr": "100 -\n(\n  node_memory_MemAvailable_bytes{job=\"node-exporter\", instance=\"$instance\"}\n/\n  node_memory_MemTotal_bytes{job=\"node-exporter\", instance=\"$instance\"}\n* 100\n)\n",
+                            "expr": "100 -\n(\n  avg(node_memory_MemAvailable_bytes{job=\"node-exporter\", instance=\"$instance\"})\n/\n  avg(node_memory_MemTotal_bytes{job=\"node-exporter\", instance=\"$instance\"})\n* 100\n)\n",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "",
@@ -459,6 +465,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 0,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -471,6 +478,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -501,7 +509,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "rate(node_disk_read_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
+                            "expr": "rate(node_disk_read_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
                             "format": "time_series",
                             "interval": "1m",
                             "intervalFactor": 2,
@@ -509,7 +517,7 @@
                             "refId": "A"
                         },
                         {
-                            "expr": "rate(node_disk_written_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
+                            "expr": "rate(node_disk_written_bytes_total{job=\"node-exporter\", instance=\"$instance\", device=~\"mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
                             "format": "time_series",
                             "interval": "1m",
                             "intervalFactor": 2,
@@ -517,7 +525,7 @@
                             "refId": "B"
                         },
                         {
-                            "expr": "rate(node_disk_io_time_seconds_total{job=\"node-exporter\", instance=\"$instance\", device=~\"nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
+                            "expr": "rate(node_disk_io_time_seconds_total{job=\"node-exporter\", instance=\"$instance\", device=~\"mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+\"}[$__interval])",
                             "format": "time_series",
                             "interval": "1m",
                             "intervalFactor": 2,
@@ -574,6 +582,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -586,6 +595,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -692,6 +702,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 0,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -704,6 +715,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -784,6 +796,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 0,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -796,6 +809,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -957,7 +971,7 @@
             "30d"
         ]
     },
-    "timezone": "",
+    "timezone": "UTC",
     "title": "Nodes",
     "uid": "fa49a4706d07a042595b664c87fb33ea",
     "version": 0

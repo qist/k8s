@@ -117,6 +117,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -129,6 +130,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -208,6 +210,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -220,6 +223,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -312,6 +316,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -324,6 +329,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -403,6 +409,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -415,6 +422,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -507,6 +515,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -519,6 +528,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -619,6 +629,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -631,6 +642,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -654,7 +666,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_latency_seconds_bucket{job=\"kube-proxy\",instance=~\"$instance\",verb=\"POST\"}[5m])) by (verb, url, le))",
+                            "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_duration_seconds_bucket{job=\"kube-proxy\",instance=~\"$instance\",verb=\"POST\"}[5m])) by (verb, url, le))",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{verb}} {{url}}",
@@ -723,6 +735,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -735,6 +748,7 @@
                         "min": false,
                         "rightSide": true,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": true
                     },
@@ -758,7 +772,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_latency_seconds_bucket{job=\"kube-proxy\", instance=~\"$instance\", verb=\"GET\"}[5m])) by (verb, url, le))",
+                            "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_duration_seconds_bucket{job=\"kube-proxy\", instance=~\"$instance\", verb=\"GET\"}[5m])) by (verb, url, le))",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{verb}} {{url}}",
@@ -827,6 +841,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -839,6 +854,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -918,6 +934,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -930,6 +947,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -1009,6 +1027,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1021,6 +1040,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -1181,7 +1201,7 @@
             "30d"
         ]
     },
-    "timezone": "",
+    "timezone": "UTC",
     "title": "Kubernetes / Proxy",
     "uid": "632e265de029684c40b21cb76bca4f94",
     "version": 0

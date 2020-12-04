@@ -224,7 +224,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\"}) / sum(kube_pod_container_resource_requests_memory_bytes{namespace=\"$namespace\"})",
+                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\", image!=\"\"}) / sum(kube_pod_container_resource_requests_memory_bytes{namespace=\"$namespace\"})",
                             "format": "time_series",
                             "instant": true,
                             "intervalFactor": 2,
@@ -308,7 +308,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\"}) / sum(kube_pod_container_resource_limits_memory_bytes{namespace=\"$namespace\"})",
+                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\", image!=\"\"}) / sum(kube_pod_container_resource_limits_memory_bytes{namespace=\"$namespace\"})",
                             "format": "time_series",
                             "instant": true,
                             "intervalFactor": 2,
@@ -550,6 +550,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #A",
@@ -568,6 +569,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #B",
@@ -586,6 +588,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #C",
@@ -604,6 +607,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #D",
@@ -622,6 +626,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #E",
@@ -640,6 +645,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": true,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "./d/6581e46e4e5c7ba40a07646395ef7b23/k8s-resources-pod?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$namespace&var-pod=$__cell",
                             "pattern": "pod",
@@ -822,7 +828,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\"}) by (pod)",
+                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\", image!=\"\"}) by (pod)",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{pod}}",
@@ -950,6 +956,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #A",
@@ -968,6 +975,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #B",
@@ -986,6 +994,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #C",
@@ -1004,6 +1013,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #D",
@@ -1022,6 +1032,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #E",
@@ -1040,6 +1051,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #F",
@@ -1058,6 +1070,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #G",
@@ -1076,6 +1089,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #H",
@@ -1094,6 +1108,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": true,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "./d/6581e46e4e5c7ba40a07646395ef7b23/k8s-resources-pod?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$namespace&var-pod=$__cell",
                             "pattern": "pod",
@@ -1121,7 +1136,7 @@
                     ],
                     "targets": [
                         {
-                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\"}) by (pod)",
+                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\", image!=\"\"}) by (pod)",
                             "format": "table",
                             "instant": true,
                             "intervalFactor": 2,
@@ -1139,7 +1154,7 @@
                             "step": 10
                         },
                         {
-                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\"}) by (pod) / sum(kube_pod_container_resource_requests_memory_bytes{namespace=\"$namespace\"}) by (pod)",
+                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\", image!=\"\"}) by (pod) / sum(kube_pod_container_resource_requests_memory_bytes{namespace=\"$namespace\"}) by (pod)",
                             "format": "table",
                             "instant": true,
                             "intervalFactor": 2,
@@ -1157,7 +1172,7 @@
                             "step": 10
                         },
                         {
-                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\"}) by (pod) / sum(kube_pod_container_resource_limits_memory_bytes{namespace=\"$namespace\"}) by (pod)",
+                            "expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\",container!=\"\", image!=\"\"}) by (pod) / sum(kube_pod_container_resource_limits_memory_bytes{namespace=\"$namespace\"}) by (pod)",
                             "format": "table",
                             "instant": true,
                             "intervalFactor": 2,
@@ -1256,6 +1271,7 @@
                     "datasource": "$datasource",
                     "fill": 1,
                     "id": 9,
+                    "interval": "1m",
                     "legend": {
                         "avg": false,
                         "current": false,
@@ -1298,6 +1314,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #A",
@@ -1316,6 +1333,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #B",
@@ -1334,6 +1352,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #C",
@@ -1352,6 +1371,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #D",
@@ -1370,6 +1390,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #E",
@@ -1388,6 +1409,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #F",
@@ -1406,6 +1428,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": true,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down to pods",
                             "linkUrl": "./d/6581e46e4e5c7ba40a07646395ef7b23/k8s-resources-pod?var-datasource=$datasource&var-cluster=$cluster&var-namespace=$namespace&var-pod=$__cell",
                             "pattern": "pod",
@@ -1433,7 +1456,7 @@
                     ],
                     "targets": [
                         {
-                            "expr": "sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "table",
                             "instant": true,
                             "intervalFactor": 2,
@@ -1442,7 +1465,7 @@
                             "step": 10
                         },
                         {
-                            "expr": "sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "table",
                             "instant": true,
                             "intervalFactor": 2,
@@ -1451,7 +1474,7 @@
                             "step": 10
                         },
                         {
-                            "expr": "sum(irate(container_network_receive_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_receive_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "table",
                             "instant": true,
                             "intervalFactor": 2,
@@ -1460,7 +1483,7 @@
                             "step": 10
                         },
                         {
-                            "expr": "sum(irate(container_network_transmit_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_transmit_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "table",
                             "instant": true,
                             "intervalFactor": 2,
@@ -1469,7 +1492,7 @@
                             "step": 10
                         },
                         {
-                            "expr": "sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "table",
                             "instant": true,
                             "intervalFactor": 2,
@@ -1478,7 +1501,7 @@
                             "step": 10
                         },
                         {
-                            "expr": "sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "table",
                             "instant": true,
                             "intervalFactor": 2,
@@ -1578,7 +1601,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{pod}}",
@@ -1676,7 +1699,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{pod}}",
@@ -1774,7 +1797,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sum(irate(container_network_receive_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_receive_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{pod}}",
@@ -1872,7 +1895,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sum(irate(container_network_receive_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_transmit_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{pod}}",
@@ -1970,7 +1993,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{pod}}",
@@ -2068,7 +2091,7 @@
                     "steppedLine": false,
                     "targets": [
                         {
-                            "expr": "sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])) by (pod)",
+                            "expr": "sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) by (pod)",
                             "format": "time_series",
                             "intervalFactor": 2,
                             "legendFormat": "{{pod}}",
@@ -2233,7 +2256,7 @@
             "30d"
         ]
     },
-    "timezone": "",
+    "timezone": "UTC",
     "title": "Kubernetes / Compute Resources / Namespace (Pods)",
     "uid": "85a562078cdf77779eaa1add43ccec1e",
     "version": 0

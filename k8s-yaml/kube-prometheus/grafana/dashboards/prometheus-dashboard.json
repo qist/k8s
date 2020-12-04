@@ -69,6 +69,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #A",
@@ -87,6 +88,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "Value #B",
@@ -105,6 +107,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "instance",
@@ -123,6 +126,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "job",
@@ -141,6 +145,7 @@
                             "dateFormat": "YYYY-MM-DD HH:mm:ss",
                             "decimals": 2,
                             "link": false,
+                            "linkTargetBlank": false,
                             "linkTooltip": "Drill down",
                             "linkUrl": "",
                             "pattern": "version",
@@ -1193,7 +1198,7 @@
         ]
     },
     "timezone": "utc",
-    "title": "Prometheus",
+    "title": "Prometheus Overview",
     "uid": "",
     "version": 0
 }

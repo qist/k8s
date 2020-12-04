@@ -33,6 +33,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -45,6 +46,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -124,6 +126,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -136,6 +139,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -228,6 +232,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -240,6 +245,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -332,6 +338,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -344,6 +351,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -424,6 +432,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -436,6 +445,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -515,6 +525,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -527,6 +538,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -606,6 +618,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -618,6 +631,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -710,6 +724,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -722,6 +737,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -801,6 +817,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -813,6 +830,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -905,6 +923,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -917,6 +936,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -996,6 +1016,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1008,6 +1029,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -1100,6 +1122,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1112,6 +1135,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -1191,6 +1215,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1203,6 +1228,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -1282,6 +1308,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1294,6 +1321,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
@@ -1373,6 +1401,7 @@
                     "dashes": false,
                     "datasource": "$datasource",
                     "fill": 1,
+                    "fillGradient": 0,
                     "gridPos": {
 
                     },
@@ -1385,6 +1414,7 @@
                         "min": false,
                         "rightSide": false,
                         "show": true,
+                        "sideWidth": null,
                         "total": false,
                         "values": false
                     },
