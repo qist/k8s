@@ -43,6 +43,14 @@ spec:
   endpoints:
   - interval: 10s
     port: https-metrics
+    relabelings:
+    - action: replace
+      regex: '(.+);(.*):.*'
+      replacement: $1-$2
+      sourceLabels:
+        - __meta_kubernetes_service_name
+        - __address__
+      targetLabel: service_name    
     scheme: https
     tlsConfig:
       caFile: /etc/prometheus/secrets/etcd-certs/etcd-ca.pem
