@@ -13,11 +13,12 @@ spec:
     port: https
     relabelings:
     - action: replace
-      regex: (.*)
-      replacement: $1
+      regex: '(.+);(.*):.*'
+      replacement: $1-$2
       sourceLabels:
-      - __meta_kubernetes_pod_node_name
-      targetLabel: instance
+        - __meta_kubernetes_service_name
+        - __address__
+      targetLabel: service_name
     scheme: https
     tlsConfig:
       insecureSkipVerify: true

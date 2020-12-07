@@ -10,8 +10,8 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  - name: http
+  - name: https
     port: 9256
-    targetPort: http
+    targetPort: https
   selector:
     app: process-exporter

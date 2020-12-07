@@ -15,7 +15,7 @@ spec:
       labels:
         app.kubernetes.io/name: node-exporter
         app.kubernetes.io/version: v1.0.1
-    spec:
+    spec:  
       containers:
       - args:
         - --web.listen-address=127.0.0.1:9100
@@ -83,7 +83,12 @@ spec:
         runAsUser: 65534
       serviceAccountName: node-exporter
       tolerations:
-      - operator: Exists
+        - effect: NoSchedule
+          operator: Exists
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists  
       volumes:
       - hostPath:
           path: /proc
