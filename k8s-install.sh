@@ -3349,7 +3349,12 @@ registries = []
 EOF
 # 生成 crictl crictl.yaml
 cat > ${HOST_PATH}/roles/crio/files/crictl.yaml << EOF
-runtime-endpoint: unix://${RUN_CRIO_SOCK}/crio.sock
+runtime-endpoint: "unix://${RUN_CRIO_SOCK}/crio.sock"
+image-endpoint: "unix://${RUN_CRIO_SOCK}/crio.sock"
+timeout: 0
+debug: false
+pull-image-on-create: true
+disable-pull-on-run: false
 EOF
 # 生成 cri-o ansible 部署文件
 cat > ${HOST_PATH}/roles/crio/tasks/main.yml  << EOF
