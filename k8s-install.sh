@@ -2797,6 +2797,8 @@ cat > ${HOST_PATH}/roles/containerd/files/crictl.yaml << EOF
   image-endpoint: unix://${RUN_CONTAINERD_SOCK}/containerd.sock
   timeout: 10
   debug: false
+  pull-image-on-create: true
+  disable-pull-on-run: false
 EOF
 cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
 - name: Create containerd
@@ -3351,7 +3353,7 @@ EOF
 cat > ${HOST_PATH}/roles/crio/files/crictl.yaml << EOF
 runtime-endpoint: "unix://${RUN_CRIO_SOCK}/crio.sock"
 image-endpoint: "unix://${RUN_CRIO_SOCK}/crio.sock"
-timeout: 0
+timeout: 10
 debug: false
 pull-image-on-create: true
 disable-pull-on-run: false
