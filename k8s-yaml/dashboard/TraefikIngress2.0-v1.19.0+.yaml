@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  rules:
+  - host: dashboard.tycng.com
+    http:
+      paths:
+        - pathType: ImplementationSpecific
+          path: /        
+          backend:
+            service:
+              name: kubernetes-dashboard
+              port: 
+                number: 443
+  tls:
+   - secretName: default
+   #- secretName: dashboard-tls-cert
