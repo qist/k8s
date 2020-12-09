@@ -3638,8 +3638,8 @@ LimitNOFILE=${HARD_SOFT}
 LimitNPROC=${HARD_SOFT}
 LimitCORE=infinity
 LimitMEMLOCK=infinity
-EnvironmentFile=-/apps/k8s/conf/kubelet
-ExecStart=/apps/k8s/bin/kubelet \$KUBELET_OPTS
+EnvironmentFile=-${K8S_PATH}/conf/kubelet
+ExecStart=${K8S_PATH}/bin/kubelet \$KUBELET_OPTS
 Restart=on-failure
 KillMode=process
 [Install]
@@ -4155,7 +4155,7 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --use-service-account-credentials=true \\
 --client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --requestheader-client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
---requestheader-client-ca-file=/apps/k8s/ssl/k8s/k8s-ca.pem \\
+--requestheader-client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --requestheader-allowed-names=aggregator \\
 --requestheader-extra-headers-prefix=X-Remote-Extra- \\
 --requestheader-group-headers=X-Remote-Group \\
