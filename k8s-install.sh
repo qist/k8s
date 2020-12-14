@@ -488,7 +488,7 @@ downloadK8S(){
            exit $?
          fi      
     # 下载containerd
-          wget -c  --tries=40 https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz \
+          wget -c  --tries=40 https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz \
                     -O $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz
          if [[ $? -ne 0 ]]; then
            colorEcho ${RED} "download  FATAL containerd."
