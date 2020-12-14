@@ -2,6 +2,7 @@
 ###########################################################K8S一键自动安装#################################################################################################
 ###########################################################K8S 版本支持在v1.15.0 及以上版本################################################################################
 ###########################################################在部署中会重启服务器及更新系统需要在全新环境部署不然重启对业务有影响############################################
+###########################################################支持操作系统centos7，centos8，Ubuntu18.4及以上版本，openSUSE Leap 15.0及上版本##################################
 # 开启 下载代理 国内尽量配置
 Proxy() {
 # export http_proxy=http://127.0.0.1:7890/
@@ -109,8 +110,8 @@ FEATURE_GATES_OPT="ServiceTopology=true,EndpointSlice=true,TTLAfterFinished=true
 ## kube-apiserver ha proxy 配置
 # nginx 启动进程数 auto 当前机器cpu 核心数的进程数
 CPU_NUM=4
-# 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者haproxy juestnow/haproxy-proxy:2.3.1
-HA_PROXY_IMAGE="juestnow/nginx-proxy:1.19.5"
+# 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者haproxy docker.io/juestnow/haproxy-proxy:2.3.1
+HA_PROXY_IMAGE="docker.io/juestnow/nginx-proxy:1.19.5"
 # pod-infra-container-image 地址
 POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause-amd64:3.2"
 #########################################################################################################################################################################
@@ -175,6 +176,8 @@ K8S_PATH=$TOTAL_PATH/k8s
 POD_ROOT_DIR=$TOTAL_PATH/work
 # kubelet pod manifest path 
 POD_MANIFEST_PATH=${POD_ROOT_DIR}/kubernetes/manifests
+# kubelet pod runing 目录
+POD_RUNING_PATH=${POD_ROOT_DIR}/kubernetes/kubelet
 # docker 运行目录
 DOCKER_PATH=$TOTAL_PATH/docker
 # docker 二进制部署目录
@@ -2159,6 +2162,27 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - ip_vs_sh
       - nf_conntrack
   when: ansible_os_family == 'Debian'
+- name: copy "{{ item }}"
+  template: 
+    src: '{{ item }}'
+    dest: /etc/modules-load.d/ 
+    owner: root 
+    group: root
+  with_items:
+      - k8s-debian-modules.conf
+      - k8s-ipvs-modules.conf
+  when: ansible_os_family == 'Suse'
+- name: Add the ipvs-modules module
+  modprobe: 
+    name: '{{ item }}'
+    state: present
+  with_items:
+      - ip_vs
+      - ip_vs_rr
+      - ip_vs_wrr
+      - ip_vs_sh
+      - nf_conntrack
+  when: ansible_os_family == 'Suse'  
 - name: Change various sysctl-settings, look at the sysctl-vars file for documentation
   sysctl:
     name: '{{ item.key }}'
@@ -2202,7 +2226,6 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - { key: 'net.ipv6.conf.lo.disable_ipv6', value: '1' }
       - { key: 'net.ipv6.conf.all.disable_ipv6', value: '1' }
       - { key: 'net.ipv6.conf.default.disable_ipv6', value: '1' }
-      - { key: 'net.ipv6.conf.all.forwarding', value: '0' }
       - { key: 'net.ipv4.ip_local_port_range', value: '1024 65535' }
       - { key: 'net.ipv4.tcp_keepalive_time', value: '600' }
       - { key: 'net.ipv4.tcp_keepalive_probes', value: '10' }
@@ -2251,6 +2274,16 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
     name: firewalld 
     state: stopped
   when: ansible_os_family == 'RedHat'
+- name: Enable service firewalld , and not touch the state
+  service:
+    name: firewalld 
+    enabled: no
+  when: ansible_os_family == 'Suse'
+- name: Stop service firewalld , if started
+  service:
+    name: firewalld 
+    state: stopped
+  when: ansible_os_family == 'Suse'  
 - name: Enable service ufw , and not touch the state
   service:
     name: ufw 
@@ -2457,10 +2490,102 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - software-properties-common
     state: latest
   when: ansible_pkg_mgr == "apt"
+- name: remove net.ipv4.ip_forward suse yast set forwarding
+  sysctl:
+    name: net.ipv4.ip_forward 
+    state: absent
+    sysctl_file: /etc/sysctl.d/70-yast.conf
+  ignore_errors: True  
+  when: ansible_os_family == 'Suse'    
+- name: remove swapfile
+  lineinfile: 
+    dest: /etc/fstab 
+    regexp: "swap" 
+    line: "#UUID"
+    state: absent
+  when: ansible_os_family == 'Suse' 
+
+- name: remvoe repository
+  zypper_repository:
+    name: openSUSE-Leap-{{ ansible_distribution_version }}-1
+    state: absent
+  ignore_errors: True
+  when: ansible_pkg_mgr == "zypper" 
+- name: add repository
+  zypper_repository:
+    name: '{{ item.value }}'
+    repo: '{{ item.key }}'
+    state: present
+  with_items:    
+      - { key: 'https://mirrors.ustc.edu.cn/opensuse/distribution/leap/{{ ansible_distribution_version }}/repo/oss/', value: 'USTC:{{ ansible_distribution_version }}:OSS' }
+      - { key: 'https://mirrors.ustc.edu.cn/opensuse/distribution/leap/{{ ansible_distribution_version }}/repo/non-oss/', value: 'USTC:{{ ansible_distribution_version }}:NON-OSS' }
+      - { key: 'https://mirrors.ustc.edu.cn/opensuse/update/leap/{{ ansible_distribution_version }}/oss/', value: 'USTC:{{ ansible_distribution_version }}:UPDATE-OSS' }
+      - { key: 'https://mirrors.ustc.edu.cn/opensuse/update/leap/{{ ansible_distribution_version }}/non-oss/', value: 'USTC:{{ ansible_distribution_version }}:UPDATE-NON-OSS ' }
+  ignore_errors: True
+  when: ansible_pkg_mgr == "zypper"
+- name: Refresh all repos 
+  zypper_repository:
+    repo: '*'
+    runrefresh: yes
+  ignore_errors: True
+  when: ansible_pkg_mgr == "zypper"    
+#- name: Only run
+#  zypper:
+#    name: '*'
+#    state: dist-upgrade
+#  ignore_errors: True  
+#  when: ansible_pkg_mgr == "zypper" 
+- name: Update all packages
+  zypper:
+    name: '*'
+    state: latest
+  register: suse_upack_source
+  environment:
+    ZYPP_LOCK_TIMEOUT: 3600
+  when: ansible_pkg_mgr == "zypper"
+- name: Suse zypper Install
+  zypper: 
+    name:
+      - ipvsadm
+      - telnet
+      - wget
+      - net-tools
+      - conntrackd
+      - ipset
+      - jq
+      - iptables
+      - curl
+      - sysstat
+      - libseccomp2
+      - socat
+      - nfs-utils
+      - fuse
+      - lvm2
+      - apparmor-parser 
+      - apparmor-parser-lang 
+      - catatonit  
+      - less 
+      - libbsd0 
+      - liblvm2cmd2_03 
+      - libnet9 
+      - libpcre2-8-0 
+      - libprotobuf-c1
+      - libsha1detectcoll1  
+      - perl-Error 
+      - rsync 
+      - vim
+      - tree
+      - iputils
+      - net-tools-deprecated
+      - device-mapper
+      - fuse-devel
+      - ceph-common
+    state: latest
+  when: ansible_pkg_mgr == "zypper"    
 - name: Reboot a slow machine that might have lots of updates to apply
   reboot:
     reboot_timeout: 3600
-  when: ubuntu_upack_source.changed or redhat_upack_source.changed
+  when: ubuntu_upack_source.changed or redhat_upack_source.changed or suse_upack_source.changed
 EOF
 cat > ${HOST_PATH}/package-sysctl.yml << EOF
 - hosts: all
@@ -2493,6 +2618,15 @@ runtimeConfig(){
             fi
       #docker 二进制安装playbook　
 cat > ${HOST_PATH}/roles/docker/tasks/main.yml << EOF
+- name: btrfs
+  shell: "mount |grep \\${TOTAL_PATH}| grep btrfs"
+  ignore_errors: yes
+  register: btrfs_result
+
+- name: btrfs
+  shell: "mount |grep \/| grep btrfs"
+  ignore_errors: yes
+  register: btr_result
 - name: create groupadd docker
   group: name=docker
 - name: Create ${DOCKER_BIN_PATH}
@@ -2573,8 +2707,12 @@ cat > ${HOST_PATH}/roles/docker/templates/daemon.json << EOF
     "oom-score-adjust": -1000,
     "live-restore": true,
     "exec-opts": ["native.cgroupdriver=cgroupfs"],
+    {% if  btrfs_result.rc == 0 or btr_result.rc == 0 %}
+     "storage-driver": "btrfs",
+     {% else %} 
     "storage-driver": "overlay2",
     "storage-opts":["overlay2.override_kernel_check=true"],
+    {% endif %}
     "debug": false,
     "registry-mirrors": [
         "https://docker.mirrors.ustc.edu.cn",
@@ -2739,7 +2877,11 @@ stream_server_port = "10010"
 sandbox_image = "${SANDBOX_IMAGE}"
 max_concurrent_downloads = ${MAX_CONCURRENT_DOWNLOADS}
   [plugins.cri.containerd]
+  {% if  btrfs_result.rc == 0 or btr_result.rc == 0 %}
+      snapshotter = "btrfs"
+  {% else %}
     snapshotter = "${SNAPSHOTTER}"
+  {% endif %}
     [plugins.cri.containerd.default_runtime]
       runtime_type = "io.containerd.runtime.v1.linux"
       runtime_engine = ""
@@ -2802,6 +2944,15 @@ cat > ${HOST_PATH}/roles/containerd/files/crictl.yaml << EOF
   disable-pull-on-run: false
 EOF
 cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
+- name: btrfs
+  shell: "mount |grep \\${TOTAL_PATH}| grep btrfs"
+  ignore_errors: yes
+  register: btrfs_result
+
+- name: btrfs
+  shell: "mount |grep \/| grep btrfs"
+  ignore_errors: yes
+  register: btr_result  
 - name: Create containerd
   file:
     path: "${CONTAINERD_PATH}/{{ item }}"
@@ -2924,7 +3075,9 @@ runroot = "${RUNROOT}"
 # Storage driver used to manage the storage of images and containers. Please
 # refer to containers-storage.conf(5) to see all available storage drivers.
 #storage_driver = ""
-
+{% if  btrfs_result.rc == 0 or btr_result.rc == 0 %}
+driver = "btrfs"
+{% endif %}
 # List to pass options to the storage driver. Please refer to
 # containers-storage.conf(5) to see all available storage options.
 #storage_option = [
@@ -3363,6 +3516,15 @@ disable-pull-on-run: false
 EOF
 # 生成 cri-o ansible 部署文件
 cat > ${HOST_PATH}/roles/crio/tasks/main.yml  << EOF
+- name: btrfs
+  shell: "mount |grep \\${TOTAL_PATH}| grep btrfs"
+  ignore_errors: yes
+  register: btrfs_result
+
+- name: btrfs
+  shell: "mount |grep \/| grep btrfs"
+  ignore_errors: yes
+  register: btr_result
 - name: Create ${CRIO_PATH}
   file:
     path: "${CRIO_PATH}/{{ item }}"
@@ -3614,7 +3776,7 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --hostname-override={{ ansible_hostname }} \\
               --cert-dir=${K8S_PATH}/ssl \\
               --runtime-cgroups=/systemd/system.slice \\
-              --root-dir=${POD_ROOT_DIR}/kubernetes/kubelet \\
+              --root-dir=${POD_RUNING_PATH} \\
               --log-dir=${K8S_PATH}/log \\
               --alsologtostderr=${ALSOLOGTOSTDERR} \\
               --config=${K8S_PATH}/conf/kubelet.yaml \\
@@ -3650,6 +3812,15 @@ WantedBy=multi-user.target
 EOF
 # kubelet 二进制安装playbook
 cat > ${HOST_PATH}/roles/kubelet/tasks/main.yml << EOF
+- name: btrfs
+  shell: "mount |grep \\${TOTAL_PATH}| grep btrfs"
+  ignore_errors: yes
+  register: btrfs_result
+
+- name: btrfs
+  shell: "mount |grep \/| grep btrfs"
+  ignore_errors: yes
+  register: btr_result
 #disable swap
 - name: disable swap
   shell: "([ $(swapon -s | wc -l) -ge 1 ] && (swapoff -a && echo disable)) || echo already"
@@ -3669,8 +3840,20 @@ cat > ${HOST_PATH}/roles/kubelet/tasks/main.yml << EOF
       - conf
 - name: Create ${POD_MANIFEST_PATH}
   file:
-    path: "${POD_MANIFEST_PATH}"
+    path: "{{ item }}"
     state: directory
+  with_items:
+      - ${POD_RUNING_PATH}
+      - ${POD_MANIFEST_PATH}
+- name: mount kubelet 
+  lineinfile: 
+    dest: /etc/fstab
+    line: '${POD_RUNING_PATH} ${POD_RUNING_PATH} none defaults,bind,nofail 0 0'
+  when: btrfs_result.rc == 0 or btr_result.rc == 0      
+- name: mount kubelet 
+  shell: mount -a
+  ignore_errors: yes
+  when: btrfs_result.rc == 0 or btr_result.rc == 0    
 - name: copy kubelet to ${K8S_PATH}
   copy: 
     src: bin 
@@ -4073,18 +4256,19 @@ cat > ${HOST_PATH}/roles/iptables/tasks/main.yml << EOF
     src: iptables-${IPTABLES_VERSION}.tar.bz2
     dest: ${SOURCE_PATH}
   register: iptables_source_unpack
+  when: ansible_os_family != 'Suse'
 - name: configure to iptables
   shell: ./configure --disable-nftables
   args:
     chdir: "${SOURCE_PATH}/iptables-${IPTABLES_VERSION}"
-  when: iptables_source_unpack.changed
+  when: iptables_source_unpack.changed and ansible_os_family != 'Suse'
   register: iptables_configure
 - name: make install
   become: yes
   shell:  make -j$(nproc) &&  make install
   args:
     chdir: "${SOURCE_PATH}/iptables-${IPTABLES_VERSION}"
-  when: iptables_configure.changed   
+  when: iptables_configure.changed and ansible_os_family != 'Suse' 
 EOF
 cat > ${HOST_PATH}/iptables.yml << EOF
 - hosts: all
