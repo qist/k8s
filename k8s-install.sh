@@ -2768,6 +2768,7 @@ Documentation=https://containerd.io
 After=network-online.target
 
 [Service]
+Type=notify
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 ExecStartPre=-/bin/mkdir -p ${RUN_CONTAINERD_SOCK}
@@ -3290,6 +3291,7 @@ Description=OCI-based implementation of Kubernetes Container Runtime Interface
 Documentation=https://github.com/github.com/cri-o/cri-o
 
 [Service]
+Type=notify
 Environment=CONTAINER_CONMON_CGROUP=pod
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
@@ -3300,6 +3302,7 @@ LimitNOFILE=${HARD_SOFT}
 LimitNPROC=${HARD_SOFT}
 LimitCORE=infinity
 LimitMEMLOCK=infinity
+Delegate=yes
 KillMode=process
 [Install]
 WantedBy=multi-user.target
