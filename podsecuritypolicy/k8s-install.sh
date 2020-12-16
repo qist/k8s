@@ -54,6 +54,8 @@ export CLUSTER_KUBERNETES_SVC_IP="10.66.0.1"
 export CLUSTER_NAME=kubernetes
 #集群域名
 export CLUSTER_DNS_DOMAIN="cluster.local"
+# 集群 服务帐号令牌颁发者的标识符 1.20版本及以上用到
+export SERVICE_ACCOUNT_ISSUER="https://${CLUSTER_NAME}.default.svc.${CLUSTER_DNS_DOMAIN}"
 #集群DNS
 export CLUSTER_DNS_SVC_IP="10.66.0.2"
 # 证书相关配置
@@ -246,7 +248,7 @@ KUBE_API_KUBELET="https://${MASTER_IP}:${K8S_VIP_PORT}"
 # RUNTIME_CONFIG 设置
 RUNTIME_CONFIG="api/all=true"
 #开启插件enable-admission-plugins #AlwaysPullImages 启用istio 不能自动注入需要手动执行注入
-ENABLE_ADMISSION_PLUGINS="DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceExists,NamespaceLifecycle,NodeRestriction,PodNodeSelector,PersistentVolumeClaimResize,PodPreset,PodSecurityPolicy,PodTolerationRestriction,ResourceQuota,ServiceAccount,StorageObjectInUseProtection,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
+ENABLE_ADMISSION_PLUGINS="DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceExists,NamespaceLifecycle,NodeRestriction,PodNodeSelector,PersistentVolumeClaimResize,PodSecurityPolicy,PodTolerationRestriction,ResourceQuota,ServiceAccount,StorageObjectInUseProtection,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
 #禁用插件disable-admission-plugins 
 DISABLE_ADMISSION_PLUGINS="DenyEscalatingExec,ExtendedResourceToleration,ImagePolicyWebhook,LimitPodHardAntiAffinityTopology,NamespaceAutoProvision,Priority,EventRateLimit"
 # 设置api 副本数
@@ -1639,7 +1641,7 @@ KubeApiserverConfig(){
         mkdir -p ${HOST_PATH}/roles/kube-apiserver/files/ssl/{etcd,k8s}
         \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-apiserver ${HOST_PATH}/roles/kube-apiserver/files/bin/
         \cp -pdr ${HOST_PATH}/cfssl/pki/etcd/{etcd-client*.pem,etcd-ca.pem} ${HOST_PATH}/roles/kube-apiserver/files/ssl/etcd
-        \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-server*.pem,k8s-ca.pem,aggregator*.pem} ${HOST_PATH}/roles/kube-apiserver/files/ssl/k8s  
+        \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-server*.pem,k8s-ca*.pem,aggregator*.pem} ${HOST_PATH}/roles/kube-apiserver/files/ssl/k8s  
        fi
     else
       colorEcho ${RED} "kubernetes no download."
@@ -1860,6 +1862,13 @@ AUDIT_POLICY_FILE="--audit-policy-file=${K8S_PATH}/config/audit-policy.yaml"
       else
 AUDIT_POLICY_FILE=""
       fi
+if [[ `expr ${KUBERNETES_VER} \>= 1.20.0` -eq 1 ]]; then
+ENABLE_ADMISSION_PLUGINS_OPT=${ENABLE_ADMISSION_PLUGINS}
+SERVICE_ACCOUNT_ISSUER_OPT="--service-account-issuer=${SERVICE_ACCOUNT_ISSUER}"
+SERVICE_ACCOUNT_SIGNING_KEY_FILE="--service-account-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem"
+else
+ENABLE_ADMISSION_PLUGINS_OPT=${ENABLE_ADMISSION_PLUGINS},PodPreset
+fi
 # 创建 kube-apiserver 启动配置文件
 cat > ${HOST_PATH}/roles/kube-apiserver/templates/kube-apiserver << EOF
 KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
@@ -1884,6 +1893,8 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --proxy-client-cert-file=${K8S_PATH}/ssl/k8s/aggregator.pem \\
         --proxy-client-key-file=${K8S_PATH}/ssl/k8s/aggregator-key.pem \\
         --kubelet-certificate-authority=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
+        ${SERVICE_ACCOUNT_ISSUER_OPT} \\
+        ${SERVICE_ACCOUNT_SIGNING_KEY_FILE} \\
         --requestheader-allowed-names=aggregator \\
         --requestheader-group-headers=X-Remote-Group \\
         --requestheader-extra-headers-prefix=X-Remote-Extra- \\
@@ -1891,7 +1902,7 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --enable-aggregator-routing=true \\
         --anonymous-auth=false \\
         --experimental-encryption-provider-config=${K8S_PATH}/config/encryption-config.yaml \\
-        --enable-admission-plugins=${ENABLE_ADMISSION_PLUGINS} \\
+        --enable-admission-plugins=${ENABLE_ADMISSION_PLUGINS_OPT} \\
         --disable-admission-plugins=${DISABLE_ADMISSION_PLUGINS} \\
         --cors-allowed-origins=.* \\
         --enable-swagger-ui \\
