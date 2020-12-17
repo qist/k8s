@@ -2,7 +2,7 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.0.0"
+      "version": "7.3.4"
     },
     {
       "type": "panel",
@@ -59,7 +59,7 @@
   "gnetId": 12275,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1601266775032,
+  "iteration": 1608192284464,
   "links": [],
   "panels": [
     {
@@ -87,6 +87,7 @@
       },
       "styles": [
         {
+          "$$hashKey": "object:414",
           "alias": "",
           "align": "",
           "colorMode": null,
@@ -102,6 +103,7 @@
           "unit": "short"
         },
         {
+          "$$hashKey": "object:415",
           "alias": "Status",
           "align": "auto",
           "colorMode": "row",
@@ -122,16 +124,19 @@
           "unit": "short",
           "valueMaps": [
             {
+              "$$hashKey": "object:465",
               "text": "Up",
               "value": "1"
             },
             {
+              "$$hashKey": "object:466",
               "text": "Down",
               "value": "0"
             }
           ]
         },
         {
+          "$$hashKey": "object:416",
           "alias": "SSL",
           "align": "auto",
           "colorMode": "cell",
@@ -152,16 +157,19 @@
           "unit": "short",
           "valueMaps": [
             {
+              "$$hashKey": "object:489",
               "text": "OK",
               "value": "1"
             },
             {
+              "$$hashKey": "object:490",
               "text": "KO",
               "value": "2"
             }
           ]
         },
         {
+          "$$hashKey": "object:417",
           "alias": "HTTP Code",
           "align": "auto",
           "colorMode": null,
@@ -179,6 +187,7 @@
           "unit": "short"
         },
         {
+          "$$hashKey": "object:418",
           "alias": "SSL Cert Expiry",
           "align": "auto",
           "colorMode": "cell",
@@ -199,6 +208,7 @@
           "unit": "s"
         },
         {
+          "$$hashKey": "object:419",
           "alias": "",
           "align": "auto",
           "colorMode": null,
@@ -216,6 +226,7 @@
           "unit": "short"
         },
         {
+          "$$hashKey": "object:420",
           "alias": "",
           "align": "left",
           "colorMode": null,
@@ -226,9 +237,10 @@
           ],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
-          "link": false,
+          "link": true,
+          "linkTargetBlank": true,
           "linkTooltip": "",
-          "linkUrl": "$target",
+          "linkUrl": "${__cell:raw}",
           "mappingType": 1,
           "pattern": "instance",
           "preserveFormat": true,
@@ -286,7 +298,8 @@
       "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -316,9 +329,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.3.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -459,7 +473,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_success{app=\"rancher\", chart=\"rancher-2.4.8\", environment=\"openplatformk8s\", heritage=\"Helm\", instance=\"https://od.qkagame.com/\", job=\"kubernetes-ingresses\", namespace=\"cattle-system\", release=\"rancher\", service=\"rancher\"}",
+      "tableColumn": "probe_success{app_kubernetes_io_instance=\"blackbox\", app_kubernetes_io_name=\"blackbox-exporter\", instance=\"blackbox-exporter.monitoring.svc:80\", job=\"blackbox-exporter\", namespace=\"monitoring\", service=\"blackbox-exporter\"}",
       "targets": [
         {
           "expr": "probe_success{instance=~\"$target\"}",
@@ -500,7 +514,8 @@
       "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -528,9 +543,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.3.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -597,7 +613,8 @@
       "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "links": []
         },
         "overrides": []
       },
@@ -625,9 +642,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.3.4",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -755,7 +773,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_http_status_code{app=\"rancher\", chart=\"rancher-2.4.8\", environment=\"openplatformk8s\", heritage=\"Helm\", instance=\"https://od.qkagame.com/\", job=\"kubernetes-ingresses\", namespace=\"cattle-system\", release=\"rancher\", service=\"rancher\"}",
+      "tableColumn": "probe_http_status_code{app_kubernetes_io_instance=\"blackbox\", app_kubernetes_io_name=\"blackbox-exporter\", instance=\"blackbox-exporter.monitoring.svc:80\", job=\"blackbox-exporter\", namespace=\"monitoring\", service=\"blackbox-exporter\"}",
       "targets": [
         {
           "expr": "probe_http_status_code{instance=~\"$target\"}",
@@ -852,7 +870,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_http_version{app=\"rancher\", chart=\"rancher-2.4.8\", environment=\"openplatformk8s\", heritage=\"Helm\", instance=\"https://od.qkagame.com/\", job=\"kubernetes-ingresses\", namespace=\"cattle-system\", release=\"rancher\", service=\"rancher\"}",
+      "tableColumn": "probe_http_version{app_kubernetes_io_instance=\"blackbox\", app_kubernetes_io_name=\"blackbox-exporter\", instance=\"blackbox-exporter.monitoring.svc:80\", job=\"blackbox-exporter\", namespace=\"monitoring\", service=\"blackbox-exporter\"}",
       "targets": [
         {
           "expr": "probe_http_version{instance=~\"$target\"}",
@@ -941,7 +959,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_http_ssl{app=\"rancher\", chart=\"rancher-2.4.8\", environment=\"openplatformk8s\", heritage=\"Helm\", instance=\"https://od.qkagame.com/\", job=\"kubernetes-ingresses\", namespace=\"cattle-system\", release=\"rancher\", service=\"rancher\"}",
+      "tableColumn": "probe_http_ssl{app_kubernetes_io_instance=\"blackbox\", app_kubernetes_io_name=\"blackbox-exporter\", instance=\"blackbox-exporter.monitoring.svc:80\", job=\"blackbox-exporter\", namespace=\"monitoring\", service=\"blackbox-exporter\"}",
       "targets": [
         {
           "expr": "probe_http_ssl{instance=~\"$target\"}",
@@ -1255,7 +1273,7 @@
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 25,
+  "schemaVersion": 26,
   "style": "dark",
   "tags": [
     "blackbox",
@@ -1272,6 +1290,7 @@
           "text": "10s",
           "value": "10s"
         },
+        "error": null,
         "hide": 0,
         "label": "Interval",
         "name": "interval",
@@ -1357,6 +1376,7 @@
         "current": {},
         "datasource": "${DS_PROMETHEUS}",
         "definition": "",
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -1407,5 +1427,5 @@
   "timezone": "",
   "title": "Prometheus Blackbox Exporter",
   "uid": "xtkCtBkiz",
-  "version": 3
+  "version": 2
 }
