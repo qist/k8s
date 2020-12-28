@@ -66,6 +66,7 @@ RUN NGINX_CONFIG="\
      --with-openssl-opt=enable-tls1_3 \
      --add-module=../echo-nginx-module \
      --add-module=../nginx_upstream_check_module \
+     --add-module=../nginx-upsync-module \
      --add-module=../mod_zip \
      --add-module=../ngx_cache_purge \
      --add-module=../ngx_upstream_jdomain \
@@ -85,6 +86,7 @@ RUN NGINX_CONFIG="\
         gnupg \
         libxslt-dev \
         gd-dev \
+        patch \
         geoip-dev \
         libstdc++ wget \
         libjpeg  \
@@ -106,7 +108,7 @@ RUN NGINX_CONFIG="\
         libzip \
         git \
         libzip-dev \
-        && curl -fSL  https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz -o /tmp/openssl-$OPENSSL_VERSION.tar.gz \
+        && curl -fSL https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz -o /tmp/openssl-$OPENSSL_VERSION.tar.gz \
         && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o /tmp/nginx-$NGINX_VERSION.tar.gz \
         && git clone https://github.com/FRiCKLE/ngx_cache_purge.git  /tmp/ngx_cache_purge \
         && git clone https://github.com/xiaokai-wang/nginx_upstream_check_module.git /tmp/nginx_upstream_check_module \
@@ -115,6 +117,7 @@ RUN NGINX_CONFIG="\
         && git clone https://github.com/GUI/nginx-upstream-dynamic-servers.git /tmp/nginx-upstream-dynamic-servers \
         && git clone https://github.com/vozlt/nginx-module-vts.git /tmp/nginx-module-vts \
         && git clone https://github.com/openresty/echo-nginx-module.git /tmp/echo-nginx-module \
+        && git clone https://github.com/weibocom/nginx-upsync-module.git /tmp/nginx-upsync-module \
         && cd /tmp \
         && tar -xzf openssl-$OPENSSL_VERSION.tar.gz \
         && tar -xzf nginx-$NGINX_VERSION.tar.gz \
@@ -123,24 +126,39 @@ RUN NGINX_CONFIG="\
         && mkdir -p /var/lib/nginx/cache \
         && ./configure $NGINX_CONFIG \
         && make -j$(getconf _NPROCESSORS_ONLN) \
-        && make install \
-        && rm -rf /tmp/* \
-        && apk del .build-deps \
-        && apk  add  --no-cache  \ 
+        && make install 
+
+# 构建confd nginx 镜像
+
+FROM alpine 
+# 作者信息
+MAINTAINER Qist Docker Maintainers "87984115@qq.com"
+
+# 修改源
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+#COPY 编译结果  
+
+COPY --from=0  /usr/bin/nginx /usr/bin/nginx
+COPY --from=0  /etc/nginx  /etc/nginx
+COPY --from=0  /var/lib/nginx /var/lib/nginx
+
+# 安装ca 证书
+RUN apk update && \
+    apk add --no-cache ca-certificates 
+RUN  mkdir -p /var/lib/nginx/cache \
+     && apk add  --no-cache  \ 
            curl \
            wget \
            pcre \
-        && chown -R nginx:nginx /var/lib/nginx \
-        && mkdir -p /var/log/nginx \
-        && mkdir -p /www \
-        && echo  '<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8" /> <title>HTML5</title> </head> <body> Server is online </body> </html>' > /www/index.html \
-        && chown -R nginx:nginx /www \
-        && rm -f /etc/nginx/nginx.conf \
-        && rm -rf /etc/nginx/conf.d \
-        && ln -sf /dev/stdout /var/log/nginx/access.log \
-        && ln -sf /dev/stderr /var/log/nginx/error.log \
-        && rm -rf /var/cache/apk/*
-
+          && addgroup -S nginx \
+          && adduser -D -S -h /var/lib/nginx -s /sbin/nologin -G nginx nginx \          
+          && mkdir -p /var/log/nginx \
+          && chown -R nginx:nginx /var/lib/nginx \
+          && rm -rf /var/cache/apk/* \
+          && ln -sf /dev/stdout /var/log/nginx/access.log \
+          && ln -sf /dev/stderr /var/log/nginx/error.log \
+          && mkdir -p /var/cache/nginx/client_temp
 
 # copy 配置到镜像中 
        
