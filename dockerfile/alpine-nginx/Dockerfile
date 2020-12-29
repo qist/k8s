@@ -164,6 +164,7 @@ RUN  mkdir -p /var/lib/nginx/cache \
        
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY conf.d /etc/nginx/conf.d
+COPY vhost /etc/nginx/vhost
 COPY localtime /etc/localtime
 
 # 开放端口
