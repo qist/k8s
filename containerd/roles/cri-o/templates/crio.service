@@ -8,6 +8,7 @@ ExecStartPre=-/sbin/modprobe overlay
 ExecStart={{ CRIO_PATH }}/crio/bin/crio-static --config {{ CRIO_PATH }}/crio/etc/crio.conf --log-level info 
 Restart=on-failure
 RestartSec=5
+Delegate=yes
 LimitNOFILE=1024000
 LimitNPROC=1024000
 LimitCORE=infinity
