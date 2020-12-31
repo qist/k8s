@@ -1,11 +1,11 @@
 ##  traefik 2版本部署
 ```
 # 配置污点
-kubectl taint nodes  k8s-ingress-01 node-role.kubernetes.io/ingress=:NoSchedule 
-kubectl taint nodes  k8s-ingress-02 node-role.kubernetes.io/ingress=:NoSchedule
+#kubectl taint nodes  k8s-ingress-01 node-role.kubernetes.io/ingress=:NoSchedule 
+#kubectl taint nodes  k8s-ingress-02 node-role.kubernetes.io/ingress=:NoSchedule
 # 创建 label 不创建是不能部署的或者删除yaml 文件 nodeSelector项
-kubectl label nodes k8s-ingress-01  ingress=yes
-kubectl label nodes k8s-ingress-02  ingress=yes
+#kubectl label nodes k8s-ingress-01  ingress=yes
+#kubectl label nodes k8s-ingress-02  ingress=yes
 # 修改 traefik-dashboard.yaml 改成自己的域名
 # 修改 traefik-secret.yaml 添加外部域名证书 与nginx 证书一样
 # 部署api 及 rbac

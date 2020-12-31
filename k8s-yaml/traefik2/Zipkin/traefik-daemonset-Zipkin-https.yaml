@@ -27,7 +27,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: traefik
-          image: traefik:v2.3.4
+          image: traefik:v2.3.6
           args:
             - --api.insecure
             - --api.dashboard
