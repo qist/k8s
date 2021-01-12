@@ -112,7 +112,7 @@ FEATURE_GATES_OPT="ServiceTopology=true,EndpointSlice=true,TTLAfterFinished=true
 ## kube-apiserver ha proxy 配置
 # nginx 启动进程数 auto 当前机器cpu 核心数的进程数
 CPU_NUM=4
-# 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者haproxy docker.io/juestnow/haproxy-proxy:2.3.1
+# 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者haproxy docker.io/juestnow/haproxy-proxy:2.3.3
 HA_PROXY_IMAGE="docker.io/juestnow/nginx-proxy:1.19.5"
 # pod-infra-container-image 地址
 POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause-amd64:3.2"
