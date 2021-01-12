@@ -1,5 +1,5 @@
  global
-                maxconn 65535
+                maxconn 4096
                 chroot /usr
                 user haproxy
                 group haproxy
@@ -7,12 +7,8 @@
                 stats socket /run/haproxy.sock mode 600 level admin
                 log             127.0.0.1 local2
 
-                nbproc 4
-                cpu-map 1 0
-                cpu-map 2 1
-                cpu-map 3 2
-                cpu-map 4 3
-                stats bind-process 4
+                nbthread  8
+                cpu-map  1- 0-
 
 defaults
                 log     global
@@ -21,7 +17,7 @@ defaults
                 option  dontlognull
                 option  redispatch
                 retries 3
-                maxconn 65535
+                maxconn 4096
                 timeout connect     30000
                 timeout client      50000
                 timeout server 50000
@@ -44,7 +40,6 @@ frontend stats
    stats enable
    stats uri /stats
    stats refresh 10s
-   bind-process 4
    
 frontend frontend-tcp
   mode tcp
