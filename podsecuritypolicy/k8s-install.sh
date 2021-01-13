@@ -3467,6 +3467,7 @@ LimitNOFILE=${HARD_SOFT}
 LimitNPROC=${HARD_SOFT}
 LimitCORE=infinity
 LimitMEMLOCK=infinity
+TasksMax=infinity
 Delegate=yes
 KillMode=process
 [Install]
