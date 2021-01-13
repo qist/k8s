@@ -8,7 +8,8 @@
                 log             127.0.0.1 local2
 
                 nbthread  8
-                cpu-map  1- 0-
+                cpu-map 1/all 0-
+                stats bind-process all
 
 defaults
                 log     global
@@ -40,9 +41,11 @@ frontend stats
    stats enable
    stats uri /stats
    stats refresh 10s
+   bind-process all
    
 frontend frontend-tcp
   mode tcp
+  bind-process all
   {{ $servers := split (getenv "HOST_PORT") "," }}{{range $servers}}
   bind :::{{.}}
   {{end}}
