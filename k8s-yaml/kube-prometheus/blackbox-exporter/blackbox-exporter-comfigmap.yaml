@@ -26,11 +26,14 @@ data:
         prober: http
         http:
           method: POST
+          preferred_ip_protocol: "ip4"
           tls_config:
             insecure_skip_verify: false
       tcp_connect:
         prober: tcp
         timeout: 60s
+        tcp:
+          preferred_ip_protocol: "ip4"
       pop3s_banner:
         prober: tcp
         tcp:
