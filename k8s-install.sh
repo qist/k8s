@@ -2632,12 +2632,12 @@ runtimeConfig(){
       #docker 二进制安装playbook　
 cat > ${HOST_PATH}/roles/docker/tasks/main.yml << EOF
 - name: btrfs
-  shell: "mount |grep \\${TOTAL_PATH}| grep btrfs"
+  shell: 'mount |grep \\${TOTAL_PATH}| grep btrfs'
   ignore_errors: yes
   register: btrfs_result
 
 - name: btrfs
-  shell: "mount |grep \/| grep btrfs"
+  shell: 'mount |grep \/| grep btrfs'
   ignore_errors: yes
   register: btr_result
 - name: create groupadd docker
@@ -2958,12 +2958,12 @@ cat > ${HOST_PATH}/roles/containerd/files/crictl.yaml << EOF
 EOF
 cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
 - name: btrfs
-  shell: "mount |grep \\${TOTAL_PATH}| grep btrfs"
+  shell: 'mount |grep \\${TOTAL_PATH}| grep btrfs'
   ignore_errors: yes
   register: btrfs_result
 
 - name: btrfs
-  shell: "mount |grep \/| grep btrfs"
+  shell: 'mount |grep \/| grep btrfs'
   ignore_errors: yes
   register: btr_result  
 - name: Create containerd
@@ -3531,12 +3531,12 @@ EOF
 # 生成 cri-o ansible 部署文件
 cat > ${HOST_PATH}/roles/crio/tasks/main.yml  << EOF
 - name: btrfs
-  shell: "mount |grep \\${TOTAL_PATH}| grep btrfs"
+  shell: 'mount |grep \\${TOTAL_PATH}| grep btrfs'
   ignore_errors: yes
   register: btrfs_result
 
 - name: btrfs
-  shell: "mount |grep \/| grep btrfs"
+  shell: 'mount |grep \/| grep btrfs'
   ignore_errors: yes
   register: btr_result
 - name: Create ${CRIO_PATH}
@@ -3827,12 +3827,12 @@ EOF
 # kubelet 二进制安装playbook
 cat > ${HOST_PATH}/roles/kubelet/tasks/main.yml << EOF
 - name: btrfs
-  shell: "mount |grep \\${TOTAL_PATH}| grep btrfs"
+  shell: 'mount |grep \\${TOTAL_PATH}| grep btrfs'
   ignore_errors: yes
   register: btrfs_result
 
 - name: btrfs
-  shell: "mount |grep \/| grep btrfs"
+  shell: 'mount |grep \/| grep btrfs'
   ignore_errors: yes
   register: btr_result
 #disable swap
