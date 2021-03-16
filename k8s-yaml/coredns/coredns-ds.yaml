@@ -67,7 +67,7 @@ data:
             lameduck 5s
         }
         ready
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
+        kubernetes __PILLAR__DNS__DOMAIN__ in-addr.arpa ip6.arpa {
             pods insecure
             endpoint_pod_names
             fallthrough in-addr.arpa ip6.arpa
@@ -122,7 +122,7 @@ spec:
         imagePullPolicy: Always
         resources:
           limits:
-            memory: 100Mi
+            memory: __PILLAR__DNS__MEMORY__LIMIT__
           requests:
             cpu: 100m
             memory: 70Mi
@@ -185,7 +185,7 @@ metadata:
 spec:
   selector:
     k8s-app: kube-dns
-  clusterIP: 8888:8000::2
+  clusterIP: __PILLAR__DNS__SERVER__
   ports:
   - name: dns
     port: 53
