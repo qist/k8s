@@ -250,7 +250,7 @@ RUNTIME_CONFIG="api/all=true"
 #开启插件enable-admission-plugins #AlwaysPullImages 启用istio 不能自动注入需要手动执行注入
 ENABLE_ADMISSION_PLUGINS="DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceExists,NamespaceLifecycle,NodeRestriction,PodNodeSelector,PersistentVolumeClaimResize,PodTolerationRestriction,ResourceQuota,ServiceAccount,StorageObjectInUseProtection,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
 #禁用插件disable-admission-plugins 
-DISABLE_ADMISSION_PLUGINS="DenyEscalatingExec,ExtendedResourceToleration,ImagePolicyWebhook,LimitPodHardAntiAffinityTopology,NamespaceAutoProvision,Priority,EventRateLimit,PodSecurityPolicy"
+DISABLE_ADMISSION_PLUGINS="ExtendedResourceToleration,ImagePolicyWebhook,LimitPodHardAntiAffinityTopology,NamespaceAutoProvision,Priority,EventRateLimit,PodSecurityPolicy"
 # 设置api 副本数
 APISERVER_COUNT="3"
 # api 突变请求最大数
@@ -1868,7 +1868,12 @@ SERVICE_ACCOUNT_ISSUER_OPT="--service-account-issuer=${SERVICE_ACCOUNT_ISSUER}"
 SERVICE_ACCOUNT_SIGNING_KEY_FILE="--service-account-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem"
 else
 ENABLE_ADMISSION_PLUGINS_OPT=${ENABLE_ADMISSION_PLUGINS},PodPreset
-fi      
+fi 
+if [[ `expr ${KUBERNETES_VER} \>= 1.21.0` -eq 1 ]]; then
+DISABLE_ADMISSION_PLUGINS_OPT=${DISABLE_ADMISSION_PLUGINS}
+else
+DISABLE_ADMISSION_PLUGINS_OPT=DenyEscalatingExec,${DISABLE_ADMISSION_PLUGINS}
+fi  
 # 创建 kube-apiserver 启动配置文件
 cat > ${HOST_PATH}/roles/kube-apiserver/templates/kube-apiserver << EOF
 KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
@@ -1902,7 +1907,7 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --anonymous-auth=false \\
         --experimental-encryption-provider-config=${K8S_PATH}/config/encryption-config.yaml \\
         --enable-admission-plugins=${ENABLE_ADMISSION_PLUGINS_OPT} \\
-        --disable-admission-plugins=${DISABLE_ADMISSION_PLUGINS} \\
+        --disable-admission-plugins=${DISABLE_ADMISSION_PLUGINS_OPT} \\
         --cors-allowed-origins=.* \\
         --enable-swagger-ui \\
         --runtime-config=${RUNTIME_CONFIG} \\
