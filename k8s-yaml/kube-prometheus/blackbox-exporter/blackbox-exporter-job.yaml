@@ -1,0 +1,41 @@
+  - job_name: 'blackbox-exporter'
+    scrape_interval: 60s
+    scrape_timeout: 60s
+    consul_sd_configs:
+    - server: '127.0.0.1:8500'
+      services: []
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.      
+    relabel_configs:
+    - source_labels: [__meta_consul_service]
+      regex: "blackbox-exporter"
+      action: keep
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: service
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: job
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service_id]
+      separator: ;
+      regex:  (.*)
+      replacement: $1
+      target_label: service_name
+      action: replace
+    - source_labels: [__meta_consul_service_address,__meta_consul_service_port]
+      separator: ;
+      regex: (.+);(.+)
+      target_label: __param_target
+      replacement: $1:$2
+      action: replace 
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 10.8.23.86:9115  # The blackbox exporter's real hostname:port.      
