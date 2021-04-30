@@ -1,4 +1,4 @@
-  - job_name: 'blackbox-exporter'
+  - job_name: 'http_2xx'
     scrape_interval: 60s
     scrape_timeout: 60s
     consul_sd_configs:
@@ -6,10 +6,86 @@
       services: []
     metrics_path: /probe
     params:
-      module: [http_2xx]  # Look for a HTTP 200 response.      
+      module: [http_2xx]  # Look for a HTTP 200 response.
     relabel_configs:
     - source_labels: [__meta_consul_service]
-      regex: "blackbox-exporter"
+      regex: "http_2xx"
+      action: keep
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: service
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: job
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service_id]
+      separator: ;
+      regex:  (.*)
+      replacement: $1
+      target_label: service_name
+      action: replace
+    - source_labels: [__meta_consul_service_address]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 10.8.23.86:9115  # The blackbox exporter's real hostname:port.
+
+  - job_name: 'icmp'
+    scrape_interval: 60s
+    scrape_timeout: 60s
+    consul_sd_configs:
+    - server: '127.0.0.1:8500'
+      services: []
+    metrics_path: /probe
+    params:
+      module: [icmp]  # Look for a HTTP 200 response.
+    relabel_configs:
+    - source_labels: [__meta_consul_service]
+      regex: "icmp"
+      action: keep
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: service
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service]
+      separator: ;
+      regex: (.*)
+      target_label: job
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_consul_service_id]
+      separator: ;
+      regex:  (.*)
+      replacement: $1
+      target_label: service_name
+      action: replace
+    - source_labels: [__meta_consul_service_address]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 10.8.23.86:9115  # The blackbox exporter's real hostname:port.
+
+  - job_name: 'tcp_connect'
+    scrape_interval: 60s
+    scrape_timeout: 60s
+    consul_sd_configs:
+    - server: '127.0.0.1:8500'
+      services: []
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]  # Look for a HTTP 200 response.
+    relabel_configs:
+    - source_labels: [__meta_consul_service]
+      regex: "tcp_connect"
       action: keep
     - source_labels: [__meta_consul_service]
       separator: ;
@@ -34,8 +110,8 @@
       regex: (.+);(.+)
       target_label: __param_target
       replacement: $1:$2
-      action: replace 
+      action: replace
     - source_labels: [__param_target]
       target_label: instance
     - target_label: __address__
-      replacement: 10.8.23.86:9115  # The blackbox exporter's real hostname:port.      
+      replacement: 10.8.23.86:9115  # The blackbox exporter's real hostname:port.   
