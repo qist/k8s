@@ -2136,6 +2136,9 @@ ip_vs_wrr
 ip_vs_sh
 EOF
 cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
+- name: Get Kernel version
+  shell: uname -r | egrep '^[0-9]*' -o
+  register: kernel_shell_output
 - name: copy modprobe modules
   template: 
     src: '{{ item }}'
@@ -2145,7 +2148,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
   with_items:
       - k8s-redhat-modules.conf
       - k8s-ipvs-modules.conf
-  when: ansible_os_family == 'RedHat'
+  when: 'kernel_shell_output.stdout|int <= 3'
 - name: Add the ipvs-modules module
   modprobe: 
     name: '{{ item }}'
@@ -2156,7 +2159,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - ip_vs_wrr
       - ip_vs_sh
       - nf_conntrack_ipv4
-  when: ansible_os_family == 'RedHat'
+  when: 'kernel_shell_output.stdout|int <= 3'
 - name: copy "{{ item }}"
   template: 
     src: '{{ item }}'
@@ -2166,7 +2169,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
   with_items:
       - k8s-debian-modules.conf
       - k8s-ipvs-modules.conf
-  when: ansible_os_family == 'Debian'
+  when: 'kernel_shell_output.stdout|int >= 4'
 - name: Add the ipvs-modules module
   modprobe: 
     name: '{{ item }}'
@@ -2177,28 +2180,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - ip_vs_wrr
       - ip_vs_sh
       - nf_conntrack
-  when: ansible_os_family == 'Debian'
-- name: copy "{{ item }}"
-  template: 
-    src: '{{ item }}'
-    dest: /etc/modules-load.d/ 
-    owner: root 
-    group: root
-  with_items:
-      - k8s-debian-modules.conf
-      - k8s-ipvs-modules.conf
-  when: ansible_os_family == 'Suse'
-- name: Add the ipvs-modules module
-  modprobe: 
-    name: '{{ item }}'
-    state: present
-  with_items:
-      - ip_vs
-      - ip_vs_rr
-      - ip_vs_wrr
-      - ip_vs_sh
-      - nf_conntrack
-  when: ansible_os_family == 'Suse'  
+  when: 'kernel_shell_output.stdout|int >= 4'
 - name: Change various sysctl-settings, look at the sysctl-vars file for documentation
   sysctl:
     name: '{{ item.key }}'
@@ -2277,21 +2259,21 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
   with_items:
       - { domain: '*', key: 'soft', item: 'nproc', value: '$HARD_SOFT'  }
       - { domain: 'root', key: 'soft', item: 'nproc', value: '$HARD_SOFT'  }
-  when: ansible_distribution_major_version == '7'
+  when: ansible_distribution_major_version == '7' and ansible_os_family == 'RedHat'
 - name: Disable SELinux
   selinux:
     state: disabled
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky'
 - name: Enable service firewalld , and not touch the state
   service:
     name: firewalld 
     enabled: no
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky'
 - name: Stop service firewalld , if started
   service:
     name: firewalld 
     state: stopped
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky'
 - name: Enable service firewalld , and not touch the state
   service:
     name: firewalld 
@@ -2355,35 +2337,35 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
     regexp: "^/dev/mapper/centos-swap"
     line: "#/dev/mapper/centos-swap" 
     state: absent
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky'
 - name: CentOS 7 repo
   get_url:
     url: https://mirrors.aliyun.com/repo/Centos-7.repo
     dest: /etc/yum.repos.d/CentOS-Base.repo
     force: yes
-  when: ansible_distribution_major_version == '7'
+  when: ansible_distribution_major_version == '7' and  ansible_os_family == 'RedHat'
 - name: CentOS 7 epel.repo
   get_url:
     url: http://mirrors.aliyun.com/repo/epel-7.repo
     dest: /etc/yum.repos.d/epel.repo
-  when: ansible_distribution_major_version == '7'
+  when: ansible_distribution_major_version == '7' and  ansible_os_family == 'RedHat'
 - name: CentOS 8 repo
   get_url:
     url: https://mirrors.aliyun.com/repo/Centos-8.repo
     dest: /etc/yum.repos.d/CentOS-Base.repo
     force: yes
-  when: ansible_distribution_major_version == '8'
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
 - name: install the epel-release rpm from a remote repo
   yum:
     name: https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm
     state: present
-  when: ansible_distribution_major_version == '8'
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
 - name: enabled centos8 epel
   lineinfile: 
     dest: '/etc/yum.repos.d/CentOS-Base.repo'
     regexp: "^enabled=0"
     line: "enabled=1" 
-  when: ansible_distribution_major_version == '8' 
+  when: ansible_distribution_major_version == '8'  and  ansible_os_family == 'RedHat'
 - name: remove centos8 epel
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
@@ -2396,7 +2378,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '8'  
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'  
 - name: is set centos8 epel
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
@@ -2408,20 +2390,20 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '8'
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
 #- name: Remove /etc/yum.repos.d/CentOS-AppStream.repo
 #  file:
 #    path: "/etc/yum.repos.d/CentOS-AppStream.repo"
 #    state: absent
 #  ignore_errors: True
-#  when: ansible_distribution_major_version == '8'  
+#  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
 - name: upgrade all packages
   yum:
     name: '*'
     state: latest
     lock_timeout: 36000
   register: redhat_upack_source
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky'
 - name: centos8 dnf Install
   dnf: 
     name:  
@@ -2734,10 +2716,7 @@ cat > ${HOST_PATH}/roles/docker/templates/daemon.json << EOF
     "debug": false,
     "registry-mirrors": [
         "https://docker.mirrors.ustc.edu.cn",
-        "https://hub-mirror.c.163.com/",
-        "https://dockerhub.azk8s.cn",
-        "https://gcr.azk8s.cn",
-        "https://quay.azk8s.cn"
+        "https://hub-mirror.c.163.com/"
     ],
     "log-opts": {
         "max-size": "${LOG_OPTS_MAX_SIZE}",
