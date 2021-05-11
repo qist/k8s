@@ -2192,7 +2192,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
   with_items:
       - { key: 'net.ipv4.tcp_slow_start_after_idle', value: '0' }
       - { key: 'net.core.rmem_max', value: '16777216' }
-      - { key: 'fs.inotify.max_user_watches', value: '524288' }
+      - { key: 'fs.inotify.max_user_watches', value: '1048576' }
       - { key: 'kernel.softlockup_all_cpu_backtrace', value: '1' }
       - { key: 'kernel.softlockup_panic', value: '1' }
       - { key: 'fs.file-max', value: '2097152' } 

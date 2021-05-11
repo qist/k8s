@@ -404,7 +404,7 @@ spec:
               sysctl -w net.ipv4.ip_local_port_range="1024 65535"
               sysctl -w fs.file-max=1048576
               sysctl -w fs.inotify.max_user_instances=16384
-              sysctl -w fs.inotify.max_user_watches=524288
+              sysctl -w fs.inotify.max_user_watches=1048576
               sysctl -w fs.inotify.max_queued_events=16384
           imagePullPolicy: IfNotPresent
           securityContext:
