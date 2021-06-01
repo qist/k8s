@@ -2349,24 +2349,88 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
     url: http://mirrors.aliyun.com/repo/epel-7.repo
     dest: /etc/yum.repos.d/epel.repo
   when: ansible_distribution_major_version == '7' and  ansible_os_family == 'RedHat'
-- name: CentOS 8 repo
-  get_url:
-    url: https://mirrors.aliyun.com/repo/Centos-8.repo
-    dest: /etc/yum.repos.d/CentOS-Base.repo
-    force: yes
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
-- name: install the epel-release rpm from a remote repo
-  yum:
-    name: https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm
-    state: present
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
-- name: enabled centos8 epel
+#- name: CentOS 8 repo
+#  get_url:
+#    url: https://mirrors.aliyun.com/repo/Centos-8.repo
+#    dest: /etc/yum.repos.d/CentOS-Base.repo
+#    force: yes
+#  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'  
+- name: enabled centos8 BaseOS
   lineinfile: 
-    dest: '/etc/yum.repos.d/CentOS-Base.repo'
+    dest: '/etc/yum.repos.d/{{ item }}'
     regexp: "^enabled=0"
     line: "enabled=1" 
+  with_items:
+      - CentOS-Linux-AppStream.repo
+      - CentOS-Linux-PowerTools.repo
+      - CentOS-Linux-BaseOS.repo
+      - CentOS-Linux-Extras.repo
   when: ansible_distribution_major_version == '8'  and  ansible_os_family == 'RedHat'
-- name: remove centos8 epel
+- name: remove centos8 BaseOS
+  lineinfile: 
+    dest: '/etc/yum.repos.d/{{ item }}'
+    regexp: "^mirrorlist"
+    line: "#mirrorlist" 
+    state: absent
+  with_items:
+      - CentOS-Linux-AppStream.repo
+      - CentOS-Linux-PowerTools.repo
+      - CentOS-Linux-BaseOS.repo
+      - CentOS-Linux-Extras.repo 
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
+- name: is set centos8 BaseOS
+  replace:
+    path: '/etc/yum.repos.d/{{ item }}'
+    regexp: '^#baseurl=http://mirror.centos.org/\\\$contentdir'
+    replace: 'baseurl=https://mirrors.aliyun.com/centos'
+  with_items:
+      - CentOS-Linux-AppStream.repo
+      - CentOS-Linux-PowerTools.repo
+      - CentOS-Linux-BaseOS.repo
+      - CentOS-Linux-Extras.repo
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
+ 
+- name: enabled Rocky BaseOS
+  lineinfile: 
+    dest: '/etc/yum.repos.d/{{ item }}'
+    regexp: "^enabled=0"
+    line: "enabled=1" 
+  with_items:
+      - Rocky-AppStream.repo
+      - Rocky-PowerTools.repo
+      - Rocky-BaseOS.repo
+      - Rocky-Extras.repo
+  when: ansible_distribution_major_version == '8'  and  ansible_os_family == 'Rocky'
+- name: remove Rocky BaseOS
+  lineinfile: 
+    dest: '/etc/yum.repos.d/{{ item }}'
+    regexp: "^mirrorlist"
+    line: "#mirrorlist" 
+    state: absent
+  with_items:
+      - Rocky-AppStream.repo
+      - Rocky-PowerTools.repo
+      - Rocky-BaseOS.repo
+      - Rocky-Extras.repo 
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'Rocky'
+- name: is set Rocky BaseOS
+  replace:
+    path: '/etc/yum.repos.d/{{ item }}'
+    regexp: '^#baseurl=http://dl.rockylinux.org/\\\$contentdir'
+    replace: 'baseurl=https://mirrors.sjtug.sjtu.edu.cn/rocky'
+  with_items:
+      - Rocky-AppStream.repo
+      - Rocky-PowerTools.repo
+      - Rocky-BaseOS.repo
+      - Rocky-Extras.repo
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'Rocky'
+  
+- name: install the epel-release rpm from a remote repo
+  yum:
+    name: epel-release
+    state: present
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky'  
+- name: remove  epel-release
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
     regexp: "^metalink"
@@ -2378,8 +2442,8 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'  
-- name: is set centos8 epel
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'  or  ansible_os_family == 'Rocky'
+- name: is set  epel-release
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
     regexp: '^#baseurl=https://download.fedoraproject.org/pub'
@@ -2390,7 +2454,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky'
 #- name: Remove /etc/yum.repos.d/CentOS-AppStream.repo
 #  file:
 #    path: "/etc/yum.repos.d/CentOS-AppStream.repo"
@@ -2404,13 +2468,13 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
     lock_timeout: 36000
   register: redhat_upack_source
   when: ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky'
-- name: centos8 dnf Install
+- name:  dnf Install
   dnf: 
     name:  
       - epel-release
     state: latest
   when: ansible_pkg_mgr == "dnf"
-- name: centos8 dnf Install
+- name:  dnf Install
   dnf: 
     name:
       - dnf-utils
