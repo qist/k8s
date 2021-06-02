@@ -3,6 +3,12 @@ kind: Namespace
 metadata:
   name: rabbitmq
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rabbitmq
+  namespace: rabbitmq
+---
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
