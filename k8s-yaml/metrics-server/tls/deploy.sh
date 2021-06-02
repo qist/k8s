@@ -25,6 +25,7 @@ cfssl gencert \
         -profile=${CERT_PROFILE} \
          ${HOST_PATH}/cfssl/k8s/metrics-server.json | \
          cfssljson -bare ./metrics-server
+cat ${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem >> ./metrics-server.pem
 cat << EOF | tee ./metrics-server-secrets.yaml
 apiVersion: v1
 kind: Secret
