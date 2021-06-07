@@ -2197,6 +2197,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - { key: 'kernel.softlockup_panic', value: '1' }
       - { key: 'fs.file-max', value: '2097152' } 
       - { key: 'fs.nr_open', value: '2097152' }
+      - { key: 'fs.may_detach_mounts', value: '1' }
       - { key: 'fs.inotify.max_user_instances', value: '8192' }
       - { key: 'fs.inotify.max_queued_events', value: '16384' }
       - { key: 'vm.max_map_count', value: '262144' }
