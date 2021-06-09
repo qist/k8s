@@ -101,9 +101,24 @@ spec:
     plural: traefikservices
     singular: traefikservice
   scope: Namespaced
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: serverstransports.traefik.containo.us
+
+spec:
+  group: traefik.containo.us
+  version: v1alpha1
+  names:
+    kind: ServersTransport
+    plural: serverstransports
+    singular: serverstransport
+  scope: Namespaced
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: traefik
 
@@ -123,25 +138,17 @@ rules:
       - networking.k8s.io
     resources:
       - ingresses
+      - ingressclasses
     verbs:
       - get
       - list
       - watch
   - apiGroups:
       - extensions
-      - networking.k8s.io
     resources:
       - ingresses/status
     verbs:
       - update
-  - apiGroups:
-      - networking.k8s.io
-    resources:
-      - ingressclasses
-    verbs:
-      - get
-      - list
-      - watch
   - apiGroups:
       - traefik.containo.us
     resources:
@@ -152,6 +159,7 @@ rules:
       - ingressrouteudps
       - tlsoptions
       - tlsstores
+      - serverstransports
     verbs:
       - get
       - list
@@ -159,7 +167,7 @@ rules:
 
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: traefik
 

@@ -27,7 +27,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: traefik
-          image: traefik:v2.3.6
+          image: traefik:v2.4.8
           args:
             - --api.insecure
             - --api.dashboard
@@ -40,10 +40,12 @@ spec:
             - --entryPoints.web.forwardedHeaders.insecure
             - --entryPoints.websecure.forwardedHeaders.insecure
             - --providers.kubernetescrd
+            - --providers.kubernetescrd.allowCrossNamespace=false
+            - --providers.kubernetescrd.throttleDuration=10s              
             - --providers.kubernetesingress=true
+            - --providers.kubernetesingress.throttleDuration=10s
             - --metrics.prometheus
-            - --serverstransport.insecureskipverify=true
-            - --providers.kubernetesingress.disablepasshostheaders=true
+            - --serverstransport.insecureskipverify=true            
             - --tracing.zipkin=true
             - --tracing.zipkin.httpEndpoint=http://zipkin:9411/api/v2/spans
             - --tracing.zipkin.sameSpan=true

@@ -27,7 +27,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: ingress-system
-          image: traefik:v2.3.6
+          image: traefik:v2.4.8
           args:
             - --api.insecure
             - --api.dashboard
@@ -40,10 +40,12 @@ spec:
             - --entryPoints.web.forwardedHeaders.insecure
             - --entryPoints.websecure.forwardedHeaders.insecure
             - --providers.kubernetescrd
+            - --providers.kubernetescrd.allowCrossNamespace=false
+            - --providers.kubernetescrd.throttleDuration=10s      
             - --providers.kubernetesingress=true
+            - --providers.kubernetesingress.throttleDuration=10s
             - --metrics.prometheus
             - --serverstransport.insecureskipverify=true
-            - --providers.kubernetesingress.disablepasshostheaders=true
             - --tracing.jaeger=true
             - --tracing.jaeger.samplingServerURL=http://jaeger-agent:5778/sampling
             - --tracing.jaeger.samplingType=const
