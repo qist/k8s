@@ -1185,7 +1185,7 @@ cat > ${HOST_PATH}/cfssl/k8s/kube-proxy.json << EOF
             "C": "CN",
             "ST": "$CERT_ST",
             "L": "$CERT_L",
-      "O": "system:masters",
+      "O": "system:node-proxier",
       "OU": "Kubernetes-manual"
     }
   ]
