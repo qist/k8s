@@ -13,9 +13,9 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV NGINX_VERSION 1.19.5
+ENV NGINX_VERSION 1.21.0
 
-ENV OPENSSL_VERSION 1.1.1h
+ENV OPENSSL_VERSION 1.1.1k
 # ENV http_proxy http://192.168.0.151:7890
 # ENV https_proxy http://192.168.0.151:7890
 
@@ -111,7 +111,7 @@ RUN NGINX_CONFIG="\
         && tar -xzf openssl-$OPENSSL_VERSION.tar.gz \
         && tar -xzf nginx-$NGINX_VERSION.tar.gz \
         && cd  /tmp/nginx-$NGINX_VERSION \
-        && git apply ../ngx_healthcheck_module/nginx_healthcheck_for_nginx_1.16+.patch \
+        && git apply ../ngx_healthcheck_module/nginx_healthcheck_for_nginx_1.19+.patch \
         && ./configure $NGINX_CONFIG \
         && make -j$(getconf _NPROCESSORS_ONLN) \
         && make install
@@ -131,9 +131,9 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV NGINX_VERSION 1.19.5
+ENV NGINX_VERSION 1.21.0
 
-ENV OPENSSL_VERSION 1.1.1h
+ENV OPENSSL_VERSION 1.1.1k
 # nginx 进行使用cpu 数量
 ENV CPU_NUM 4
 # nginx 监听端口

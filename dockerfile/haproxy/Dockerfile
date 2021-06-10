@@ -13,8 +13,8 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV HAPROXY_VERSION 2.3.3
-ENV HAPROXY_URL http://www.haproxy.org/download/2.3/src/haproxy-2.3.3.tar.gz
+ENV HAPROXY_VERSION 2.4.0
+ENV HAPROXY_URL http://www.haproxy.org/download/2.4/src/haproxy-2.4.0.tar.gz
 
 # 代理
 # ENV http_proxy http://192.168.0.151:7890
@@ -33,7 +33,7 @@ RUN HAPROXY_CONFIG="\
      USE_LINUX_TPROXY=1 \
      USE_CPU_AFFINITY=1 \
      DEFINE=-DTCP_USER_TIMEOUT=18 \
-     EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o" \
+     EXTRA_OBJS="addons/promex/service-prometheus.o" \
      PREFIX=/usr \
      " \
      && apk  add  --no-cache --virtual .build-deps \
@@ -71,8 +71,8 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV HAPROXY_VERSION 2.3.3
-ENV HAPROXY_URL http://www.haproxy.org/download/2.3/src/haproxy-2.3.3.tar.gz
+ENV HAPROXY_VERSION 2.4.0
+ENV HAPROXY_URL http://www.haproxy.org/download/2.4/src/haproxy-2.4.0.tar.gz
 # 监听端口
 ENV HOST_PORT 6443
 # 后端转发端口
