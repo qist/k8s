@@ -13,6 +13,7 @@ events {
 }
 
 stream {
+        server_traffic_status_zone;
         upstream kube_apiserver {
             {{ $servers := split (getenv "CP_HOSTS") "," }}{{range $servers}}
             server {{.}}:BACKEND_PORT;
@@ -36,6 +37,7 @@ stream {
 }
 
 http {
+    stream_server_traffic_status_zone;
     server {
         listen 8404;
 
@@ -43,9 +45,17 @@ http {
         location /stats {
             healthcheck_status;
         }
-        # metrics interface
-        location /metrics {
-            healthcheck_status prometheus;
+        location / {
+          access_log  off;
+          stream_server_traffic_status_display;
+          stream_server_traffic_status_display_format html;
         }
+      # metrics interface
+      location /metrics {
+        stream_server_traffic_status_display;
+        stream_server_traffic_status_display_format prometheus;
+        server_tokens off;
+        access_log off;
+    }
     }
 }

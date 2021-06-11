@@ -68,6 +68,8 @@ RUN NGINX_CONFIG="\
       --with-stream_ssl_module \
       --with-stream_ssl_preread_module \
       --with-ld-opt=-Wl,--as-needed \
+      --add-module=../nginx-module-stream-sts \
+      --add-module=../nginx-module-sts \      
       --add-module=../ngx_healthcheck_module \
      " \
      && addgroup -S nginx \
@@ -108,6 +110,8 @@ RUN NGINX_CONFIG="\
         && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o /tmp/nginx-$NGINX_VERSION.tar.gz \
         && cd /tmp \
         && git clone https://github.com/zhouchangxun/ngx_healthcheck_module.git /tmp/ngx_healthcheck_module \
+        && git clone https://github.com/vozlt/nginx-module-stream-sts.git /tmp/nginx-module-stream-sts \
+        && git clone https://github.com/vozlt/nginx-module-sts.git /tmp/nginx-module-sts \        
         && tar -xzf openssl-$OPENSSL_VERSION.tar.gz \
         && tar -xzf nginx-$NGINX_VERSION.tar.gz \
         && cd  /tmp/nginx-$NGINX_VERSION \
