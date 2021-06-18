@@ -103,7 +103,8 @@ LOGTOSTDERR=true
 ALSOLOGTOSTDERR=true
 # 设置输出日志级别
 LEVEL_LOG="2"
-# 启用特性 处于Alpha 或者Beta 阶段 https://kubernetes.io/zh/docs/reference/command-line-tools-reference/feature-gates/
+# 启用特性 处于Alpha 或者Beta 阶段 https://kubernetes.io/zh/docs/reference/command-line-tools-reference/feature-gates/ 
+# RemoveSelfLink=false 1.20 以后使用provisioner 方式部署动态StorageClass 使用默认true
 FEATURE_GATES_OPT="ServiceTopology=true,EndpointSlice=true,TTLAfterFinished=true"
 
 ########################################################################################################################################################################
