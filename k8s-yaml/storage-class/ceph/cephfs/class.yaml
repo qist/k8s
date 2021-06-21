@@ -6,8 +6,8 @@ provisioner: ceph.com/cephfs
 reclaimPolicy: Retain
 allowVolumeExpansion: true
 parameters:
-    monitors: 10.10.10.6,10.10.10.7,10.10.10.5:6789
+    monitors: 10.11.11.2,10.11.11.3,10.11.11.4:6789
     adminId: admin
     adminSecretName: ceph-secret-admin
-    adminSecretNamespace: "kube-system"
-    claimRoot: /pvc-volumes
+    adminSecretNamespace: "clusterstorage"
+    claimRoot: /kube-volumes

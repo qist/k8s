@@ -1,0 +1,10 @@
+---
+# This is the Vault Token that can be created in a Kubernetes Namespace
+# (Tenant) for encrypting PVCs with the "vaulttokens" encryptionKMSType.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-csi-kms-token
+  namespace: clusterstorage
+stringData:
+  token: "sample_root_token_id"

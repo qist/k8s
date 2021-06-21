@@ -1,0 +1,24 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: csi-cephfs
+provisioner: cephfs.csi.ceph.com
+parameters:
+  #此处就是填写上面的clusterID
+  clusterID: 7b4eebe5-c501-41a5-a7db-1cc132972df0  
+  #填写上面的文件系统
+  fsName: cephfs 
+  pool: cephfs_data
+  # 注意，这里的命名空间都改为 clusterstorage
+  csi.storage.k8s.io/provisioner-secret-name: csi-cephfs-secret
+  csi.storage.k8s.io/provisioner-secret-namespace: clusterstorage
+  csi.storage.k8s.io/controller-expand-secret-name: csi-cephfs-secret
+  csi.storage.k8s.io/controller-expand-secret-namespace: clusterstorage
+  csi.storage.k8s.io/node-stage-secret-name: csi-cephfs-secret
+  csi.storage.k8s.io/node-stage-secret-namespace: clusterstorage
+
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+mountOptions:
+ # - debug

@@ -1,0 +1,192 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: csi-cephfsplugin-provisioner
+  namespace: clusterstorage
+  labels:
+    app: csi-metrics
+spec:
+  selector:
+    app: csi-cephfsplugin-provisioner
+  ports:
+    - name: http-metrics
+      port: 8080
+      protocol: TCP
+      targetPort: 8681
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: csi-cephfsplugin-provisioner
+  namespace: clusterstorage
+spec:
+  selector:
+    matchLabels:
+      app: csi-cephfsplugin-provisioner
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: csi-cephfsplugin-provisioner
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - csi-cephfsplugin-provisioner
+              topologyKey: "kubernetes.io/hostname"
+      serviceAccountName: cephfs-csi-provisioner
+      priorityClassName: system-cluster-critical
+      containers:
+        - name: csi-provisioner
+          image: docker.io/juestnow/csi-provisioner:v2.0.4
+          args:
+            - "--csi-address=$(ADDRESS)"
+            - "--v=5"
+            - "--timeout=150s"
+            - "--leader-election=true"
+            - "--retry-interval-start=500ms"
+            - "--feature-gates=Topology=false"
+            - "--extra-create-metadata=true"
+          env:
+            - name: ADDRESS
+              value: unix:///csi/csi-provisioner.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+        - name: csi-resizer
+          image: docker.io/juestnow/csi-resizer:v1.0.1
+          args:
+            - "--csi-address=$(ADDRESS)"
+            - "--v=5"
+            - "--timeout=150s"
+            - "--leader-election"
+            - "--retry-interval-start=500ms"
+            - "--handle-volume-inuse-error=false"
+          env:
+            - name: ADDRESS
+              value: unix:///csi/csi-provisioner.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+        - name: csi-snapshotter
+          image: docker.io/juestnow/csi-snapshotter:v4.0.0
+          args:
+            - "--csi-address=$(ADDRESS)"
+            - "--v=5"
+            - "--timeout=150s"
+            - "--leader-election=true"
+          env:
+            - name: ADDRESS
+              value: unix:///csi/csi-provisioner.sock
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+        - name: csi-cephfsplugin-attacher
+          image: docker.io/juestnow/csi-attacher:v3.0.2
+          args:
+            - "--v=5"
+            - "--csi-address=$(ADDRESS)"
+            - "--leader-election=true"
+            - "--retry-interval-start=500ms"
+          env:
+            - name: ADDRESS
+              value: /csi/csi-provisioner.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+        - name: csi-cephfsplugin
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+          # for stable functionality replace canary with latest release version
+          image: docker.io/juestnow/cephcsi:canary
+          args:
+            - "--nodeid=$(NODE_ID)"
+            - "--type=cephfs"
+            - "--controllerserver=true"
+            - "--endpoint=$(CSI_ENDPOINT)"
+            - "--v=5"
+            - "--drivername=cephfs.csi.ceph.com"
+            - "--pidlimit=-1"
+            - "--enableprofiling=false"
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: CSI_ENDPOINT
+              value: unix:///csi/csi-provisioner.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+            - name: host-sys
+              mountPath: /sys
+            - name: lib-modules
+              mountPath: /lib/modules
+              readOnly: true
+            - name: host-dev
+              mountPath: /dev
+            - name: ceph-csi-config
+              mountPath: /etc/ceph-csi-config/
+            - name: keys-tmp-dir
+              mountPath: /tmp/csi/keys
+        - name: liveness-prometheus
+          image: docker.io/juestnow/cephcsi:canary
+          args:
+            - "--type=liveness"
+            - "--endpoint=$(CSI_ENDPOINT)"
+            - "--metricsport=8681"
+            - "--metricspath=/metrics"
+            - "--polltime=60s"
+            - "--timeout=3s"
+          env:
+            - name: CSI_ENDPOINT
+              value: unix:///csi/csi-provisioner.sock
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+          imagePullPolicy: "IfNotPresent"
+      volumes:
+        - name: socket-dir
+          emptyDir: {
+            medium: "Memory"
+          }
+        - name: host-sys
+          hostPath:
+            path: /sys
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+        - name: host-dev
+          hostPath:
+            path: /dev
+        - name: ceph-csi-config
+          configMap:
+            name: ceph-csi-config
+        - name: keys-tmp-dir
+          emptyDir: {
+            medium: "Memory"
+          }

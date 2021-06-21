@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: ConfigMap
+data:
+  config.json: |-
+    [
+      {
+        "clusterID": "7b4eebe5-c501-41a5-a7db-1cc132972df0", 
+        "monitors": [
+          "10.11.11.2:6789",
+          "10.11.11.3:6789",
+          "10.11.11.4:6789"
+        ],
+        "cephFS": {
+          "subvolumeGroup": "/kube-volumes"
+        }
+      }
+    ]
+metadata:
+  name: ceph-csi-config
+  namespace: clusterstorage
