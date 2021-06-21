@@ -3750,7 +3750,6 @@ evictionSoftGracePeriod:
   memory.available: 2m
   nodefs.available: 2m
 evictionPressureTransitionPeriod: ${EVICTION_PRESSURE_TRANSITION_PERIOD}
-podsPerCore: 0
 evictionMinimumReclaim:
   imagefs.available: ${EVICTIONHARD_MEMORY}
   memory.available: 0Mi
