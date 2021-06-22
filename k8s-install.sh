@@ -3266,6 +3266,7 @@ cgroup_manager = "cgroupfs"
 # will be added.
 default_capabilities = [
     "CHOWN",
+    "MKNOD",
     "DAC_OVERRIDE",
     "NET_ADMIN",
     "NET_RAW",
