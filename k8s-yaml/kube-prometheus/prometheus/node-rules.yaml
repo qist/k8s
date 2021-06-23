@@ -11,7 +11,7 @@ spec:
     - name: linux Disk Alerts
       rules:
         - alert: DiskSpaceUsage
-          expr: 100 - (node_filesystem_avail_bytes{fstype=~"ext.?|xfs",mountpoint!~".+docker|.+kubelet|.+docker.+|.+kubelet.+"} / node_filesystem_size_bytes{fstype=~"ext.?|xfs",mountpoint!~".+docker|.+kubelet|.+docker.+|.+kubelet.+"} * 100) > 90
+          expr: 100 - (node_filesystem_avail_bytes{fstype=~"ext.?|xfs",mountpoint!~".+docker.*|.+kubelet.*"} / node_filesystem_size_bytes{fstype=~"ext.?|xfs",mountpoint!~".+docker.*|.+kubelet.*"} * 100) > 90
           for: 1m
           labels:
             severity: critical
