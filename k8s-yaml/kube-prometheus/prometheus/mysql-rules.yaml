@@ -79,4 +79,57 @@ spec:
       annotations:
         description: The innodb logs are waiting for disk at a rate of {{$value}} /
           second
-        summary: MySQL innodb log writes stalling  
+        summary: MySQL innodb log writes stalling                
+    - alert: MySQL Status 
+        expr: up == 0
+        for: 5s 
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{$labels.instance}}: MySQL has stop !!!"
+          description: "检测MySQL数据库运行状态"
+
+    - alert: MySQL Slave IO Thread Status
+      expr: mysql_slave_status_slave_io_running == 0
+      for: 5s 
+      labels:
+        severity: warning
+      annotations: 
+        summary: "{{$labels.instance}}: MySQL Slave IO Thread has stop !!!"
+        description: "检测MySQL主从IO线程运行状态"
+
+    - alert: MySQL Slave SQL Thread Status 
+      expr: mysql_slave_status_slave_sql_running == 0
+      for: 5s 
+      labels:
+        severity: warning
+      annotations: 
+        summary: "{{$labels.instance}}: MySQL Slave SQL Thread has stop !!!"
+        description: "检测MySQL主从SQL线程运行状态"
+
+    - alert: MySQL Slave Delay Status 
+      expr: mysql_slave_status_sql_delay == 30
+      for: 5s 
+      labels:
+        severity: warning
+      annotations: 
+        summary: "{{$labels.instance}}: MySQL Slave Delay has more than 30s !!!"
+        description: "检测MySQL主从延时状态"
+
+    - alert: Mysql_Too_Many_Connections
+      expr: rate(mysql_global_status_threads_connected[5m]) > 200
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "{{$labels.instance}}: 连接数过多"
+        description: "{{$labels.instance}}: 连接数过多，请处理 ,(current value is: {{ $value }})"  
+
+    - alert: Mysql_Too_Many_slow_queries
+      expr: rate(mysql_global_status_slow_queries[5m]) > 3
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "{{$labels.instance}}: 慢查询有点多，请检查处理"
+        description: "{{$labels.instance}}: Mysql slow_queries is more than 3 per second ,(current value is: {{ $value }})"
