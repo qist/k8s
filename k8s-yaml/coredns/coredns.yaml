@@ -77,11 +77,14 @@ data:
         kubernetes __PILLAR__DNS__DOMAIN__ in-addr.arpa ip6.arpa {
             pods verified
             endpoint_pod_names
+            upstream
             fallthrough in-addr.arpa ip6.arpa
             ttl 30
         }
         prometheus :9153
-        forward . /etc/resolv.conf
+        forward . /etc/resolv.conf {
+            max_concurrent 1000
+        }
         cache 30
         reload 6s
         loadbalance
