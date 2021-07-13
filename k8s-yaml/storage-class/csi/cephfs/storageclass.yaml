@@ -17,7 +17,8 @@ parameters:
   csi.storage.k8s.io/controller-expand-secret-namespace: clusterstorage
   csi.storage.k8s.io/node-stage-secret-name: csi-cephfs-secret
   csi.storage.k8s.io/node-stage-secret-namespace: clusterstorage
-
+  # mounter: kernel
+  mounter: fuse
 reclaimPolicy: Delete
 allowVolumeExpansion: true
 mountOptions:
