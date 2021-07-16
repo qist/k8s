@@ -4742,6 +4742,7 @@ KUBE_PROXY_OPTS="--logtostderr=${LOGTOSTDERR} \\
 ${FEATURE_GATES} \\
 --masquerade-all=true \\
 --proxy-mode=ipvs \\
+--profiling=true \\
 --ipvs-min-sync-period=5s \\
 --ipvs-sync-period=5s \\
 --ipvs-scheduler=rr \\
