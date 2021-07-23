@@ -93,6 +93,7 @@ RUN PHP_CONFIG="\
         oniguruma-dev \
         gettext-dev \
         libzip \
+        file \
         git \
         libzip-dev \
         && curl -fSL  https://www.php.net/distributions/php-$PHP_VERSION.tar.gz -o /tmp/php-$PHP_VERSION.tar.gz \
@@ -134,7 +135,7 @@ COPY php-fpm.d /etc/php-fpm.d
 COPY localtime /etc/localtime
 RUN echo extension=`find /usr/local/lib/ -name memcached.so`>>/etc/php.ini
 # 开放端口
-EXPOSE 9001
+EXPOSE 9000
 
 STOPSIGNAL SIGTERM
 
