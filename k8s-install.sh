@@ -7298,12 +7298,18 @@ selectEnv(){
         fi
         if [ ${IPTABLES_INSTALL} == "ON" ]; then
         IPTABLES_FILE=iptables.yml
+        else
+        IPTABLES_FILE=""
         fi
         if [ ${PACKAGE_SYSCTL} == "ON" ]; then
             PACKAGE_SYSCTL_FILE=package-sysctl.yml
+        else
+            PACKAGE_SYSCTL_FILE=""
         fi
         if [ ${K8S_EVENTS} == ON ]; then
         EVENTS_ETCD="##########  etcd EVENTS 部署 ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE}  events-etcd.yml --ssh-common-args=\"-o StrictHostKeyChecking=no\" ${ASK_PASS}"
+        else
+        EVENTS_ETCD=""
         fi        
 }
 README.md(){
