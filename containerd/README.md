@@ -13,8 +13,8 @@ https://github.com/containernetworking/plugins/releases/download/v0.8.5/cni-plug
 # kubelet 接入： 
 # containerd 配置：
               --container-runtime=remote \
-              --container-runtime-endpoint=unix:///run/containerd/containerd.sock \
-              --containerd=unix:///run/containerd/containerd.sock \
+              --container-runtime-endpoint=unix:///run/containerd/containerd.sock
+
 # kubelet.service
 [Unit]
 Description=Kubernetes Kubelet
@@ -36,11 +36,10 @@ ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice
 # 刷新service 并启动
 systemctl daemon-reload
 systemctl restart  kubelet.service 
-cri-o 配置
-       
+# kubelet 接入： 
+# cri-o 配置:
               --container-runtime=remote \
-              --container-runtime-endpoint=unix:///var/run/crio/crio.sock \
-              --containerd=unix:///var/run/crio/crio.sock \   
+              --container-runtime-endpoint=unix:///var/run/crio/crio.sock
 
 # kubelet.service
 [Unit]
