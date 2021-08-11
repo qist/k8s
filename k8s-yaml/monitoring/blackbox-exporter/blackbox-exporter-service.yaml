@@ -9,8 +9,11 @@ metadata:
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/scheme: 'https'
-    prometheus.io/port: '9115' 
-    prometheus.io/tcp: 'true'    
+    prometheus.io/port: '9115'
+    prometheus.io/web: 'true'
+    prometheus.io/tls: 'https'
+    prometheus.io/tcp: 'true'
+    prometheus.io/icmp: 'true'   
 spec:
   ports:
   - name: https

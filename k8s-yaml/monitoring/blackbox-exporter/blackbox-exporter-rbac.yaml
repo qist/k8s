@@ -17,6 +17,18 @@ kind: ClusterRole
 metadata:
   name: blackbox-exporter
 rules:
+- verbs:
+    - '*'
+  apiGroups:
+    - '*'
+  resources:
+    - '*'
+- verbs:
+    - get
+  nonResourceURLs:
+   - '*'
+  verbs: 
+    - get
 - apiGroups:
   - authentication.k8s.io
   resources:

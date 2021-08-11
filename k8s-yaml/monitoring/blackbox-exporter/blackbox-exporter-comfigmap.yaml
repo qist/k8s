@@ -17,7 +17,9 @@ data:
           valid_status_codes: [200, 201, 301, 302]
           method: GET
           tls_config:
-            insecure_skip_verify: false
+            insecure_skip_verify: true
+            ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
           no_follow_redirects: false
           preferred_ip_protocol: "ip4"
           ip_protocol_fallback: false
