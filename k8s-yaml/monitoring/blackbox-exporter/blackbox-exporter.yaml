@@ -1,0 +1,118 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: blackbox-exporter
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/instance: blackbox
+    app.kubernetes.io/name: blackbox-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: blackbox
+      app.kubernetes.io/name: blackbox-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: blackbox
+        app.kubernetes.io/name: blackbox-exporter
+    spec:
+      initContainers:
+        - name: increase-net-ipv4-ping-group-range
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command: ["sysctl", "-w", "net.ipv4.ping_group_range=0 2147483647"]
+          securityContext:
+            privileged: true
+      containers:
+        - name: blackbox-exporter
+          image: 'prom/blackbox-exporter:latest'
+          args:
+            - '--config.file=/etc/blackbox_exporter/config.yml'
+            - '--log.level=info'
+            - '--web.listen-address=:19115'
+          securityContext:
+            capabilities:
+              add:
+                - NET_RAW
+            runAsUser: 1000
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+          ports:
+            - name: http
+              containerPort: 19115
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /etc/blackbox_exporter
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 19115
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 19115
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          imagePullPolicy: IfNotPresent
+        - name: module-configmap-reloader
+          args:
+            - --webhook-url=http://localhost:19115/-/reload
+            - --volume-dir=/etc/blackbox_exporter/
+          image: jimmidyson/configmap-reload:v0.5.0        
+          resources:
+            limits:
+              cpu: 20m
+              memory: 40Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+          - mountPath: /etc/blackbox_exporter/
+            name: config
+            readOnly: true
+        - args:
+          - --logtostderr
+          - --secure-listen-address=:9115
+          - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+          - --upstream=http://127.0.0.1:19115/
+          image: quay.io/brancz/kube-rbac-proxy:v0.11.0
+          name: kube-rbac-proxy
+          ports:
+          - containerPort: 9115
+            name: https
+          resources:
+            limits:
+              cpu: 20m
+              memory: 40Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
+          securityContext:
+            runAsGroup: 65532
+            runAsNonRoot: true
+            runAsUser: 65532
+      nodeSelector:
+        kubernetes.io/os: linux
+      serviceAccountName: blackbox-exporter
+      volumes:
+      - configMap:
+          name: blackbox-exporter-configuration
+        name: config          
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1

@@ -1,0 +1,63 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: blackbox-exporter-configuration
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/instance: blackbox
+    app.kubernetes.io/name: blackbox-exporter
+data:
+  config.yml: |-
+    modules:
+      http_2xx:
+        prober: http
+        timeout: 60s
+        http:
+          valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+          valid_status_codes: [200, 201, 301, 302]
+          method: GET
+          tls_config:
+            insecure_skip_verify: false
+          no_follow_redirects: false
+          preferred_ip_protocol: "ip4"
+          ip_protocol_fallback: false
+      http_post_2xx:
+        timeout: 60s
+        prober: http
+        http:
+          method: POST
+          preferred_ip_protocol: "ip4"
+          tls_config:
+            insecure_skip_verify: false
+      tcp_connect:
+        prober: tcp
+        timeout: 60s
+        tcp:
+          preferred_ip_protocol: "ip4"
+      pop3s_banner:
+        prober: tcp
+        tcp:
+          query_response:
+          - expect: "^+OK"
+          tls: true
+          tls_config:
+            insecure_skip_verify: false
+      ssh_banner:
+        prober: tcp
+        tcp:
+          query_response:
+          - expect: "^SSH-2.0-"
+      irc_banner:
+        prober: tcp
+        tcp:
+          query_response:
+          - send: "NICK prober"
+          - send: "USER prober prober prober :prober"
+          - expect: "PING :([^ ]+)"
+            send: "PONG ${1}"
+          - expect: "^:[^ ]+ 001"
+      icmp:
+        timeout: 60s
+        prober: icmp
+        icmp:
+          preferred_ip_protocol: "ip4"

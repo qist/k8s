@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: process-exporter
+  name: process-exporter
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: process-exporter
+  template:
+    metadata:
+      labels:
+        app: process-exporter  
+    spec:
+      containers:
+      - image: juestnow/process-exporter:v0.7.5
+        args:
+        - --web.listen-address=127.0.0.1:9256
+        - "-procfs=/host/proc"
+        - "-config.path=/etc/process-exporter/process-exporter.yaml"
+        name: process-exporter
+        resources:
+          requests:
+            memory: 100Mi
+            cpu: 102m
+          limits:
+            memory: 150Mi
+            cpu: 250m
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/process-exporter
+        - name: proc
+          readOnly:  true
+          mountPath: /host/proc
+      - args:
+        - --logtostderr
+        - --secure-listen-address=[$(IP)]:9256
+        - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+        - --upstream=http://127.0.0.1:9256/
+        env:
+        - name: IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        image: quay.io/brancz/kube-rbac-proxy:v0.8.0
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 9256
+          hostPort: 9256
+          name: https
+        resources:
+          limits:
+            cpu: 20m
+            memory: 40Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+        securityContext:
+          runAsGroup: 65532
+          runAsNonRoot: true
+          runAsUser: 65532
+      hostNetwork: true
+      hostPID: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+      serviceAccountName: process-exporter
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: config-volume
+          configMap:
+            name: process-config          
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 10%
+    type: RollingUpdate        

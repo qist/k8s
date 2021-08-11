@@ -1,0 +1,39 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: prometheus-files-discover-http
+  namespace: monitoring
+data:
+  probe.yaml: |
+    - targets:
+      - https://www.sina.com.cn
+      - http://www.ifeng.com
+      - http://www.cctv.com
+      - http://news.2345.com/wuli
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: prometheus-files-discover-tcp
+  namespace: monitoring
+data:
+  probe.yaml: |
+    - targets:
+      - www.sina.com.cn:443
+      - www.ifeng.com:443
+      - www.cctv.com:443
+      - news.2345.com:443
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: prometheus-files-discover-icmp
+  namespace: monitoring
+data:
+  probe.yaml: |
+    - targets:
+      - www.sina.com.cn
+      - www.ifeng.com
+      - www.cctv.com
+      - news.2345.com

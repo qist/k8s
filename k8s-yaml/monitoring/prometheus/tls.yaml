@@ -1,0 +1,6 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: prometheus-k8s-tls-assets
+  namespace: monitoring
+type: Opaque

@@ -1,0 +1,172 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: prometheus-k8s
+  name: prometheus-k8s
+  namespace: monitoring
+spec:
+  podManagementPolicy: Parallel
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: prometheus-k8s
+  serviceName: prometheus-operated
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: prometheus-k8s
+    spec:
+      containers:
+      - args:
+        - --web.console.templates=/etc/prometheus/consoles
+        - --web.console.libraries=/etc/prometheus/console_libraries
+        - --config.file=/etc/prometheus/config/prometheus.yaml
+        - --storage.tsdb.path=/prometheus
+        - --storage.tsdb.retention.time=1d
+        - --web.enable-lifecycle
+        - --storage.tsdb.no-lockfile
+        - --web.route-prefix=/
+        image: prom/prometheus:v2.28.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 6
+          httpGet:
+            path: /-/healthy
+            port: web
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 3
+        name: prometheus
+        ports:
+        - containerPort: 9090
+          name: web
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 120
+          httpGet:
+            path: /-/ready
+            port: web
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 3
+        resources:
+          requests:
+            memory: 4Gi
+        volumeMounts:
+        - mountPath: /etc/prometheus/config
+          name: config
+          readOnly: true
+        - mountPath: /etc/prometheus/certs
+          name: tls-assets
+          readOnly: true
+        - name: secret-etcd-certs
+          readOnly: true
+          mountPath: /etc/prometheus/secrets/etcd-certs          
+        - mountPath: /prometheus
+          name: prometheus-k8s-db
+          subPath: prometheus-db
+        - mountPath: /etc/prometheus/rules
+          name: prometheus-k8s-rulefiles
+        - mountPath: /etc/prometheus/configmaps/prometheus-files-discover/http
+          name: configmap-prometheus-files-discover-http
+          readOnly: true
+        - mountPath: /etc/prometheus/configmaps/prometheus-files-discover/tcp
+          name: configmap-prometheus-files-discover-tcp
+          readOnly: true
+        - mountPath: /etc/prometheus/configmaps/prometheus-files-discover/icmp
+          name: configmap-prometheus-files-discover-icmp
+          readOnly: true          
+      - args:
+        - --webhook-url=http://localhost:9090/-/reload
+        - --volume-dir=/etc/prometheus/config
+        - --web.listen-address=:9532
+        image: jimmidyson/configmap-reload:v0.5.0
+        imagePullPolicy: IfNotPresent
+        name: prometheus-config-reloader
+        resources:
+          limits:
+            cpu: 100m
+            memory: 25Mi
+          requests:
+            cpu: 100m
+            memory: 25Mi
+        volumeMounts:
+        - mountPath: /etc/prometheus/config
+          name: config
+      - args:
+        - --webhook-url=http://localhost:9090/-/reload
+        - --volume-dir=/etc/prometheus/rules
+        - --web.listen-address=:9533
+        image: jimmidyson/configmap-reload:v0.5.0
+        imagePullPolicy: IfNotPresent
+        name: rules-configmap-reloader
+        resources:
+          limits:
+            cpu: 100m
+            memory: 25Mi
+          requests:
+            cpu: 100m
+            memory: 25Mi
+        volumeMounts:
+        - mountPath: /etc/prometheus/rules
+          name: prometheus-k8s-rulefiles
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 1000
+      serviceAccount: prometheus-k8s
+      serviceAccountName: prometheus-k8s
+      terminationGracePeriodSeconds: 600
+      volumes:
+      - name: config
+        configMap:
+          defaultMode: 420
+          name: prometheus-k8s-config
+      - name: tls-assets
+        secret:
+          defaultMode: 420
+          secretName: prometheus-k8s-tls-assets
+      - name: secret-etcd-certs
+        secret:
+          secretName: etcd-certs
+          defaultMode: 420          
+      - configMap:
+          defaultMode: 420
+          name: prometheus-k8s-rulefiles
+        name: prometheus-k8s-rulefiles
+      - configMap:
+          defaultMode: 420
+          name: prometheus-files-discover-http
+        name: configmap-prometheus-files-discover-http
+      - configMap:
+          defaultMode: 420
+          name: prometheus-files-discover-tcp
+        name: configmap-prometheus-files-discover-tcp
+      - configMap:
+          defaultMode: 420
+          name: prometheus-files-discover-icmp
+        name: configmap-prometheus-files-discover-icmp        
+      - name: prometheus-k8s-db
+        emptyDir: {}        
+  updateStrategy:
+    type: RollingUpdate
+  #volumeClaimTemplates:
+  #- metadata:
+  #    name: prometheus-k8s-db
+  #  spec:
+  #    accessModes:
+  #    - ReadWriteOnce
+  #    resources:
+  #      requests:
+  #        storage: 50Gi
+  #    volumeMode: Filesystem

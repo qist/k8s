@@ -1,0 +1,20 @@
+groups:
+- name: black-box
+  rules:
+  - alert: SSL证书到期预警
+    expr: (probe_ssl_earliest_cert_expiry-time())/86400 < 14
+    for: 1d
+    labels:
+      severity: critical
+    annotations:
+      description: '域名: {{ $labels.instance }} , 剩余有效天数: {{$value}}'
+      summary: 'SSL Warning'
+
+  - alert: 域名无法访问
+    expr: probe_success < 1
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      description: '域名: {{ $labels.instance }} , 无法访问'
+      summary: 'Domain Warning'

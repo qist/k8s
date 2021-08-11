@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    alertmanager: main
+  name: alertmanager-main
+  namespace: monitoring
+spec:
+  podManagementPolicy: Parallel
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      alertmanager: main
+      app: alertmanager
+  serviceName: alertmanager-operated
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        alertmanager: main
+        app: alertmanager
+    spec:
+      containers:
+      - args:
+        - --config.file=/etc/alertmanager/config/alertmanager.yaml
+        - --storage.path=/alertmanager
+        - --data.retention=120h
+        - --cluster.listen-address=[$(POD_IP)]:9094
+        - --web.listen-address=:9093
+        - --web.route-prefix=/
+        - --cluster.peer=alertmanager-main-0.alertmanager-operated:9094
+        - --cluster.peer=alertmanager-main-1.alertmanager-operated:9094
+        - --cluster.peer=alertmanager-main-2.alertmanager-operated:9094
+        - --cluster.reconnect-timeout=5m
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        image: quay.io/prometheus/alertmanager:v0.22.2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /-/healthy
+            port: web
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        name: alertmanager
+        ports:
+        - containerPort: 9093
+          name: web
+          protocol: TCP
+        - containerPort: 9094
+          name: mesh-tcp
+          protocol: TCP
+        - containerPort: 9094
+          name: mesh-udp
+          protocol: UDP
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /-/ready
+            port: web
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 3
+        resources:
+          requests:
+            memory: 200Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /etc/alertmanager/config
+          name: config-volume
+        - mountPath: /alertmanager
+          name: alertmanager-main-db
+      - args:
+        - -webhook-url=http://localhost:9093/-/reload
+        - -volume-dir=/etc/alertmanager/config
+        image: jimmidyson/configmap-reload:v0.5.0
+        imagePullPolicy: IfNotPresent
+        name: config-reloader
+        resources:
+          limits:
+            cpu: 100m
+            memory: 25Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /etc/alertmanager/config
+          name: config-volume
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 1000
+      serviceAccount: alertmanager-main
+      serviceAccountName: alertmanager-main
+      terminationGracePeriodSeconds: 120
+      volumes:
+      - name: config-volume
+        secret:
+          defaultMode: 420
+          secretName: alertmanager-main
+      - emptyDir: {}
+        name: alertmanager-main-db
+  updateStrategy:
+    type: RollingUpdate

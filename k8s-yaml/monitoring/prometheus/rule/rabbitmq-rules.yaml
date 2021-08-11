@@ -1,0 +1,35 @@
+groups:
+- name: rabbitmq.rules
+  rules:
+  - alert: RabbitmqClusterNodeDown                      
+    expr: sum (rabbitmq_identity_info) by (rabbitmq_cluster) <2
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      description: " Some cluster nodes of rabbitmq are down. Number of available nodes:{{ $value }} "
+      summary: "Some cluster nodes of rabbitmq are down"
+  - alert: RabbitmqClusterDown                      
+    expr: absent(sum (rabbitmq_identity_info) by (rabbitmq_cluster)) == 1
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      description: " The rabbitmq cluster is down,All node is not available! "
+      summary: "The rabbitmq cluster is down."
+  - alert: RabbitmqTooManyConnections
+    expr: rabbitmq_connections > 1000
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      description: "Instance {{ $labels.instance }} Rabbitmq connections too many, VALUE = {{ $value }}"
+      summary: "Rabbitmq connections too many. This requires immediate action!"
+  - alert: RabbitmqMemoryUsage
+    expr: (rabbitmq_resident_memory_limit_bytes - rabbitmq_process_resident_memory_bytes )/1024/1024 < 500
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      description: "Instance {{ $labels.instance }} Rabbitmq memory available is less than 500MB, VALUE = {{ $value }}"
+      summary: "Rabbitmq memory available is less than 500MB!"
