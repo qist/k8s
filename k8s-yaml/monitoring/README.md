@@ -10,6 +10,11 @@ kubectl -n monitoring create secret generic etcd-certs \
 --from-file=/opt/rocky/cfssl/pki/etcd/etcd-ca.pem \
 --from-file=/opt/rocky/cfssl/pki/etcd/etcd-client.pem \
 --from-file=/opt/rocky/cfssl/pki/etcd/etcd-client-key.pem
+## kubeadm 安装etcd 证书地址 记得修改prometheus-configmap.yaml etcd 证书路径
+kubectl -n monitoring create secret generic etcd-certs \
+--from-file=/etc/kubernetes/pki/etcd/ca.crt \
+--from-file=/etc/kubernetes/pki/apiserver-etcd-client.crt \
+--from-file=/etc/kubernetes/pki/apiserver-etcd-client.key
 ```
 ### 创建监控rule
 ```
