@@ -12,7 +12,11 @@ spec:
   template:
     metadata:
       labels:
-        app: process-exporter  
+        app: process-exporter
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/scheme: "https"
+        prometheus.io/port: "9256" 
     spec:
       containers:
       - image: juestnow/process-exporter:v0.7.5
