@@ -3,6 +3,8 @@ apiVersion: networking.k8s.io/v1
 metadata:
   name: blackbox-exporter
   namespace: monitoring
+  annotations:
+    prometheus.io/probed: 'true'   
 spec:
   rules:
     - host: blackbox.tycng.com
