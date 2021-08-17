@@ -1657,12 +1657,12 @@ KubeApiserverConfig(){
       elif [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \< 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.19.0` -eq 1 ]]; then
       FEATURE_GATES="--feature-gates=DynamicAuditing=true"
       AUDIT_DYNAMIC_CONFIGURATION="--audit-dynamic-configuration"
-      elif [[ "$DYNAMICAUDITING" == "false" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]]; then
+      elif [[ "$DYNAMICAUDITING" == "false" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
       AUDIT_DYNAMIC_CONFIGURATION=""
       FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
-      elif  [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "false" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]]; then
+      elif  [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "false" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
       AUDIT_DYNAMIC_CONFIGURATION=""
-      elif  [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]]; then
+      elif  [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
       AUDIT_DYNAMIC_CONFIGURATION=""
       FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
       else
@@ -1875,6 +1875,11 @@ DISABLE_ADMISSION_PLUGINS_OPT=${DISABLE_ADMISSION_PLUGINS}
 else
 DISABLE_ADMISSION_PLUGINS_OPT=DenyEscalatingExec,${DISABLE_ADMISSION_PLUGINS}
 fi  
+if [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
+KUBELET_HTTPS="--kubelet-https"
+else
+KUBELET_HTTPS=""
+fi
 # 创建 kube-apiserver 启动配置文件
 cat > ${HOST_PATH}/roles/kube-apiserver/templates/kube-apiserver << EOF
 KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
@@ -1926,7 +1931,7 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         ${AUDIT_POLICY_FILE} \\
         --audit-log-path=${K8S_PATH}/log/api-server-audit.log \\
         --profiling \\
-        --kubelet-https \\
+        ${KUBELET_HTTPS} \\
         --http2-max-streams-per-connection=10000 \\
         --event-ttl=1h \\
         ${FEATURE_GATES} \\
@@ -3709,7 +3714,7 @@ kubeletConfig(){
       colorEcho ${RED} "kubernetes no download."
       exit 1
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] ; then
+      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
       #FEATURE_GATES=`echo -e "featureGates:\n  EndpointSlice: true\n  ServiceTopology: true"`
       FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
       else
@@ -4381,11 +4386,16 @@ controllerConfig(){
       colorEcho ${RED} "kubernetes no download."
       exit 1
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] ; then
+      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
       FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
       else
       FEATURE_GATES=""
    fi
+if [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
+HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS="--horizontal-pod-autoscaler-use-rest-clients=true"
+else
+HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS=""
+fi
 # 创建kube-controller-manager 启动配置文件
 cat > ${HOST_PATH}/roles/kube-controller-manager/templates/kube-controller-manager << EOF
 KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
@@ -4427,7 +4437,7 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --service-account-private-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem \\
 ${FEATURE_GATES} \\
 --controllers=*,bootstrapsigner,tokencleaner \\
---horizontal-pod-autoscaler-use-rest-clients=true \\
+${HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS} \\
 --horizontal-pod-autoscaler-sync-period=10s \\
 --flex-volume-plugin-dir=${K8S_PATH}/kubelet-plugins/volume \\
 --tls-cert-file=${K8S_PATH}/ssl/k8s/k8s-controller-manager.pem \\
@@ -4571,7 +4581,7 @@ schedulerConfig(){
       colorEcho ${RED} "kubernetes no download."
       exit 1
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] ; then
+      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]] ; then
       FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
       else
       FEATURE_GATES=""
@@ -4730,7 +4740,7 @@ kubeProxyConfig(){
       colorEcho ${RED} "kubernetes no download."
       exit 1
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] ; then
+      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
       FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
       else
       FEATURE_GATES=""
