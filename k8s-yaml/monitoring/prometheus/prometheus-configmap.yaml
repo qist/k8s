@@ -371,7 +371,97 @@ data:
           regex: (.+);(.*):.*
           target_label: service_name
           replacement: $1-$2
-          action: replace          
+          action: replace  
+        - source_labels: [__meta_kubernetes_service_name]
+          separator: ;
+          regex: (.*)
+          target_label: job
+          replacement: $1
+          action: replace
+      - job_name: kube-state-metrics/0
+        honor_labels: true
+        honor_timestamps: true
+        scrape_interval: 30s
+        scrape_timeout: 30s
+        metrics_path: /metrics
+        scheme: https
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true        
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+          separator: ;
+          regex: kube-state-metrics
+          replacement: $1
+          action: keep
+        - source_labels: [__meta_kubernetes_endpoint_port_name]
+          separator: ;
+          regex: https-main
+          replacement: $1
+          action: keep
+        - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+          separator: ;
+          regex: Node;(.*)
+          target_label: node
+          replacement: ${1}
+          action: replace
+        - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+          separator: ;
+          regex: Pod;(.*)
+          target_label: pod
+          replacement: ${1}
+          action: replace
+        - source_labels: [__meta_kubernetes_namespace]
+          separator: ;
+          regex: (.*)
+          target_label: namespace
+          replacement: $1
+          action: replace
+        - source_labels: [__meta_kubernetes_service_name]
+          separator: ;
+          regex: (.*)
+          target_label: service
+          replacement: $1
+          action: replace
+        - source_labels: [__meta_kubernetes_pod_name]
+          separator: ;
+          regex: (.*)
+          target_label: pod
+          replacement: $1
+          action: replace
+        - source_labels: [__meta_kubernetes_pod_container_name]
+          separator: ;
+          regex: (.*)
+          target_label: container
+          replacement: $1
+          action: replace
+        - source_labels: [__meta_kubernetes_service_name]
+          separator: ;
+          regex: (.*)
+          target_label: job
+          replacement: ${1}
+          action: replace
+        - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+          separator: ;
+          regex: (.+)
+          target_label: job
+          replacement: ${1}
+          action: replace
+        - separator: ;
+          regex: (.*)
+          target_label: endpoint
+          replacement: https-main
+          action: replace
+        - separator: ;
+          regex: (pod|service|endpoint|namespace)
+          replacement: $1
+          action: labeldrop 
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - monitoring          
       - job_name: kubernetes-http_2xx
         honor_timestamps: true
         params:
@@ -584,37 +674,37 @@ data:
           target_label: pod
           replacement: $1
           action: replace          
-      - job_name: 'kubernetes-ingresses'
-        metrics_path: /probe
-        params:
-          module: [http_2xx]
-        kubernetes_sd_configs:
-        - role: ingress
-        relabel_configs:
-        # Example relabel to probe only some ingresses that have "prometheus.io/probed = true" annotation
-        - source_labels: [__meta_kubernetes_ingress_annotation_prometheus_io_probed]
-          separator: ;
-          regex: true
-          replacement: $1
-          action: keep         
-        - source_labels: [__meta_kubernetes_ingress_scheme,__address__,__meta_kubernetes_ingress_path]
-          separator: ;
-          regex: (.+);(.+);(.+)
-          replacement: ${1}://${2}${3}
-          target_label: __param_target
-        - target_label: __address__
-          replacement: blackbox-exporter.monitoring:19115
-        - source_labels: [__param_target]
-          separator: ;
-          target_label: instance
-        - action: labelmap
-          regex: __meta_kubernetes_ingress_label_(.+)
-        - source_labels: [__meta_kubernetes_namespace]
-          separator: ;
-          target_label: namespace
-        - source_labels: [__meta_kubernetes_ingress_name]
-          separator: ;
-          target_label: service
+      # job_name: 'kubernetes-ingresses'
+      # metrics_path: /probe
+      # params:
+      #   module: [http_2xx]
+      # kubernetes_sd_configs:
+      # - role: ingress
+      # relabel_configs:
+      # # Example relabel to probe only some ingresses that have "prometheus.io/probed = true" annotation
+      # - source_labels: [__meta_kubernetes_ingress_annotation_prometheus_io_probed]
+      #   separator: ;
+      #   regex: true
+      #   replacement: $1
+      #   action: keep         
+      # - source_labels: [__meta_kubernetes_ingress_scheme,__address__,__meta_kubernetes_ingress_path]
+      #   separator: ;
+      #   regex: (.+);(.+);(.+)
+      #   replacement: ${1}://${2}${3}
+      #   target_label: __param_target
+      # - target_label: __address__
+      #   replacement: blackbox-exporter.monitoring:19115
+      # - source_labels: [__param_target]
+      #   separator: ;
+      #   target_label: instance
+      # - action: labelmap
+      #   regex: __meta_kubernetes_ingress_label_(.+)
+      # - source_labels: [__meta_kubernetes_namespace]
+      #   separator: ;
+      #   target_label: namespace
+      # - source_labels: [__meta_kubernetes_ingress_name]
+      #   separator: ;
+      #   target_label: service
       - job_name: kubernetes-pods
         honor_timestamps: true
         scrape_interval: 10s
