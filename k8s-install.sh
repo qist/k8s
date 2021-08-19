@@ -3865,7 +3865,6 @@ EOF
 cat > ${HOST_PATH}/roles/kubelet/templates/kubelet.service << EOF
 [Unit]
 Description=Kubernetes Kubelet
-BindsTo=${AFTER_REQUIRES}
 Wants=network-online.target
 After=network-online.target
 
