@@ -357,8 +357,8 @@ CONTAINERD_ENDPOINT=unix:///run/containerd/containerd.sock
 PULL_IMAGES=${DOCKER_BIN_PATH}/docker
 elif [ ${RUNTIME} == "CONTAINERD" ]; then
 # containerd 配置
-# containerd 运行目录
-CONTAINERD_BIN_PATH=$TOTAL_PATH/containerd/bin/containerd
+# containerd 运行目录 二进制目录
+CONTAINERD_BIN_PATH=$CONTAINERD_PATH/bin/containerd
 # sandbox_image 地址
 SANDBOX_IMAGE=${POD_INFRA_CONTAINER_IMAGE}
 # 镜像下载线程 20
@@ -2939,7 +2939,7 @@ EOF
 # 生成containerd 配置文件
 cat > ${HOST_PATH}/roles/containerd/templates/config.toml << EOF
 [plugins.opt]
-path = "${CONTAINERD_BIN_PATH}"
+path = "${CONTAINERD_PATH}"
 [plugins.cri]
 stream_server_address = "127.0.0.1"
 stream_server_port = "10010"
@@ -2980,6 +2980,7 @@ After=network-online.target
 
 [Service]
 Type=notify
+Environment=PATH=${CONTAINERD_PATH}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 ExecStartPre=-/bin/mkdir -p ${RUN_CONTAINERD_SOCK}
@@ -3060,17 +3061,17 @@ cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
     group: root
   with_items:
       - crictl.yaml
-- name: Create a symbolic link
-  file:
-    src: "${CONTAINERD_PATH}/bin/{{ item }}"
-    dest: '/usr/bin/{{ item }}'
-    owner: root
-    group: root
-    state: link
-    force: yes
-  with_items:
-      - containerd-shim
-      - runc
+#- name: Create a symbolic link
+#  file:
+#    src: "${CONTAINERD_PATH}/bin/{{ item }}"
+#    dest: '/usr/bin/{{ item }}'
+#    owner: root
+#    group: root
+#    state: link
+#    force: yes
+#  with_items:
+#      - containerd-shim
+#      - runc
 - name:  copy to containerd service
   template: 
     src: '{{ item }}' 
