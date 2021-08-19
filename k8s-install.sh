@@ -2984,10 +2984,10 @@ Environment=PATH=${CONTAINERD_PATH}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 ExecStartPre=-/bin/mkdir -p ${RUN_CONTAINERD_SOCK}
-ExecStart=${CONTAINERD_BIN_PATH} \
-         -c ${CONTAINERD_PATH}/conf/config.toml \
-         -a ${RUN_CONTAINERD_SOCK}/containerd.sock \
-         --state ${CONTAINERD_PATH}/run/containerd \
+ExecStart=${CONTAINERD_BIN_PATH} \\
+         -c ${CONTAINERD_PATH}/conf/config.toml \\
+         -a ${RUN_CONTAINERD_SOCK}/containerd.sock \\
+         --state ${CONTAINERD_PATH}/run/containerd \\
          --root ${CONTAINERD_PATH}/containerd 
 
 KillMode=process
