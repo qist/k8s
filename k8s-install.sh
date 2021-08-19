@@ -2980,7 +2980,6 @@ After=network-online.target
 
 [Service]
 Type=notify
-Environment=PATH=${CONTAINERD_PATH}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 ExecStartPre=-/bin/mkdir -p ${RUN_CONTAINERD_SOCK}
@@ -3061,17 +3060,17 @@ cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
     group: root
   with_items:
       - crictl.yaml
-#- name: Create a symbolic link
-#  file:
-#    src: "${CONTAINERD_PATH}/bin/{{ item }}"
-#    dest: '/usr/bin/{{ item }}'
-#    owner: root
-#    group: root
-#    state: link
-#    force: yes
-#  with_items:
-#      - containerd-shim
-#      - runc
+- name: Create a symbolic link
+  file:
+    src: "${CONTAINERD_PATH}/bin/{{ item }}"
+    dest: '/usr/bin/{{ item }}'
+    owner: root
+    group: root
+    state: link
+    force: yes
+  with_items:
+      - containerd-shim
+      - runc
 - name:  copy to containerd service
   template: 
     src: '{{ item }}' 
