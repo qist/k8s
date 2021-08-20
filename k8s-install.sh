@@ -2854,7 +2854,7 @@ EOF
 if [ "${DOCKER_BIN_PATH}" == "/usr/bin" ]; then
         ENVIRONMENT_PATH=""
 else
-        ENVIRONMENT_PATH="Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:${DOCKER_BIN_PATH}:/root/bin"
+        ENVIRONMENT_PATH="Environment=PATH=${DOCKER_BIN_PATH}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin"
 fi
 # 生成docker 启动文件
 cat > ${HOST_PATH}/roles/docker/templates/docker.service << EOF
@@ -2952,7 +2952,7 @@ max_concurrent_downloads = ${MAX_CONCURRENT_DOWNLOADS}
     snapshotter = "${SNAPSHOTTER}"
   {% endif %}
     [plugins.cri.containerd.default_runtime]
-      runtime_type = "io.containerd.runtime.v1.linux"
+      runtime_type = ""
       runtime_engine = ""
       runtime_root = ""
     [plugins.cri.containerd.untrusted_workload_runtime]
@@ -2962,6 +2962,10 @@ max_concurrent_downloads = ${MAX_CONCURRENT_DOWNLOADS}
   [plugins.cri.cni]
     bin_dir = "${CNI_BIN_DIR}"
     conf_dir = "${CNI_CONF_DIR}"
+    [plugins.cri.registry]
+      [plugins.cri.registry.mirrors]
+        [plugins.cri.registry.mirrors."docker.io"]
+          endpoint = ["https://docker.mirrors.ustc.edu.cn"]     
 [plugins."io.containerd.runtime.v1.linux"]
   shim = "containerd-shim"
   runtime = "runc"
@@ -2980,6 +2984,8 @@ After=network-online.target
 
 [Service]
 Type=notify
+Environment=PATH=${CONTAINERD_PATH}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin
+ExecStartPre=-/bin/rm -rf ${CONTAINERD_PATH}/run/containerd
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 ExecStartPre=-/bin/mkdir -p ${RUN_CONTAINERD_SOCK}
@@ -3060,17 +3066,17 @@ cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
     group: root
   with_items:
       - crictl.yaml
-- name: Create a symbolic link
-  file:
-    src: "${CONTAINERD_PATH}/bin/{{ item }}"
-    dest: '/usr/bin/{{ item }}'
-    owner: root
-    group: root
-    state: link
-    force: yes
-  with_items:
-      - containerd-shim
-      - runc
+#- name: Create a symbolic link
+#  file:
+#    src: "${CONTAINERD_PATH}/bin/{{ item }}"
+#    dest: '/usr/bin/{{ item }}'
+#    owner: root
+#    group: root
+#    state: link
+#    force: yes
+#  with_items:
+#      - containerd-shim
+#      - runc
 - name:  copy to containerd service
   template: 
     src: '{{ item }}' 
