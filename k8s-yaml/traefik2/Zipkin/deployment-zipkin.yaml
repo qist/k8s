@@ -42,8 +42,6 @@ metadata:
   namespace: ingress-system
   labels:
     app: zipkin
-  annotations:
-    deployment.kubernetes.io/revision: '1'
 spec:
   replicas: 1
   selector:
@@ -53,8 +51,6 @@ spec:
     metadata:
       labels:
         app: zipkin
-      annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
       containers:
         - name: zipkin
