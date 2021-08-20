@@ -524,14 +524,21 @@ getPMT(){
     return 0
 }
 
+function version_lt() {
+ test "$(printf '%s\n' "$@" | sort -V | head -n 1)" = "$1"; 
+ }
+ 
+function version_gt() {
+ test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; 
+ }
+ 
 ansibleInstall(){
     getPMT
     if [[ -n `command -v ansible` ]]; then
        CMD_ANSIBLE=`command -v ansible`
        ANSIBLE_VERSION=`$CMD_ANSIBLE --version| awk 'NR==1{print $2}'`
        colorEcho ${GREEN} ${ANSIBLE_VERSION}
-        if [[ `expr ${ANSIBLE_VERSION} \< 2.8.0` -eq 1 ]]; then
-        
+        if version_lt ${ANSIBLE_VERSION} 2.8.0; then        
          $CMD_UPDATE
          $CMD_UPGRADE ansible
        else
