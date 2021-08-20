@@ -2954,11 +2954,7 @@ max_concurrent_downloads = ${MAX_CONCURRENT_DOWNLOADS}
       runtime_root = ""
   [plugins.cri.cni]
     bin_dir = "${CNI_BIN_DIR}"
-    conf_dir = "${CNI_CONF_DIR}"
-    [plugins.cri.registry]
-      [plugins.cri.registry.mirrors]
-        [plugins.cri.registry.mirrors."docker.io"]
-          endpoint = ["https://docker.mirrors.ustc.edu.cn"]     
+    conf_dir = "${CNI_CONF_DIR}"    
 [plugins."io.containerd.runtime.v1.linux"]
   shim = "containerd-shim"
   runtime = "runc"
