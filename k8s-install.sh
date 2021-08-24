@@ -3749,12 +3749,10 @@ kubeletConfig(){
 # 生成 kubelet config 配置文件
 if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]];then
 CONTAINER_CGROUP="cgroupfs"
-KUBE_RESERVED="- kube-reserved"
-SYSTEM_RESERVED="- system-reserved"
+KUBE_RESERVED=`echo -e "- pods\n- kube-reserved\n- system-reserved"`
 elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]];then
 CONTAINER_CGROUP="systemd"
-KUBE_RESERVED=""
-SYSTEM_RESERVED=""
+KUBE_RESERVED="- pods"
 fi
 cat > ${HOST_PATH}/roles/kubelet/templates/kubelet.yaml  << EOF
 ---
@@ -3860,9 +3858,7 @@ kubeReserved:
 systemReservedCgroup: "/systemd/system.slice"
 kubeReservedCgroup: "/systemd/system.slice"
 enforceNodeAllocatable:
-- pods
 ${KUBE_RESERVED}
-${SYSTEM_RESERVED}
 allowedUnsafeSysctls:
 - kernel.msg*
 - kernel.shm*
