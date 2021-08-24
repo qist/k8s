@@ -2941,9 +2941,9 @@ EOF
             fi
 
 if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]];then
-CONTAINER_CGROUP="true"
-elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]];then
 CONTAINER_CGROUP="false"
+elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]];then
+CONTAINER_CGROUP="true"
 fi            
 # 生成containerd 配置文件
 cat > ${HOST_PATH}/roles/containerd/templates/config.toml << EOF
