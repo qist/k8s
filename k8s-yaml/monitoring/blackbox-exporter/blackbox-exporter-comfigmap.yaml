@@ -20,7 +20,7 @@ data:
             insecure_skip_verify: true
             ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
           bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-          no_follow_redirects: false
+          follow_redirects: true
           preferred_ip_protocol: "ip4"
           ip_protocol_fallback: false
       http_post_2xx:
@@ -31,11 +31,16 @@ data:
           preferred_ip_protocol: "ip4"
           tls_config:
             insecure_skip_verify: false
+            ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
       tcp_connect:
         prober: tcp
         timeout: 60s
         tcp:
           preferred_ip_protocol: "ip4"
+          tls_config:
+            insecure_skip_verify: true
+            ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       pop3s_banner:
         prober: tcp
         tcp:
