@@ -5312,7 +5312,9 @@ data:
             ttl 30
         }
         prometheus :9153
-        forward . /etc/resolv.conf
+        forward . /etc/resolv.conf{
+            max_concurrent 1000
+        }
         cache 30
         reload
         loadbalance
