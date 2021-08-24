@@ -40,6 +40,8 @@ ETCD_EVENTS_MEMBER_2_IP="192.168.2.187"
 ETCD_EVENTS_MEMBER_2_HOSTNAMES="k8s-node-2"
 ETCD_EVENTS_MEMBER_3_IP="192.168.3.62"
 ETCD_EVENTS_MEMBER_3_HOSTNAMES="k8s-node-3"
+### cgroup驱动 cgroupfs systemd 默认 cgroupfs
+NATIVE_CGROUPDRIVER=cgroupfs
 #### 以下参数根据实际网络环境修改不能有重复网段
 # 最好使用 当前未用的网段 来定义服务网段和 Pod 网段
 # 服务网段，部署前路由不可达，部署后集群内路由可达(kube-proxy 保证)
@@ -142,16 +144,17 @@ export CFSSL_VERSION=1.4.1
 # docker 版本
 export DOCKER_VERSION=20.10.8
 # containerd 版本
-export CONTAINERD_VERSION=1.4.3
+export CONTAINERD_VERSION=1.5.5
 # crictl 版本
-export CRICTL_VERSION=v1.19.0
+export CRICTL_VERSION=v1.22.0
 # runc 版本
-export RUNC_VERSION=v1.0.0-rc92
+export RUNC_VERSION=v1.0.2
 # cri-o 版本
-export CRIO_VERSION=v1.19.0
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/k8s-conform-cri-o/artifacts/cri-o.amd64.b27d974e13c3f9e2baa2d848ca554c80434ea88c.tar.gz"
+export CRIO_VERSION=v1.21.2
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel 插件选择
-FLANNEL_VERSION="quay.io/coreos/flannel:v0.12.0-amd64"
+FLANNEL_VERSION="quay.io/coreos/flannel:v0.14.0"
 # kube-router 镜像
 KUBE_ROUTER_INIT=busybox
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
@@ -494,7 +497,7 @@ downloadK8S(){
          fi      
     elif [[ ${RUNTIME} == "CRIO" ]]; then
     # 下载crio
-          wget -c  --tries=40 https://storage.googleapis.com/k8s-conform-cri-o/artifacts/crio-${CRIO_VERSION}.tar.gz \
+          wget -c  --tries=40 ${DOWNLOAD_CRIO_VERSION} \
                     -O $DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz
          if [[ $? -ne 0 ]]; then
            colorEcho ${RED} "download  FATAL crio."
@@ -2778,7 +2781,7 @@ cat > ${HOST_PATH}/roles/docker/templates/daemon.json << EOF
     "bridge": "${NET_BRIDGE}",
     "oom-score-adjust": -1000,
     "live-restore": true,
-    "exec-opts": ["native.cgroupdriver=cgroupfs"],
+    "exec-opts": ["native.cgroupdriver=${NATIVE_CGROUPDRIVER}"],
     {% if  btrfs_result.rc == 0 or btr_result.rc == 0 %}
      "storage-driver": "btrfs",
      {% else %} 
@@ -2936,6 +2939,12 @@ EOF
                 colorEcho ${RED} "containerd no download."
                 exit 1
             fi
+
+if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]];then
+CONTAINER_CGROUP="true"
+elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]];then
+CONTAINER_CGROUP="false"
+fi            
 # 生成containerd 配置文件
 cat > ${HOST_PATH}/roles/containerd/templates/config.toml << EOF
 [plugins.opt]
@@ -2959,6 +2968,16 @@ max_concurrent_downloads = ${MAX_CONCURRENT_DOWNLOADS}
       runtime_type = ""
       runtime_engine = ""
       runtime_root = ""
+    [plugins.cri.containerd.runtimes.runc]
+      base_runtime_spec = ""
+      container_annotations = []
+      pod_annotations = []
+      privileged_without_host_devices = false
+      runtime_engine = ""
+      runtime_root = ""
+      runtime_type = "io.containerd.runc.v2"
+    [plugins.cri.containerd.runtimes.runc.options]
+      SystemdCgroup = ${CONTAINER_CGROUP}
   [plugins.cri.cni]
     bin_dir = "${CNI_BIN_DIR}"
     conf_dir = "${CNI_CONF_DIR}"    
@@ -2981,14 +3000,13 @@ After=network-online.target
 [Service]
 Type=notify
 Environment=PATH=${CONTAINERD_PATH}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin
-ExecStartPre=-/bin/rm -rf ${CONTAINERD_PATH}/run/containerd
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 ExecStartPre=-/bin/mkdir -p ${RUN_CONTAINERD_SOCK}
 ExecStart=${CONTAINERD_BIN_PATH} \\
          -c ${CONTAINERD_PATH}/conf/config.toml \\
          -a ${RUN_CONTAINERD_SOCK}/containerd.sock \\
-         --state ${CONTAINERD_PATH}/run/containerd \\
+         --state /run/containerd \\
          --root ${CONTAINERD_PATH}/containerd 
 
 KillMode=process
@@ -3107,11 +3125,12 @@ EOF
              fi
              if [[ -e "$DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz" ]]; then
                  if [[ ! -e "$DOWNLOAD_PATH/crio-${CRIO_VERSION}/bin/crio" ]] || [[ ! -e "${HOST_PATH}/roles/crio/files/bin/crio" ]]; then
+                 mkdir -p ${DOWNLOAD_PATH}/crio-${CRIO_VERSION}
               # cp 二进制 文件到 ansible 目录
-                 tar -xf $DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz -C ${DOWNLOAD_PATH}
-                 \cp -pdr $DOWNLOAD_PATH/crio-${CRIO_VERSION}/bin ${HOST_PATH}/roles/crio/files/
+                 tar -xf $DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/crio-${CRIO_VERSION}
+                 \cp -pdr $DOWNLOAD_PATH/crio-${CRIO_VERSION}/cri-o/bin ${HOST_PATH}/roles/crio/files/
                  mv -f ${HOST_PATH}/roles/crio/files/bin/crictl  ${HOST_PATH}/roles/crio/files
-                 \cp -pdr $DOWNLOAD_PATH/crio-${CRIO_VERSION}/etc/crio-umount.conf ${HOST_PATH}/roles/crio/templates/crio-umount.conf
+                 \cp -pdr $DOWNLOAD_PATH/crio-${CRIO_VERSION}/cri-o/etc/crio-umount.conf ${HOST_PATH}/roles/crio/templates/crio-umount.conf
                  fi
             else
                 colorEcho ${RED} "crio no download."
@@ -3241,7 +3260,7 @@ conmon_cgroup = "system.slice"
 # Environment variable list for the conmon process, used for passing necessary
 # environment variables to conmon or the runtime.
 conmon_env = [
-	"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${CONMON_ENV}",
+	"PATH=${CONMON_ENV}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
 ]
 
 # Additional environment variables to set for all the
@@ -3266,7 +3285,7 @@ seccomp_profile = ""
 apparmor_profile = "crio-default"
 
 # Cgroup management implementation used for the runtime.
-cgroup_manager = "cgroupfs"
+cgroup_manager = "${NATIVE_CGROUPDRIVER}"
 
 # List of default capabilities for containers. If it is empty or commented out,
 # only the capabilities defined in the containers json file by the user/kube
@@ -3509,6 +3528,11 @@ enable_metrics = false
 # The port on which the metrics server will listen.
 metrics_port = 9090
 EOF
+if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]];then
+CONTAINER_CGROUP="Environment=CONTAINER_CONMON_CGROUP=pod"
+elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]];then
+CONTAINER_CGROUP=""
+fi
 # 生成 crio 启动配置文件
 cat > ${HOST_PATH}/roles/crio/templates/crio.service << EOF
 [Unit]
@@ -3517,7 +3541,7 @@ Documentation=https://github.com/github.com/cri-o/cri-o
 
 [Service]
 Type=notify
-Environment=CONTAINER_CONMON_CGROUP=pod
+${CONTAINER_CGROUP}
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 ExecStart=${CRIO_PATH}/bin/crio --config ${CRIO_PATH}/etc/crio.conf --log-level info 
@@ -3723,6 +3747,15 @@ kubeletConfig(){
       FEATURE_GATES="" 
    fi
 # 生成 kubelet config 配置文件
+if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]];then
+CONTAINER_CGROUP="cgroupfs"
+KUBE_RESERVED="- kube-reserved"
+SYSTEM_RESERVED="- system-reserved"
+elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]];then
+CONTAINER_CGROUP="systemd"
+KUBE_RESERVED=""
+SYSTEM_RESERVED=""
+fi
 cat > ${HOST_PATH}/roles/kubelet/templates/kubelet.yaml  << EOF
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
@@ -3770,7 +3803,7 @@ imageGCLowThresholdPercent: ${IMAGE_GC_LOW_THRESHOLD}
 volumeStatsAggPeriod: 1m0s
 kubeletCgroups: "/systemd/system.slice"
 cgroupsPerQOS: true
-cgroupDriver: cgroupfs
+cgroupDriver: ${CONTAINER_CGROUP}
 cpuManagerPolicy: none
 cpuManagerReconcilePeriod: 10s
 topologyManagerPolicy: none
@@ -3828,8 +3861,8 @@ systemReservedCgroup: "/systemd/system.slice"
 kubeReservedCgroup: "/systemd/system.slice"
 enforceNodeAllocatable:
 - pods
-- kube-reserved
-- system-reserved
+${KUBE_RESERVED}
+${SYSTEM_RESERVED}
 allowedUnsafeSysctls:
 - kernel.msg*
 - kernel.shm*
