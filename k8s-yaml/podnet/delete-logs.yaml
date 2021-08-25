@@ -1,0 +1,40 @@
+﻿apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: delete-logs
+  namespace: web
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+    spec:
+      template:
+        metadata:
+        spec:
+          containers:
+          - command:
+            - /bin/sh
+            - -c
+            - find /mnt/ -name "*.log"  -mtime +7 | xargs rm -fv;find /mnt/ -type d -empty -delete;date;exit 0
+            image: busybox
+            imagePullPolicy: Always
+            name: delete-logs
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /mnt
+              name: log-data
+          dnsPolicy: ClusterFirst
+          restartPolicy: Never
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - name: log-data
+            persistentVolumeClaim:
+              claimName: log-claim-500g
+  schedule: 0 4 * * *
+  successfulJobsHistoryLimit: 3
+  suspend: false
