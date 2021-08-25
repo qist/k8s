@@ -375,6 +375,12 @@ data:
         - source_labels: [__meta_kubernetes_service_name]
           separator: ;
           regex: (.*)
+          target_label: container
+          replacement: $1
+          action: replace          
+        - source_labels: [__meta_kubernetes_service_name]
+          separator: ;
+          regex: (.*)
           target_label: job
           replacement: $1
           action: replace
@@ -430,7 +436,7 @@ data:
           target_label: pod
           replacement: $1
           action: replace
-        - source_labels: [__meta_kubernetes_pod_container_name]
+        - source_labels: [__meta_kubernetes_service_name]
           separator: ;
           regex: (.*)
           target_label: container
@@ -768,7 +774,13 @@ data:
           regex: (.*)
           target_label: endpoint
           replacement: $1  
-          action: replace     
+          action: replace  
+        - source_labels: [__meta_kubernetes_pod_controller_name]
+          separator: ;
+          regex: (.*)
+          target_label: container
+          replacement: $1
+          action: replace          
         - source_labels: [__meta_kubernetes_pod_controller_name, __address__]
           separator: ;
           regex: (.+);(.*):.*
