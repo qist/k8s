@@ -90,7 +90,7 @@ K8S_EVENTS=OFF
 # 是否升级iptables OFF 关闭 ON 开启
 IPTABLES_INSTALL=OFF
 # 是否开启 审计 false 关闭 true 开启
-DYNAMICAUDITING=false
+DYNAMICAUDITING=true
 # k8s 17号版本及以上的版本配置
 # 拓扑感知服务路由配置 false 关闭 true 开启
 SERVICETOPOLOGY=true
@@ -136,7 +136,7 @@ export ETCD_VERSION=v3.5.0
 # kubernetes 版本
 export KUBERNETES_VERSION=v1.22.1
 # cni 版本
-export CNI_VERSION=v1.0.0
+export CNI_VERSION=v0.9.1
 # iptables
 export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
@@ -182,7 +182,9 @@ DOCKER_PATH=$TOTAL_PATH/docker
 # DOCKER_BIN_PATH=$TOTAL_PATH/docker/bin #ubuntu 18 版本必须设置在/usr/bin 目录下面
 DOCKER_BIN_PATH=/usr/bin
 # cni 部署目录
-CNI_PATH=$TOTAL_PATH/cni
+# cni 配置
+CNI_BIN_DIR=/opt/cni/bin
+CNI_CONF_DIR=/etc/cni/net.d
 # 源码安装 源码存放目录
 SOURCE_PATH=/usr/local/src
 # containerd 部署目录
@@ -193,9 +195,6 @@ CRIO_PATH=$TOTAL_PATH/crio
 HARD_SOFT=655350
 #容器运行文件打开数
 POD_HARD_SOFT=65535
-# cni 配置
-CNI_BIN_DIR=${CNI_PATH}/bin
-CNI_CONF_DIR=${CNI_PATH}/etc/net.d
 # 配置etcd集群参数
 ETCD_SERVER_HOSTNAMES="\"${ETCD_MEMBER_1_HOSTNAMES}\",\"${ETCD_MEMBER_2_HOSTNAMES}\",\"${ETCD_MEMBER_3_HOSTNAMES}\""
 ETCD_SERVER_IPS="\"${ETCD_MEMBER_1_IP}\",\"${ETCD_MEMBER_2_IP}\",\"${ETCD_MEMBER_3_IP}\""
@@ -1652,24 +1651,25 @@ KubeApiserverConfig(){
       exit 1
     fi  
    if [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "false" ]] && [[ `expr ${KUBERNETES_VER} \< 1.19.0` -eq 1 ]]; then
-      FEATURE_GATES="--feature-gates=DynamicAuditing=true"
-      AUDIT_DYNAMIC_CONFIGURATION="--audit-dynamic-configuration"
+      FEATURE_GATES=`echo -e "--feature-gates=DynamicAuditing=true \\\\\\\\\n        --event-ttl=1h"`
+      AUDIT_DYNAMIC_CONFIGURATION=`echo -e "--audit-dynamic-configuration \\\\\\\\\n        --audit-log-maxage=30"`
       elif [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.19.0` -eq 1 ]]; then
-      FEATURE_GATES="--feature-gates=DynamicAuditing=true,${FEATURE_GATES_OPT}"
-      AUDIT_DYNAMIC_CONFIGURATION="--audit-dynamic-configuration"
+      FEATURE_GATES=`echo -e "--feature-gates=DynamicAuditing=true,${FEATURE_GATES_OPT} \\\\\\\\\n        --event-ttl=1h"`
+      AUDIT_DYNAMIC_CONFIGURATION=`echo -e "--audit-dynamic-configuration \\\\\\\\\n        --audit-log-maxage=30"`
       elif [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \< 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.19.0` -eq 1 ]]; then
-      FEATURE_GATES="--feature-gates=DynamicAuditing=true"
-      AUDIT_DYNAMIC_CONFIGURATION="--audit-dynamic-configuration"
+      FEATURE_GATES=`echo -e "--feature-gates=DynamicAuditing=true \\\\\\\\\n        --event-ttl=1h"`
+      AUDIT_DYNAMIC_CONFIGURATION=`echo -e "--audit-dynamic-configuration \\\\\\\\\n        --audit-log-maxage=30"`
       elif [[ "$DYNAMICAUDITING" == "false" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      AUDIT_DYNAMIC_CONFIGURATION=""
-      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
+      AUDIT_DYNAMIC_CONFIGURATION="--audit-log-maxage=30"
+      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n        --event-ttl=1h"`
       elif  [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "false" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      AUDIT_DYNAMIC_CONFIGURATION=""
+      AUDIT_DYNAMIC_CONFIGURATION="--audit-log-maxage=30"
       elif  [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      AUDIT_DYNAMIC_CONFIGURATION=""
-      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
+      AUDIT_DYNAMIC_CONFIGURATION="--audit-log-maxage=30"
+      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n        --event-ttl=1h"`
       else
-      FEATURE_GATES=""
+      FEATURE_GATES="--event-ttl=1h"
+      AUDIT_DYNAMIC_CONFIGURATION="--audit-log-maxage=30"
    fi
     if [[ "$DYNAMICAUDITING" == "true" ]]; then
 # 创建审计策略文件
@@ -1862,16 +1862,16 @@ rules:
     omitStages:
       - RequestReceived
 EOF
-AUDIT_POLICY_FILE="--audit-policy-file=${K8S_PATH}/config/audit-policy.yaml"    
+AUDIT_POLICY_FILE=`echo -e "--audit-policy-file=${K8S_PATH}/config/audit-policy.yaml \\\\\\\\\n        --audit-log-truncate-enabled"`    
       else
-AUDIT_POLICY_FILE=""
+AUDIT_POLICY_FILE="--audit-log-truncate-enabled"
       fi
 if [[ `expr ${KUBERNETES_VER} \>= 1.20.0` -eq 1 ]]; then
 ENABLE_ADMISSION_PLUGINS_OPT=${ENABLE_ADMISSION_PLUGINS}
-SERVICE_ACCOUNT_ISSUER_OPT="--service-account-issuer=${SERVICE_ACCOUNT_ISSUER}"
-SERVICE_ACCOUNT_SIGNING_KEY_FILE="--service-account-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem"
+SERVICE_ACCOUNT_ISSUER_OPT=`echo -e "--service-account-issuer=${SERVICE_ACCOUNT_ISSUER} \\\\\\\\\n        --service-account-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem \\\\\\\\\n        --requestheader-allowed-names=aggregator"`
 else
 ENABLE_ADMISSION_PLUGINS_OPT=${ENABLE_ADMISSION_PLUGINS},PodPreset
+SERVICE_ACCOUNT_ISSUER_OPT="--requestheader-allowed-names=aggregator"
 fi 
 if [[ `expr ${KUBERNETES_VER} \>= 1.21.0` -eq 1 ]]; then
 DISABLE_ADMISSION_PLUGINS_OPT=${DISABLE_ADMISSION_PLUGINS}
@@ -1879,9 +1879,9 @@ else
 DISABLE_ADMISSION_PLUGINS_OPT=DenyEscalatingExec,${DISABLE_ADMISSION_PLUGINS}
 fi  
 if [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-KUBELET_HTTPS="--kubelet-https"
+KUBELET_HTTPS=`echo -e "--kubelet-https \\\\\\\\\n        --profiling"`
 else
-KUBELET_HTTPS=""
+KUBELET_HTTPS="--profiling"
 fi
 # 创建 kube-apiserver 启动配置文件
 cat > ${HOST_PATH}/roles/kube-apiserver/templates/kube-apiserver << EOF
@@ -1907,8 +1907,6 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --proxy-client-cert-file=${K8S_PATH}/ssl/k8s/aggregator.pem \\
         --proxy-client-key-file=${K8S_PATH}/ssl/k8s/aggregator-key.pem \\
         ${SERVICE_ACCOUNT_ISSUER_OPT} \\
-        ${SERVICE_ACCOUNT_SIGNING_KEY_FILE} \\
-        --requestheader-allowed-names=aggregator \\
         --requestheader-group-headers=X-Remote-Group \\
         --requestheader-extra-headers-prefix=X-Remote-Extra- \\
         --requestheader-username-headers=X-Remote-User \\
@@ -1925,18 +1923,14 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --allow-privileged=true \\
         --apiserver-count=${APISERVER_COUNT} \\
         ${AUDIT_DYNAMIC_CONFIGURATION} \\
-        --audit-log-maxage=30 \\
         --audit-log-maxbackup=3 \\
         --audit-log-maxsize=100 \\
         --default-not-ready-toleration-seconds=${DEFAULT_NOT_READY_TOLERATION_SECONDS} \\
         --default-unreachable-toleration-seconds=${DEFAULT_UNREACHABLE_TOLERATION_SECONDS} \\
-        --audit-log-truncate-enabled \\
         ${AUDIT_POLICY_FILE} \\
         --audit-log-path=${K8S_PATH}/log/api-server-audit.log \\
-        --profiling \\
         ${KUBELET_HTTPS} \\
         --http2-max-streams-per-connection=10000 \\
-        --event-ttl=1h \\
         ${FEATURE_GATES} \\
         --enable-bootstrap-token-auth=true \\
         --alsologtostderr=${ALSOLOGTOSTDERR} \\
@@ -1999,14 +1993,7 @@ cat > ${HOST_PATH}/roles/kube-apiserver/tasks/main.yml << EOF
     group: root
   with_items:
       - log
-      - kubelet-plugins
       - conf
-- name: Create ${K8S_PATH}/kubelet-plugins/volume
-  file:
-    path: "${K8S_PATH}/kubelet-plugins/volume"
-    state: directory
-    owner: k8s
-    group: root
 - name: copy kube-apiserver
   copy: 
     src: bin 
@@ -2712,6 +2699,30 @@ cat > ${HOST_PATH}/roles/docker/tasks/main.yml << EOF
   file:
     path: "/etc/docker"
     state: directory
+- name: Create /var/lib/docker
+  file:
+    path: "/var/lib/docker"
+    state: directory
+    owner: root
+    group: root
+- name: Create /run/docker
+  file:
+    path: "/run/docker"
+    state: directory
+    owner: root
+    group: root
+- name: Create $TOTAL_PATH/docker/data
+  file:
+    path: "$TOTAL_PATH/docker/data"
+    state: directory
+    owner: root
+    group: root
+- name: Create $TOTAL_PATH/docker/root
+  file:
+    path: "$TOTAL_PATH/docker/root"
+    state: directory
+    owner: root
+    group: root    
 - name: Create /etc/containerd
   file:
     path: "/etc/containerd"
@@ -2727,7 +2738,7 @@ cat > ${HOST_PATH}/roles/docker/tasks/main.yml << EOF
     path: /usr/bin/docker
   register: docker_path_register
 - name: PATH 
-  raw: echo "export PATH=\\\$PATH:${DOCKER_BIN_PATH}" >> /etc/profile
+  raw: echo "export PATH=${DOCKER_BIN_PATH}:\\\$PATH" >> /etc/profile
   when: docker_path_register.stat.exists == False
 - name: daemon.json conf
   template: 
@@ -2737,19 +2748,30 @@ cat > ${HOST_PATH}/roles/docker/tasks/main.yml << EOF
     group: root
 - name: config.toml
   shell: ${DOCKER_BIN_PATH}/containerd config default >/etc/containerd/config.toml
-- name: Create a symbolic link
-  file:
-    src: "${DOCKER_BIN_PATH}/{{ item }}"
-    dest: '/usr/bin/{{ item }}'
-    owner: root
-    group: root
-    state: link
-    force: yes
-  with_items:
-      - containerd-shim
-      - runc
-  when: docker_path_register.stat.exists == False
-  ignore_errors: True 
+#- name: Create a symbolic link
+#  file:
+#    src: "${DOCKER_BIN_PATH}/{{ item }}"
+#    dest: '/usr/bin/{{ item }}'
+#    owner: root
+#    group: root
+#    state: link
+#    force: yes
+#  with_items:
+#      - containerd-shim
+#      - runc
+#  when: docker_path_register.stat.exists == False
+#  ignore_errors: True 
+- name: mount docker data 
+  lineinfile: 
+    dest: /etc/fstab
+    line: '${DATA_ROOT} /var/lib/docker none defaults,bind,nofail 0 0'
+- name: mount docker exec 
+  lineinfile: 
+    dest: /etc/fstab
+    line: '${EXEC_ROOT} /run/docker none defaults,bind,nofail 0 0'
+- name: mount docker
+  shell: mount -a
+  ignore_errors: yes     
 - name: copy "{{ item }}"
   template: 
     src: '{{ item }}'
@@ -2775,8 +2797,8 @@ EOF
 cat > ${HOST_PATH}/roles/docker/templates/daemon.json << EOF
 {
     "max-concurrent-downloads": ${MAX_CONCURRENT_DOWNLOADS},
-    "data-root": "${DATA_ROOT}",
-    "exec-root": "${EXEC_ROOT}",
+    "data-root": "/var/lib/docker",
+    "exec-root": "/var/run/docker",
     "log-driver": "${LOG_DRIVER}",
     "bridge": "${NET_BRIDGE}",
     "oom-score-adjust": -1000,
@@ -2818,6 +2840,11 @@ cat > ${HOST_PATH}/roles/docker/templates/daemon.json << EOF
 }
 EOF
 # 生成containerd 启动服务文件
+if [ "${DOCKER_BIN_PATH}" == "/usr/bin" ]; then
+        ENVIRONMENT_PATH=""
+else
+        ENVIRONMENT_PATH="Environment=PATH=${DOCKER_BIN_PATH}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin"
+fi
 cat > ${HOST_PATH}/roles/docker/templates/containerd.service << EOF
 [Unit]
 Description=containerd container runtime
@@ -2825,6 +2852,7 @@ Documentation=https://containerd.io
 After=network.target
 
 [Service]
+${ENVIRONMENT_PATH}
 ExecStartPre=-/sbin/modprobe overlay
 ExecStart=${DOCKER_BIN_PATH}/containerd
 KillMode=process
@@ -2854,11 +2882,6 @@ SocketGroup=docker
 [Install]
 WantedBy=sockets.target
 EOF
-if [ "${DOCKER_BIN_PATH}" == "/usr/bin" ]; then
-        ENVIRONMENT_PATH=""
-else
-        ENVIRONMENT_PATH="Environment=PATH=${DOCKER_BIN_PATH}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin"
-fi
 # 生成docker 启动文件
 cat > ${HOST_PATH}/roles/docker/templates/docker.service << EOF
 [Unit]
@@ -3007,7 +3030,7 @@ ExecStart=${CONTAINERD_BIN_PATH} \\
          -c ${CONTAINERD_PATH}/conf/config.toml \\
          -a ${RUN_CONTAINERD_SOCK}/containerd.sock \\
          --state /run/containerd \\
-         --root ${CONTAINERD_PATH}/containerd 
+         --root /var/lib/containerd 
 
 KillMode=process
 Delegate=yes
@@ -3080,17 +3103,41 @@ cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
     group: root
   with_items:
       - crictl.yaml
-#- name: Create a symbolic link
-#  file:
-#    src: "${CONTAINERD_PATH}/bin/{{ item }}"
-#    dest: '/usr/bin/{{ item }}'
-#    owner: root
-#    group: root
-#    state: link
-#    force: yes
-#  with_items:
-#      - containerd-shim
-#      - runc
+- name: Create /var/lib/containerd
+  file:
+    path: "/var/lib/containerd"
+    state: directory
+    owner: root
+    group: root
+- name: Create /run/containerd
+  file:
+    path: "/run/containerd"
+    state: directory
+    owner: root
+    group: root
+- name: Create ${CONTAINERD_PATH}/containerd
+  file:
+    path: "${CONTAINERD_PATH}/containerd"
+    state: directory
+    owner: root
+    group: root
+- name: Create ${CONTAINERD_PATH}/run/containerd
+  file:
+    path: "${CONTAINERD_PATH}/run/containerd"
+    state: directory
+    owner: root
+    group: root    
+- name: mount containerd data 
+  lineinfile:
+    dest: /etc/fstab
+    line: '${CONTAINERD_PATH}/containerd /var/lib/containerd none defaults,bind,nofail 0 0'
+- name: mount containerd exec 
+  lineinfile:
+    dest: /etc/fstab
+    line: '${CONTAINERD_PATH}/run/containerd /run/containerd none defaults,bind,nofail 0 0'     
+- name: mount containerd
+  shell: mount -a
+  ignore_errors: yes
 - name:  copy to containerd service
   template: 
     src: '{{ item }}' 
@@ -3157,10 +3204,10 @@ cat > ${HOST_PATH}/roles/crio/templates/crio.conf << EOF
 
 # Path to the "root directory". CRI-O stores all of its data, including
 # containers images, in this directory.
-root = "${CRIO_ROOT}"
+root = "/var/lib/containers/storage"
 
 # Path to the "run directory". CRI-O stores all of its state in this directory.
-runroot = "${RUNROOT}"
+runroot = "/var/run/containers/storage"
 
 # Storage driver used to manage the storage of images and containers. Please
 # refer to containers-storage.conf(5) to see all available storage drivers.
@@ -3678,6 +3725,42 @@ cat > ${HOST_PATH}/roles/crio/tasks/main.yml  << EOF
     group: root
   with_items:
       - crictl.yaml
+- name: Create /var/lib/containers/storage
+  file:
+    path: "/var/lib/containers/storage"
+    state: directory
+    owner: root
+    group: root
+- name: Create /run/containers/storage
+  file:
+    path: "/run/containers/storage"
+    state: directory
+    owner: root
+    group: root
+- name: Create ${CRIO_ROOT}
+  file:
+    path: "${CRIO_ROOT}"
+    state: directory
+    owner: root
+    group: root
+- name: Create ${RUNROOT}
+  file:
+    path: "${RUNROOT}"
+    state: directory
+    owner: root
+    group: root    
+- name: mount CRIO data 
+  lineinfile: 
+    dest: /etc/fstab
+    line: '${CRIO_ROOT} /var/lib/containers/storage none defaults,bind,nofail 0 0'
+- name: mount CRIO exec 
+  lineinfile: 
+    dest: /etc/fstab
+    line: '${RUNROOT} /run/containers/storage none defaults,bind,nofail 0 0' 
+    
+- name: mount CRIO
+  shell: mount -a
+  ignore_errors: yes       
 - name:  copy to crio service
   template: 
     src: '{{ item }}' 
@@ -3742,9 +3825,9 @@ kubeletConfig(){
     fi
       if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
       #FEATURE_GATES=`echo -e "featureGates:\n  EndpointSlice: true\n  ServiceTopology: true"`
-      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
+      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n              --v=${LEVEL_LOG}"`
       else
-      FEATURE_GATES="" 
+      FEATURE_GATES="--v=${LEVEL_LOG}" 
    fi
 # 生成 kubelet config 配置文件
 if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]];then
@@ -3754,6 +3837,8 @@ elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]];then
 CONTAINER_CGROUP="systemd"
 KUBE_RESERVED="- pods"
 fi
+K8S_TLS_CIPHER=`echo $TLS_CIPHER| sed  -e "s/\,/\\\\n-\ /g"`
+KUBE_TLS_CIPHER=`echo -e "- $K8S_TLS_CIPHER"`
 cat > ${HOST_PATH}/roles/kubelet/templates/kubelet.yaml  << EOF
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
@@ -3765,7 +3850,8 @@ httpCheckFrequency: 20s
 address: {{ ${KUBELET_IPV4} }}
 port: 10250
 readOnlyPort: 0
-tlsCipherSuites: [${TLS_CIPHER}]
+tlsCipherSuites: 
+${KUBE_TLS_CIPHER}
 rotateCertificates: true
 authentication:
   x509:
@@ -3877,7 +3963,7 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --hostname-override={{ ansible_hostname }} \\
               --cert-dir=${K8S_PATH}/ssl \\
               --runtime-cgroups=/systemd/system.slice \\
-              --root-dir=${POD_RUNING_PATH} \\
+              --root-dir=/var/lib/kubelet \\
               --log-dir=${K8S_PATH}/log \\
               --alsologtostderr=${ALSOLOGTOSTDERR} \\
               --config=${K8S_PATH}/conf/kubelet.yaml \\
@@ -3886,10 +3972,8 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --container-runtime-endpoint=${CONTAINER_RUNTIME_ENDPOINT} \\
               --containerd=${CONTAINERD_ENDPOINT} \\
               --pod-infra-container-image=${POD_INFRA_CONTAINER_IMAGE} \\
-              --image-pull-progress-deadline=${IMAGE_PULL_PROGRESS_DEADLINE} \\
-              --v=${LEVEL_LOG} \\
               ${FEATURE_GATES} \\
-              --volume-plugin-dir=${K8S_PATH}/kubelet-plugins/volume"
+              --image-pull-progress-deadline=${IMAGE_PULL_PROGRESS_DEADLINE}"
 EOF
 # 生成 kubelet  配置文件
 cat > ${HOST_PATH}/roles/kubelet/templates/kubelet.service << EOF
@@ -3937,7 +4021,6 @@ cat > ${HOST_PATH}/roles/kubelet/tasks/main.yml << EOF
     state: directory
   with_items:
       - log
-      - kubelet-plugins
       - conf
 - name: Create ${POD_MANIFEST_PATH}
   file:
@@ -3946,15 +4029,25 @@ cat > ${HOST_PATH}/roles/kubelet/tasks/main.yml << EOF
   with_items:
       - ${POD_RUNING_PATH}
       - ${POD_MANIFEST_PATH}
+- name: Create /usr/libexec/kubernetes/kubelet-plugins/volume/exec/
+  file:
+    path: "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/"
+    state: directory
+    owner: root
+    group: root      
+- name: Create /var/lib/kubelet
+  file:
+    path: "/var/lib/kubelet"
+    state: directory
+    owner: root
+    group: root      
 - name: mount kubelet 
   lineinfile: 
     dest: /etc/fstab
-    line: '${POD_RUNING_PATH} ${POD_RUNING_PATH} none defaults,bind,nofail 0 0'
-  when: btrfs_result.rc == 0 or btr_result.rc == 0      
+    line: '${POD_RUNING_PATH} /var/lib/kubelet none defaults,bind,nofail 0 0'  
 - name: mount kubelet 
   shell: mount -a
-  ignore_errors: yes
-  when: btrfs_result.rc == 0 or btr_result.rc == 0    
+  ignore_errors: yes   
 - name: copy kubelet to ${K8S_PATH}
   copy: 
     src: bin 
@@ -4262,23 +4355,19 @@ cniConfig(){
 cat > ${HOST_PATH}/roles/cni/tasks/main.yml << EOF
 - name: Create cni
   file:
-    path: "${CNI_PATH}"
+    path: "${CNI_BIN_DIR}"
     state: directory
+- name: Create cni etc
+  file:
+    path: "${CNI_CONF_DIR}"
+    state: directory    
 - name: copy to cni
   copy: 
-    src: bin 
-    dest: ${CNI_PATH}/ 
+    src: bin/
+    dest: ${CNI_BIN_DIR}/ 
     owner: root 
     group: root 
     mode: 0755
-#- name: Create a symbolic link
-#  file:
-#    src: "${CNI_PATH}/etc"
-#    dest: '/etc/cni'
-#    owner: root
-#    group: root
-#    state: link
-#    force: yes
 EOF
 cat > ${HOST_PATH}/cni.yml << EOF
 - hosts: all
@@ -4422,14 +4511,16 @@ controllerConfig(){
       exit 1
     fi
       if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
+      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n--enable-garbage-collector=true"`
       else
-      FEATURE_GATES=""
+      FEATURE_GATES="--enable-garbage-collector=true"
    fi
 if [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS="--horizontal-pod-autoscaler-use-rest-clients=true"
+HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS=`echo -e "--horizontal-pod-autoscaler-use-rest-clients=true \\\\\\\\\n--horizontal-pod-autoscaler-sync-period=10s"`
+BIND_ADDRESS=`echo -e "--bind-address={{ $KUBELET_IPV4 }} \\\\\\\\\n--address=127.0.0.1"`
 else
-HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS=""
+HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS="--horizontal-pod-autoscaler-sync-period=10s"
+BIND_ADDRESS="--bind-address=0.0.0.0"
 fi
 # 创建kube-controller-manager 启动配置文件
 cat > ${HOST_PATH}/roles/kube-controller-manager/templates/kube-controller-manager << EOF
@@ -4439,8 +4530,7 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --concurrent-deployment-syncs=${CONCURRENT_DEPLOYMENT_SYNCS} \\
 --concurrent-gc-syncs=${CONCURRENT_GC_SYNCS} \\
 --leader-elect=true \\
---bind-address={{ $KUBELET_IPV4 }} \\
---address=127.0.0.1 \\
+${BIND_ADDRESS} \\
 --service-cluster-ip-range=${SERVICE_CIDR} \\
 --cluster-cidr=${CLUSTER_CIDR} \\
 --node-cidr-mask-size=24 \\
@@ -4467,14 +4557,11 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --cluster-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem  \\
 --deployment-controller-sync-period=10s \\
 --experimental-cluster-signing-duration=${EXPIRY_TIME}0m0s \\
---enable-garbage-collector=true \\
 --root-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --service-account-private-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem \\
 ${FEATURE_GATES} \\
 --controllers=*,bootstrapsigner,tokencleaner \\
 ${HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS} \\
---horizontal-pod-autoscaler-sync-period=10s \\
---flex-volume-plugin-dir=${K8S_PATH}/kubelet-plugins/volume \\
 --tls-cert-file=${K8S_PATH}/ssl/k8s/k8s-controller-manager.pem \\
 --tls-private-key-file=${K8S_PATH}/ssl/k8s/k8s-controller-manager-key.pem \\
 --kube-api-qps=${KUBE_API_QPS} \\
@@ -4517,15 +4604,14 @@ cat > ${HOST_PATH}/roles/kube-controller-manager/tasks/main.yml << EOF
     group: root
   with_items:
       - log
-      - kubelet-plugins
       - conf
       - config
-- name: Create ${K8S_PATH}/kubelet-plugins/volume
+- name: Create /usr/libexec/kubernetes/kubelet-plugins/volume/exec/
   file:
-    path: "${K8S_PATH}/kubelet-plugins/volume"
+    path: "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/"
     state: directory
     owner: k8s
-    group: root
+    group: root    
 - name: copy kube-controller-manager
   copy: 
     src: bin 
@@ -4617,9 +4703,9 @@ schedulerConfig(){
       exit 1
     fi
       if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]] ; then
-      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
+      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n                   --leader-elect=true"`
       else
-      FEATURE_GATES=""
+      FEATURE_GATES="--leader-elect=true"
    fi
 # 创建kube-scheduler 启动配置文件
 cat > ${HOST_PATH}/roles/kube-scheduler/templates/kube-scheduler << EOF
@@ -4627,7 +4713,6 @@ KUBE_SCHEDULER_OPTS=" \\
                    --logtostderr=${LOGTOSTDERR} \\
                    --address=127.0.0.1 \\
                    --bind-address={{ $KUBELET_IPV4 }} \\
-                   --leader-elect=true \\
                    ${FEATURE_GATES} \\
                    --kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authentication-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
@@ -4682,15 +4767,8 @@ cat > ${HOST_PATH}/roles/kube-scheduler/tasks/main.yml << EOF
     group: root
   with_items:
       - log
-      - kubelet-plugins
       - conf
       - config
-- name: Create ${K8S_PATH}/kubelet-plugins/volume
-  file:
-    path: "${K8S_PATH}/kubelet-plugins/volume"
-    state: directory
-    owner: k8s
-    group: root
 - name: copy kube-scheduler
   copy: 
     src: bin 
@@ -4776,21 +4854,21 @@ kubeProxyConfig(){
       exit 1
     fi
       if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      FEATURE_GATES="--feature-gates=${FEATURE_GATES_OPT}"
+      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n--masquerade-all=true"`
       else
-      FEATURE_GATES=""
+      FEATURE_GATES="--masquerade-all=true"
    fi
 # 创建 kube-proxy 启动配置文件
 cat > ${HOST_PATH}/roles/kube-proxy/templates/kube-proxy << EOF
 KUBE_PROXY_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --v=${LEVEL_LOG} \\
 ${FEATURE_GATES} \\
---masquerade-all=true \\
 --proxy-mode=ipvs \\
 --profiling=true \\
 --ipvs-min-sync-period=5s \\
 --ipvs-sync-period=5s \\
 --ipvs-scheduler=rr \\
+--conntrack-max-per-core=0 \\
 --cluster-cidr=${CLUSTER_CIDR} \\
 --log-dir=${K8S_PATH}/log \\
 --metrics-bind-address=0.0.0.0 \\
