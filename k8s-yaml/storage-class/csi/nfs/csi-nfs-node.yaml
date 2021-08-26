@@ -46,7 +46,7 @@ spec:
           args:
             - --v=2
             - --csi-address=/csi/csi.sock
-            - --kubelet-registration-path=/apps/work/kubernetes/kubelet/plugins/csi-nfsplugin/csi.sock
+            - --kubelet-registration-path=/var/lib/kubelet/plugins/csi-nfsplugin/csi.sock
           env:
             - name: KUBE_NODE_NAME
               valueFrom:
@@ -92,18 +92,18 @@ spec:
             - name: socket-dir
               mountPath: /csi
             - name: pods-mount-dir
-              mountPath: /apps/work/kubernetes/kubelet/pods
+              mountPath: /var/lib/kubelet/pods
               mountPropagation: "Bidirectional"
       volumes:
         - name: socket-dir
           hostPath:
-            path: /apps/work/kubernetes/kubelet/plugins/csi-nfsplugin
+            path: /var/lib/kubelet/plugins/csi-nfsplugin
             type: DirectoryOrCreate
         - name: pods-mount-dir
           hostPath:
-            path: /apps/work/kubernetes/kubelet/pods
+            path: /var/lib/kubelet/pods
             type: Directory
         - hostPath:
-            path: /apps/work/kubernetes/kubelet/plugins_registry
+            path: /var/lib/kubelet/plugins_registry
             type: Directory
           name: registration-dir
