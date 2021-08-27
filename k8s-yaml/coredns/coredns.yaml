@@ -204,6 +204,9 @@ metadata:
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
     kubernetes.io/name: "CoreDNS"
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9153'    
 spec:
   selector:
     k8s-app: kube-dns
