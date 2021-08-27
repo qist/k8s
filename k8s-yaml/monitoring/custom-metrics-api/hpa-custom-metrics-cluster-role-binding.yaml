@@ -9,4 +9,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: horizontal-pod-autoscaler
-  namespace: monitoring
+  namespace: kube-system
