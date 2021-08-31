@@ -77,7 +77,6 @@ data:
         kubernetes __PILLAR__DNS__DOMAIN__ in-addr.arpa ip6.arpa {
             pods verified
             endpoint_pod_names
-            upstream
             fallthrough in-addr.arpa ip6.arpa
             ttl 30
         }
