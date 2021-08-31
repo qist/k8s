@@ -29,7 +29,7 @@ spec:
         - --web.enable-lifecycle
         - --storage.tsdb.no-lockfile
         - --web.route-prefix=/
-        image: prom/prometheus:v2.28.1
+        image: prom/prometheus:v2.29.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 6
