@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-etc
+  namespace: zentao 
+  labels:
+    k8s-app: zentao  
+data:
+  default.conf: |
+    server {
+    
+            listen                  80;
+            listen [::]:80 ipv6only=on;
+            server_name  zentao.mddgame.com;
+            client_max_body_size 1024m;
+            chunked_transfer_encoding on;
+            location / {
+                root   /www/zentaopms/www;
+                index  index.php;
+                client_max_body_size 1024m;
+                chunked_transfer_encoding on;
+    
+            }
+    
+            error_page  404              /404.html;
+            error_page   500 502 503 504  /50x.html;
+            location = /50x.html {
+                root   /var/lib/nginx/html/;
+            }
+            location ~ \.php$ {
+                root           /www/zentaopms/www;
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                fastcgi_pass   unix:/var/run/svr/php-fpm.sock;
+                fastcgi_index  index.php;
+                fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+                include        fastcgi_params;
+            }
+            location ~* ^.+\.(jpg|jpeg|gif|png|bmp)$ {
+                access_log  off;
+                root        /www/zentaopms/www;
+                expires     30d;
+                            break;
+         }
+        location /ping {
+                 access_log off;
+                 fastcgi_pass unix:/var/run/svr/php-fpm.sock;
+                 include fastcgi_params;
+                 fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
+      }
+    }
