@@ -23,7 +23,7 @@ spec:
       - path: /
         pathType: Prefix # 1.20 以上使用
         backend:
-          service
+          service:
             name: myip 
             port: 
               number: 8080
@@ -49,7 +49,7 @@ spec:
     http:
       paths:
       - backend:
-          service
+          service:
             name: kubernetes-dashboard
             port: 
               number: 443
