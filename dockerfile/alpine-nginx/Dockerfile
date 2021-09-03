@@ -70,6 +70,7 @@ RUN NGINX_CONFIG="\
      --add-module=../mod_zip \
      --add-module=../ngx_cache_purge \
      --add-module=../ngx_upstream_jdomain \
+     --add-module=../headers-more-nginx-module \
      --add-module=../nginx-upstream-dynamic-servers \
      --add-module=../nginx-module-vts \
      " \
@@ -118,6 +119,7 @@ RUN NGINX_CONFIG="\
         && git clone https://github.com/vozlt/nginx-module-vts.git /tmp/nginx-module-vts \
         && git clone https://github.com/openresty/echo-nginx-module.git /tmp/echo-nginx-module \
         && git clone https://github.com/weibocom/nginx-upsync-module.git /tmp/nginx-upsync-module \
+        && git clone https://github.com/openresty/headers-more-nginx-module.git /tmp/headers-more-nginx-module \
         && cd /tmp \
         && tar -xzf openssl-$OPENSSL_VERSION.tar.gz \
         && tar -xzf nginx-$NGINX_VERSION.tar.gz \
