@@ -126,6 +126,7 @@ RUN PHP_CONFIG="\
            oniguruma \
            sqlite-libs \
            libzip \
+        && ln -sf /dev/stdout /usr/local/var/log/php-fpm.log \
         && rm -rf /var/cache/apk/*
 # copy 配置到镜像中 
        
