@@ -33,10 +33,10 @@ spec:
         port:
           number: 80
         subset: v2
-      weight: 10
+      weight: 50
     - destination:
         host: nginx
         port:
           number: 80
         subset: v1
-      weight: 90
+      weight: 50

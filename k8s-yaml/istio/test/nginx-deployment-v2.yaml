@@ -22,24 +22,24 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: juestnow/nginx
+          image: juestnow/nginx-alpine:1.21.2
           imagePullPolicy: IfNotPresent
           lifecycle:
             postStart:
               exec:
-                command:  ["/bin/sh", "-c", "echo Hello v2 > /www/index.html"]
+                command:  ["/bin/sh", "-c", "echo Hello v2 > /var/lib/nginx/html/index.html"]
           ports:
             - containerPort: 80
               name: http
               protocol: TCP
             - containerPort: 8080
-              name: http-vts
+              name: http-metrics
               protocol: TCP
           readinessProbe:
             failureThreshold: 10
             httpGet:
               path: /healthz
-              port: http-vts
+              port: http-metrics
               scheme: HTTP
             initialDelaySeconds: 3
             periodSeconds: 5
@@ -49,19 +49,3 @@ spec:
             requests:
               cpu: 200m
               memory: 200Mi
-        - name: nginx-vts-exporter
-          image: juestnow/nginx-vts-exporter
-          imagePullPolicy: IfNotPresent
-          args:
-          - "-nginx.scrape_uri=http://localhost:8080/format/json"
-          ports:
-            - containerPort: 9913
-              name: http-metrics
-              protocol: TCP
-          resources:
-            requests:
-              memory: 30Mi
-              cpu: 102m
-            limits:
-              memory: 50Mi
-              cpu: 250m

@@ -1,0 +1,18 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: nginx
+  namespace: istio-system
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: nginx.tycng.com
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: istio-ingressgateway
+                port:
+                  number: 80
