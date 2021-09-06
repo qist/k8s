@@ -63,7 +63,14 @@ helm install istio-ingress manifests/charts/gateways/istio-ingress \
 --set gateways.istio-ingressgateway.type=ClusterIP \
 -n istio-system
 ```    
-    
+# 添加namespace标签
+```
+kubectl label namespace default istio-injection=enabled
+```
+# 查询添加标签
+```
+ kubectl get namespace -L istio-injection
+ ```    
 # 卸载 
 ```  
 helm ls -n istio-system
