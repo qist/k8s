@@ -4,6 +4,7 @@ metadata:
   name: grafana-dashboard
   namespace: monitoring
 spec:
+  ingressClassName: nginx
   rules:
     - host: monitor.tycng.com
       http:
