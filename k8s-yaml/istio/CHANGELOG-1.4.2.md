@@ -130,6 +130,9 @@ helm install install/kubernetes/helm/istio-cni --name-template istio-cni --names
 --set cniConfDir=/etc/cni/net.d   \
 --set excludeNamespaces={"istio-system,monitoring,kubernetes-dashboard,kube-system"}
 ```
+# 测试项目
+* [测试项目](./test)
+
 ##  istio 更新
 ```
 #检查是否安装 istio-cni  插件

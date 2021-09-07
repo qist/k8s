@@ -71,6 +71,12 @@ kubectl label namespace default istio-injection=enabled
 ```
  kubectl get namespace -L istio-injection
  ```    
+# 其它插件安装目录
+```
+samples\addons yaml 文件
+```
+# 测试项目
+* [测试项目](./test)
 # 卸载 
 ```  
 helm ls -n istio-system
