@@ -47,7 +47,7 @@ spec:
             path: /login
             port: 3000
           # initialDelaySeconds: 30
-          # timeoutSeconds: 1
+          # timeoutSeconds: 1          
         volumeMounts:
         - name: grafana-etc-volume
           mountPath: /etc/grafana/
@@ -62,3 +62,6 @@ spec:
         - name: grafana-settings
           persistentVolumeClaim:
             claimName: grafana-pvc
+      securityContext:
+        fsGroup: 65535
+        runAsNonRoot: true          

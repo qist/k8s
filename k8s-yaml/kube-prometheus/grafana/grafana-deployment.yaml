@@ -60,3 +60,6 @@ spec:
         - name: grafana-settings
           persistentVolumeClaim:
             claimName: grafana-pvc
+      securityContext:
+        fsGroup: 65535
+        runAsNonRoot: true            
