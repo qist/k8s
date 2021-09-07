@@ -34,7 +34,7 @@ spec:
           - name: GF_AUTH_BASIC_ENABLED
             value: "true"
           - name: GF_AUTH_ANONYMOUS_ENABLED
-            value: "false"
+            value: "true"
           - name: GF_INSTALL_PLUGINS
             value: "grafana-clock-panel,grafana-piechart-panel,digiapulssi-breadcrumb-panel,grafana-polystat-panel,camptocamp-prometheus-alertmanager-datasource"
           # - name: GF_AUTH_ANONYMOUS_ORG_ROLE
