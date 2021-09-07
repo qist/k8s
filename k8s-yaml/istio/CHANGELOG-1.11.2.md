@@ -72,9 +72,12 @@ kubectl label namespace default istio-injection=enabled
  kubectl get namespace -L istio-injection
  ```    
 # 其它插件安装目录
+* [添加apm插件](./addons)
 ```
-samples\addons yaml 文件
+kubectl apply -f ./addons/.
 ```
+grafana dashboard 导入 IstioWasmExtensionDashboard 不支持containerd 运行时
+* [dashboard](./addons/dashboard)
 # 测试项目
 * [测试项目](./test)
 # 卸载 

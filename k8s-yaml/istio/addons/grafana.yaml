@@ -1,0 +1,9 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: grafana 
+  namespace: istio-system
+spec:
+  type: ExternalName
+  sessionAffinity: None
+  externalName: grafana.monitoring.svc.cluster.local
