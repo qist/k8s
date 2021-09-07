@@ -106,8 +106,8 @@ helm install  install/kubernetes/helm/istio --name-template istio --namespace is
 --set kiali.dashboard.jaegerURL=http://tracing.tycng.com \
 --set kiali.createDemoSecret=true \
 --set istio_cni.enabled=true   \
---set istio-cni.cniBinDir=/apps/cni/bin   \
---set istio-cni.cniConfDir=/apps/cni/etc/net.d   \
+--set istio-cni.cniBinDir=/opt/cni/bin   \
+--set istio-cni.cniConfDir=/etc/cni/net.d   \
 --set istio-cni.excludeNamespaces={"istio-system,monitoring,kubernetes-dashboard,kube-system"}  \
 --set global.proxy.clusterDomain="cluster.local" \
 --set global.proxy.accessLogFile="/dev/stdout" \
@@ -126,8 +126,8 @@ kubectl label namespace default istio-injection=enabled
 # cni 部署
 ```
 helm install install/kubernetes/helm/istio-cni --name-template istio-cni --namespace istio-system \
---set cniBinDir=/apps/cni/bin \
---set cniConfDir=/apps/cni/etc/net.d   \
+--set cniBinDir=/opt/cni/bin \
+--set cniConfDir=/etc/cni/net.d   \
 --set excludeNamespaces={"istio-system,monitoring,kubernetes-dashboard,kube-system"}
 ```
 ##  istio 更新
@@ -138,8 +138,8 @@ helm status istio-cni --namespace istio-system
 helm uninstall istio-cni --namespace istio-system
 # cni 部署
 helm install install/kubernetes/helm/istio-cni --name-template istio-cni --namespace istio-system \
---set cniBinDir=/apps/cni/bin \
---set cniConfDir=/apps/cni/etc/net.d   \
+--set cniBinDir=/opt/cni/bin \
+--set cniConfDir=/etc/cni/net.d   \
 --set excludeNamespaces={"istio-system,monitoring,kubernetes-dashboard,kube-system"}
 # 升级istio-init
 helm upgrade --install istio-init install/kubernetes/helm/istio-init  --namespace istio-system --force
@@ -162,8 +162,8 @@ helm upgrade --install istio install/kubernetes/helm/istio --namespace istio-sys
 --set kiali.dashboard.jaegerURL=http://tracing.tycng.com \
 --set kiali.createDemoSecret=true \
 --set istio_cni.enabled=true   \
---set istio-cni.cniBinDir=/apps/cni/bin   \
---set istio-cni.cniConfDir=/apps/cni/etc/net.d   \
+--set istio-cni.cniBinDir=/opt/cni/bin   \
+--set istio-cni.cniConfDir=/etc/cni/net.d   \
 --set istio-cni.excludeNamespaces={"istio-system,monitoring,kubernetes-dashboard,kube-system"}  \
 --set global.proxy.clusterDomain="cluster.local" \
 --set global.proxy.accessLogFile="/dev/stdout" \
