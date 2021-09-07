@@ -79,6 +79,10 @@ data:
     external_services:
       custom_dashboards:
         enabled: true
+      grafana:
+        enabled: true
+        in_cluster_url: "http://grafana:3000"
+        url: "http://monitor.tycng.com/"        
     identity:
       cert_file: ""
       private_key_file: ""

@@ -74,6 +74,14 @@ kubectl label namespace default istio-injection=enabled
 # 其它插件安装目录
 * [添加apm插件](./addons)
 ```
+# 修改 kiali.yaml
+    external_services:
+      custom_dashboards:
+        enabled: true
+      grafana:
+        enabled: true
+        in_cluster_url: "http://grafana:3000"
+        url: "http://monitor.tycng.com/"  # 改成自己的grafana 地址 外网能访问的
 kubectl apply -f ./addons/.
 ```
 grafana dashboard 导入 IstioWasmExtensionDashboard 不支持containerd 运行时
