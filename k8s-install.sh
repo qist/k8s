@@ -90,7 +90,7 @@ K8S_EVENTS=OFF
 # 是否升级iptables OFF 关闭 ON 开启
 IPTABLES_INSTALL=OFF
 # 是否开启 审计 false 关闭 true 开启
-DYNAMICAUDITING=true
+DYNAMICAUDITING=false
 # k8s 17号版本及以上的版本配置
 # 拓扑感知服务路由配置 false 关闭 true 开启
 SERVICETOPOLOGY=true
