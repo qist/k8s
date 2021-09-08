@@ -40,8 +40,8 @@ ETCD_EVENTS_MEMBER_2_IP="192.168.2.187"
 ETCD_EVENTS_MEMBER_2_HOSTNAMES="k8s-node-2"
 ETCD_EVENTS_MEMBER_3_IP="192.168.3.62"
 ETCD_EVENTS_MEMBER_3_HOSTNAMES="k8s-node-3"
-### cgroup驱动 cgroupfs systemd 默认 cgroupfs
-NATIVE_CGROUPDRIVER=cgroupfs
+### cgroup驱动 cgroupfs systemd 默认 systemd
+NATIVE_CGROUPDRIVER=systemd
 #### 以下参数根据实际网络环境修改不能有重复网段
 # 最好使用 当前未用的网段 来定义服务网段和 Pod 网段
 # 服务网段，部署前路由不可达，部署后集群内路由可达(kube-proxy 保证)
@@ -79,7 +79,7 @@ K8S_VIP_PORT=6443
 # 是否自动安装 K8S 集群 ON 开启 OFF 关闭
 INSTALL_K8S=OFF
 # 配置容器运行时 DOCKER,CONTAINERD,CRIO 默认docker
-RUNTIME=DOCKER
+RUNTIME=CRIO
 # 网络插件 选择 flannel,kube-router 默认 flannel 
 # calico 插件下载地址
 # https://docs.projectcalico.org/manifests/calico.yaml
