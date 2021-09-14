@@ -1,3 +1,5 @@
+# 默认账号密码 guest
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -35,7 +37,7 @@ spec:
                 path: enabled_plugins
       containers:
         - name: rabbitmq-k8s
-          image: 'docker.io/bitnami/rabbitmq:3.8'
+          image: 'docker.io/juestnow/rabbitmq:3.8'
           ports:
             - name: http
               containerPort: 15672
@@ -74,6 +76,10 @@ spec:
               mountPath: /var/lib/rabbitmq/mnesia
           imagePullPolicy: Always
       restartPolicy: Always
+      #securityContext:
+      #  fsGroup: 65535
+      #  runAsNonRoot: true
+      #  runAsUser: 65535        
       terminationGracePeriodSeconds: 10
       dnsPolicy: ClusterFirst
       nodeSelector:
@@ -83,7 +89,6 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: rabbitmq-data
-        creationTimestamp: null
       spec:
         accessModes:
           - ReadWriteOnce
@@ -91,10 +96,7 @@ spec:
           requests:
             storage: 20Gi
         volumeMode: Filesystem
-      status:
-        phase: Pending
   serviceName: rabbitmq
-  podManagementPolicy: OrderedReady
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
