@@ -35,7 +35,7 @@ spec:
                 path: enabled_plugins
       containers:
         - name: rabbitmq-k8s
-          image: 'docker.io/bitnami/rabbitmq:3.7.17-debian-9-r0'
+          image: 'docker.io/bitnami/rabbitmq:3.8'
           ports:
             - name: http
               containerPort: 15672
@@ -141,3 +141,30 @@ spec:
   type: ClusterIP
   sessionAffinity: None
   publishNotReadyAddresses: true
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rabbitmq-metrics
+  namespace: rabbitmq
+  labels:
+    app: rabbitmq
+    type: LoadBalancer
+  annotations:
+    prometheus.io/port: '15692'
+    prometheus.io/scrape: 'true'
+spec:
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 15692
+      targetPort: 15692
+  selector:
+    app: rabbitmq
+  clusterIP: None
+  type: ClusterIP
+  sessionAffinity: None
+  publishNotReadyAddresses: true
+status:
+  loadBalancer: {}
+  
