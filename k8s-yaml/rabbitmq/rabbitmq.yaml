@@ -167,4 +167,30 @@ spec:
   publishNotReadyAddresses: true
 status:
   loadBalancer: {}
-  
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rabbitmq-peer-discovery-rbac
+  namespace: rabbitmq
+rules:
+  - verbs:
+      - get
+    apiGroups:
+      - ''
+    resources:
+      - endpoints
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: rabbitmq-peer-discovery-rbac
+  namespace: rabbitmq
+subjects:
+  - kind: ServiceAccount
+    name: rabbitmq
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rabbitmq-peer-discovery-rbac
+
