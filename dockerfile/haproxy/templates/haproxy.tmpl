@@ -5,7 +5,7 @@
                 group haproxy
                 pidfile /run/haproxy.pid
                 stats socket /run/haproxy.sock mode 600 level admin
-                log             127.0.0.1 local2
+                log stdout format iso local7
 
                 nbthread  8
                 cpu-map 1/all 0-
