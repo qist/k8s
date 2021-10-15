@@ -724,7 +724,7 @@ spec:
     spec:
       containers:
         - name: create
-          image: juestnow/kube-webhook-certgen:v1.0
+          image: juestnow/kube-webhook-certgen:v1.1.1
           imagePullPolicy: IfNotPresent
           args:
             - create
@@ -774,7 +774,7 @@ spec:
     spec:
       containers:
         - name: patch
-          image: juestnow/kube-webhook-certgen:v1.0
+          image: juestnow/kube-webhook-certgen:v1.1.1
           imagePullPolicy: IfNotPresent
           args:
             - patch
