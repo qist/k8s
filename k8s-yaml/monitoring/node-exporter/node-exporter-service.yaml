@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: node-exporter
-    app.kubernetes.io/version: v1.0.1
+    app.kubernetes.io/version: v1.2.2
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/scheme: "https"    
