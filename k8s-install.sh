@@ -2213,6 +2213,9 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - { key: 'vm.swappiness', value: '0' }
       - { key: 'kernel.sysrq', value: '1' }
       - { key: 'net.ipv4.neigh.default.gc_stale_time', value: '120' }
+      - { key: 'net.ipv4.neigh.default.gc_thresh1', value: '0' }
+      - { key: 'net.ipv4.neigh.default.gc_thresh2', value: '4096' }
+      - { key: 'net.ipv4.neigh.default.gc_thresh3', value: '8192' }
       - { key: 'net.ipv4.conf.all.rp_filter', value: '0' }
       - { key: 'net.ipv4.conf.default.rp_filter', value: '0' }
       - { key: 'net.ipv4.conf.default.arp_announce', value: '2' }
@@ -2235,6 +2238,8 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - { key: 'net.netfilter.nf_conntrack_tcp_timeout_time_wait', value: '120' }
       - { key: 'net.netfilter.nf_conntrack_tcp_timeout_close_wait', value: '60' }
       - { key: 'net.netfilter.nf_conntrack_tcp_timeout_fin_wait', value: '12' }
+      - { key: 'net.netfilter.nf_conntrack_tcp_timeout_close', value: '3' }
+      - { key: 'net.ipv4.conf.all.route_localnet', value: '1' }
 - name: Add or modify hard nofile limits for wildcard domain
   pam_limits:
     domain: '*'
