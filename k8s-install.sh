@@ -2205,6 +2205,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - { key: 'net.core.somaxconn', value: '32768' }
       - { key: 'net.ipv4.ip_forward', value: '1' }
       - { key: 'net.ipv4.tcp_timestamps', value: '0' }
+      - { key: 'net.ipv4.tcp_fin_timeout', value: '1' }
       - { key: 'net.ipv4.tcp_max_syn_backlog', value: '8096' }
       - { key: 'net.bridge.bridge-nf-call-iptables', value: '1' }
       - { key: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
