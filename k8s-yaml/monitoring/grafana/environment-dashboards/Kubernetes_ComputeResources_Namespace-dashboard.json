@@ -141,7 +141,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(\n  node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n  node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -430,7 +430,7 @@
       ],
       "targets": [
         {
-          "expr": "count(mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload, workload_type)",
+          "expr": "count(namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload, workload_type)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -440,7 +440,7 @@
           "step": 10
         },
         {
-          "expr": "sum(\n  node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n  node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -450,7 +450,7 @@
           "step": 10
         },
         {
-          "expr": "sum(\n  kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n  kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -460,7 +460,7 @@
           "step": 10
         },
         {
-          "expr": "sum(\n  node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n/sum(\n  kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n  node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n/sum(\n  kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -470,7 +470,7 @@
           "step": 10
         },
         {
-          "expr": "sum(\n  kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n  kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -480,7 +480,7 @@
           "step": 10
         },
         {
-          "expr": "sum(\n  node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n/sum(\n  kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n  node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n/sum(\n  kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -613,7 +613,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(\n    container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\",environment=~\"$env\"}\n  * on(namespace,pod)\n    group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n    container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\",environment=~\"$env\"}\n  * on(namespace,pod)\n    group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -902,7 +902,7 @@
       ],
       "targets": [
         {
-          "expr": "count(mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload, workload_type)",
+          "expr": "count(namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload, workload_type)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -912,7 +912,7 @@
           "step": 10
         },
         {
-          "expr": "sum(\n    container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\",environment=~\"$env\"}\n  * on(namespace,pod)\n    group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n    container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\",environment=~\"$env\"}\n  * on(namespace,pod)\n    group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -922,7 +922,7 @@
           "step": 10
         },
         {
-          "expr": "sum(\n  kube_pod_container_resource_requests_memory_bytes{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n  kube_pod_container_resource_requests_memory_bytes{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -932,7 +932,7 @@
           "step": 10
         },
         {
-          "expr": "sum(\n    container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\",environment=~\"$env\"}\n  * on(namespace,pod)\n    group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n/sum(\n  kube_pod_container_resource_requests_memory_bytes{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n    container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\",environment=~\"$env\"}\n  * on(namespace,pod)\n    group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n/sum(\n  kube_pod_container_resource_requests_memory_bytes{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -942,7 +942,7 @@
           "step": 10
         },
         {
-          "expr": "sum(\n  kube_pod_container_resource_limits_memory_bytes{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n  kube_pod_container_resource_limits_memory_bytes{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -952,7 +952,7 @@
           "step": 10
         },
         {
-          "expr": "sum(\n    container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\",environment=~\"$env\"}\n  * on(namespace,pod)\n    group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n/sum(\n  kube_pod_container_resource_limits_memory_bytes{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
+          "expr": "sum(\n    container_memory_working_set_bytes{cluster=\"$cluster\", namespace=\"$namespace\", container!=\"\",environment=~\"$env\"}\n  * on(namespace,pod)\n    group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n/sum(\n  kube_pod_container_resource_limits_memory_bytes{cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}\n* on(namespace,pod)\n  group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}\n) by (workload, workload_type)\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1216,7 +1216,7 @@
       ],
       "targets": [
         {
-          "expr": "(sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1226,7 +1226,7 @@
           "step": 10
         },
         {
-          "expr": "(sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1236,7 +1236,7 @@
           "step": 10
         },
         {
-          "expr": "(sum(irate(container_network_receive_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_receive_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1246,7 +1246,7 @@
           "step": 10
         },
         {
-          "expr": "(sum(irate(container_network_transmit_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_transmit_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1256,7 +1256,7 @@
           "step": 10
         },
         {
-          "expr": "(sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1266,7 +1266,7 @@
           "step": 10
         },
         {
-          "expr": "(sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1378,7 +1378,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1494,7 +1494,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1610,7 +1610,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(avg(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(avg(irate(container_network_receive_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1726,7 +1726,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(avg(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(avg(irate(container_network_transmit_bytes_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1842,7 +1842,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(irate(container_network_receive_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_receive_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1958,7 +1958,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(irate(container_network_transmit_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_transmit_packets_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2074,7 +2074,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_receive_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2190,7 +2190,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod) \ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
+          "expr": "(sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\",environment=~\"$env\"}[$__interval])\n* on (namespace,pod) \ngroup_left(workload,workload_type) namespace_workload_pod:kube_pod_owner:relabel{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\",environment=~\"$env\"}) by (workload))\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2345,7 +2345,7 @@
         "auto_min": "10s",
         "current": {},
         "datasource": "$datasource",
-        "definition": "label_values(mixin_pod_workload{namespace=~\"$namespace\", workload=~\".+\",environment=~\"$env\"}, workload_type)",
+        "definition": "label_values(namespace_workload_pod:kube_pod_owner:relabel{namespace=~\"$namespace\", workload=~\".+\",environment=~\"$env\"}, workload_type)",
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -2353,7 +2353,7 @@
         "multi": false,
         "name": "type",
         "options": [],
-        "query": "label_values(mixin_pod_workload{namespace=~\"$namespace\", workload=~\".+\",environment=~\"$env\"}, workload_type)",
+        "query": "label_values(namespace_workload_pod:kube_pod_owner:relabel{namespace=~\"$namespace\", workload=~\".+\",environment=~\"$env\"}, workload_type)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
