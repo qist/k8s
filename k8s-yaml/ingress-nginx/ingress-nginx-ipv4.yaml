@@ -45,6 +45,7 @@ data:
   compute-full-forwarded-for: "true"
   forwarded-for-header: "X-Forwarded-For"
   use-forwarded-headers: "true"
+  load-balance: ewma
   large-client-header-buffers: 4 128k
   server-name-hash-bucket-size: "128"
   log-format-escape-json: "true"
@@ -54,6 +55,7 @@ data:
     $upstream_response_length $upstream_response_time $upstream_status $req_id $host
     $request_body
   max-worker-connections: "65536"
+  proxy-next-upstream: error timeout http_500 http_502 http_503 http_504 http_403 http_404 http_429
   proxy-body-size: 8192m
   proxy-buffer-size: 64k
   proxy-connect-timeout: "300"
