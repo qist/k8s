@@ -344,7 +344,7 @@
         {
           "expr": "probe_duration_seconds{instance=~\"$target\"}",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{ instance }}",
           "refId": "A"
@@ -478,7 +478,7 @@
         {
           "expr": "probe_success{instance=~\"$target\"}",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -558,7 +558,7 @@
         {
           "expr": "probe_http_duration_seconds{instance=~\"$target\"}",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{ phase }}",
           "refId": "B"
@@ -658,7 +658,7 @@
         {
           "expr": "probe_duration_seconds{instance=~\"$target\"}",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "seconds",
           "refId": "A"
@@ -778,7 +778,7 @@
         {
           "expr": "probe_http_status_code{instance=~\"$target\"}",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -964,7 +964,7 @@
         {
           "expr": "probe_http_ssl{instance=~\"$target\"}",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -1065,7 +1065,7 @@
         {
           "expr": "probe_ssl_earliest_cert_expiry{instance=~\"$target\"} - time()",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -1164,7 +1164,7 @@
         {
           "expr": "avg(probe_duration_seconds{instance=~\"$target\"})",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -1253,7 +1253,7 @@
         {
           "expr": "avg(probe_dns_lookup_time_seconds{instance=~\"$target\"})",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A"
         }

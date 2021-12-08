@@ -243,7 +243,7 @@
       },
       "height": "125px",
       "id": 19,
-      "interval": "$interval",
+      "interval": "$__interval",
       "links": [],
       "mappingType": 1,
       "mappingTypes": [
@@ -329,7 +329,7 @@
       },
       "height": "125px",
       "id": 25,
-      "interval": "$interval",
+      "interval": "$__interval",
       "links": [],
       "mappingType": 1,
       "mappingTypes": [
@@ -454,7 +454,7 @@
         {
           "expr": "avg by (instance) (avg_over_time(node_load1{instance=~\"$node_name\"}[$interval]) or avg_over_time(node_load1{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -502,7 +502,7 @@
       },
       "height": "125px",
       "id": 38,
-      "interval": "$interval",
+      "interval": "$__interval",
       "links": [
         {
           "targetBlank": true,
@@ -634,7 +634,7 @@
         {
           "expr": "avg by (instance) (min(node_filesystem_free_bytes{instance=~\"$node_name\", fstype!~\"rootfs|selinuxfs|autofs|rpc_pipefs|tmpfs|shm|overlay|squashfs\"}/node_filesystem_size_bytes{instance=~\"$node_name\", fstype!~\"rootfs|selinuxfs|autofs|rpc_pipefs|tmpfs|shm|overlay|squashfs\"})*100)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -767,7 +767,7 @@
       },
       "height": "125px",
       "id": 26,
-      "interval": "$interval",
+      "interval": "$__interval",
       "links": [],
       "mappingType": 1,
       "mappingTypes": [
@@ -892,7 +892,7 @@
         {
           "expr": "avg by (instance) (((node_memory_MemAvailable_bytes{instance=~\"$node_name\"} or (node_memory_MemFree_bytes{instance=~\"$node_name\"} + node_memory_Buffers_bytes{instance=~\"$node_name\"} + node_memory_Cached_bytes{instance=~\"$node_name\"})) / node_memory_MemTotal_bytes{instance=~\"$node_name\"}) * 100)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -940,7 +940,7 @@
       },
       "height": "125px",
       "id": 37,
-      "interval": "$interval",
+      "interval": "$__interval",
       "links": [],
       "mappingType": 1,
       "mappingTypes": [
@@ -1135,19 +1135,19 @@
       "targets": [
         {
           "expr": "sum by (service_name) (max_over_time(mysql_global_status_threads_connected{instance=~\"$node_name\"}[$interval]))",
-          "interval": "$interval",
+          "interval": "$__interval",
           "legendFormat": "MySQL - {{service_name}}",
           "refId": "A"
         },
         {
           "expr": "sum by (service_name) (max_over_time(mongodb_connections{instance=~\"$node_name\",state=\"current\"}[$interval]))",
-          "interval": "$interval",
+          "interval": "$__interval",
           "legendFormat": "MongoDB - {{service_name}}",
           "refId": "B"
         },
         {
           "expr": "sum by (service_name) (max_over_time(pg_stat_database_numbackends{instance=~\"$node_name\"}[$interval]))",
-          "interval": "$interval",
+          "interval": "$__interval",
           "legendFormat": "PostgreSQL - {{service_name}}",
           "refId": "C"
         }
@@ -1222,7 +1222,7 @@
           "expr": "count by (service_type) (sum by (service_name,service_type) (max_over_time(mysql_global_status_threads_connected{instance=~\"$node_name\"}[$interval]) or sum by (service_name,service_type) (max_over_time(mongodb_connections{instance=~\"$node_name\",state=\"current\"}[$interval])) or sum by (service_name,service_type) (max_over_time(pg_stat_database_numbackends{instance=~\"$node_name\"}[$interval]))))",
           "format": "table",
           "instant": true,
-          "interval": "$interval",
+          "interval": "$__interval",
           "legendFormat": "",
           "refId": "A"
         }
@@ -1331,7 +1331,7 @@
         {
           "expr": "avg by (instance,mode) (clamp_max(((avg by (mode) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",mode!=\"idle\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",mode!=\"idle\"}[5m]),1)) ))*100 or (avg_over_time(node_cpu_average{instance=~\"$node_name\", mode!=\"total\", mode!=\"idle\"}[$interval]) or avg_over_time(node_cpu_average{instance=~\"$node_name\", mode!=\"total\", mode!=\"idle\"}[5m]))),100))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{ mode }}",
           "refId": "B"
@@ -1340,7 +1340,7 @@
           "expr": "clamp_max(max by () (sum  by (cpu) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",mode!=\"idle\",mode!=\"iowait\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",mode!=\"idle\",mode!=\"iowait\"}[5m]),1)) )),1)",
           "format": "time_series",
           "hide": true,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Max Core Utilization",
           "refId": "C"
@@ -1470,7 +1470,7 @@
           "format": "time_series",
           "hide": false,
           "instant": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Normalized CPU Load",
           "metric": "",
@@ -1484,7 +1484,7 @@
           "errors": {},
           "expr": "clamp_max(max by () (sum  by (cpu) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",mode!=\"idle\",mode!=\"iowait\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",mode!=\"idle\",mode!=\"iowait\"}[5m]),1)) )),1)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Max CPU Core Utilization",
           "metric": "",
@@ -1495,7 +1495,7 @@
         {
           "expr": "avg by (node_name) (aws_rds_cpu_credit_usage_average{instance=~\"$node_name\"})",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "legendFormat": "CPU Credits Usage",
           "refId": "C"
         }
@@ -1612,7 +1612,7 @@
           "errors": {},
           "expr": "avg by (instance) (rate(node_context_switches_total{instance=~\"$node_name\"}[$interval]) or irate(node_context_switches_total{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Context Switches",
           "metric": "",
@@ -1623,7 +1623,7 @@
         {
           "expr": "avg by (instance) ((rate(node_context_switches_total{instance=~\"$node_name\"}[$interval]) or irate(node_context_switches_total{instance=~\"$node_name\"}[5m])) / scalar(count(node_cpu_seconds_total{mode=\"user\", node_name=~\"$node_name\"})))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Context Switches per Virtual CPU",
           "refId": "B",
@@ -1632,7 +1632,7 @@
         {
           "expr": "avg by (instance) (rate(node_intr_total{instance=~\"$node_name\"}[$interval]) or irate(node_intr_total{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Interrupts",
           "refId": "C"
@@ -1748,14 +1748,14 @@
       "targets": [
         {
           "expr": "avg by (instance) (clamp_min((avg_over_time(node_procs_running{instance=~\"$node_name\"}[$interval]) - 1) or (avg_over_time(node_procs_running{instance=~\"$node_name\"}[5m]) -1),0))",
-          "interval": "$interval",
+          "interval": "$__interval",
           "legendFormat": "Runnable Processes",
           "refId": "A"
         },
         {
           "expr": "avg by (instance) (avg_over_time(node_procs_blocked{instance=~\"$node_name\"}[$interval]) or avg_over_time(node_procs_blocked{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Blocked Processes",
           "refId": "B"
@@ -1763,7 +1763,7 @@
         {
           "expr": "avg by (instance) (rate(node_forks_total{instance=~\"$node_name\"}[$interval]) or irate(node_forks_total{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Created Processes (Forks)",
           "refId": "C"
@@ -1919,7 +1919,7 @@
           "errors": {},
           "expr": "avg by (instance) (max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Free",
           "metric": "",
@@ -1933,7 +1933,7 @@
           "errors": {},
           "expr": "avg by (instance) (max_over_time(node_memory_Buffers_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Buffers_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Buffers",
           "metric": "",
@@ -1948,7 +1948,7 @@
           "expr": "clamp_min(avg by (instance) (((max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[5m])) - ((max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[5m]))+ \n(max_over_time(node_memory_Buffers_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Buffers_bytes{instance=~\"$node_name\"}[5m])) + \n(max_over_time(node_memory_Cached_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Cached_bytes{instance=~\"$node_name\"}[5m]))))),0)",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Used",
           "metric": "",
@@ -1958,14 +1958,14 @@
         },
         {
           "expr": "avg by (instance) (max(max_over_time(node_memory_Cached_bytes{instance=~\"$node_name\",job=~\"rds.*|node.*\"}[$interval]) or max_over_time(node_memory_Cached_bytes{instance=~\"$node_name\",job=~\"rds.*|node.*\"}[5m])) without (job))",
-          "interval": "$interval",
+          "interval": "$__interval",
           "legendFormat": "Cache",
           "refId": "F"
         },
         {
           "expr": "avg by (instance) (max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "C"
@@ -2103,7 +2103,7 @@
           "expr": "avg by (instance) (((max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[5m])) + \n(max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[5m]))))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "metric": "",
@@ -2118,7 +2118,7 @@
           "expr": "avg by (instance) ((((max_over_time(node_memory_MemAvailable_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemAvailable_bytes{instance=~\"$node_name\"}[5m])) or \n((max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[5m]))+ \n(max_over_time(node_memory_Buffers_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Buffers_bytes{instance=~\"$node_name\"}[5m]))+ \n(max_over_time(node_memory_Cached_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Cached_bytes{instance=~\"$node_name\"}[5m])))) + \n(max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[5m]))))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Available",
           "metric": "",
@@ -2128,7 +2128,7 @@
         },
         {
           "expr": "avg by (instance) ((max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[5m])) + \n(max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[5m])) - \n((max_over_time(node_memory_MemAvailable_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemAvailable_bytes{instance=~\"$node_name\"}[5m])) or \n((max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[5m]))+ \n(max_over_time(node_memory_Buffers_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Buffers_bytes{instance=~\"$node_name\"}[5m]))+ \n(max_over_time(node_memory_Cached_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Cached_bytes{instance=~\"$node_name\"}[5m]))) + \n(max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[5m]))))",
-          "interval": "$interval",
+          "interval": "$__interval",
           "legendFormat": "Used",
           "refId": "D"
         }
@@ -2248,7 +2248,7 @@
           "errors": {},
           "expr": "avg by (instance) ((max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[5m])) -\n(max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[5m])))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Used",
           "metric": "",
@@ -2262,7 +2262,7 @@
           "errors": {},
           "expr": "avg by (instance) (max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Free",
           "metric": "",
@@ -2273,7 +2273,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "C"
@@ -2398,7 +2398,7 @@
           "errors": {},
           "expr": "avg by (instance) (rate(node_vmstat_pswpin{instance=~\"$node_name\"}[$interval]) * 4096 or irate(node_vmstat_pswpin{instance=~\"$node_name\"}[5m]) * 4096)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Swap In (Reads)",
           "metric": "",
@@ -2412,7 +2412,7 @@
           "errors": {},
           "expr": "avg by (instance) (rate(node_vmstat_pswpout{instance=~\"$node_name\"}[$interval]) * 4096 or irate(node_vmstat_pswpout{instance=~\"$node_name\"}[5m]) * 4096)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Swap Out (Writes)",
           "metric": "",
@@ -2423,7 +2423,7 @@
         {
           "expr": "avg by (instance) ((rate(node_vmstat_pswpin{instance=~\"$node_name\"}[$interval]) * 4096 or irate(node_vmstat_pswpin{instance=~\"$node_name\"}[5m]) * 4096) + (rate(node_vmstat_pswpout{instance=~\"$node_name\"}[$interval]) * 4096 or irate(node_vmstat_pswpout{instance=~\"$node_name\"}[5m]) * 4096))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "C"
@@ -2566,7 +2566,7 @@
           "errors": {},
           "expr": "avg by (instance) (rate(node_vmstat_pgpgin{instance=~\"$node_name\"}[$interval]) * 1024 or irate(node_vmstat_pgpgin{instance=~\"$node_name\"}[5m]) * 1024 or\n(max_over_time(rdsosmetrics_diskIO_readKbPS{instance=~\"$node_name\"}[$interval]) or max_over_time(rdsosmetrics_diskIO_readKbPS{instance=~\"$node_name\"}[5m])) * 1024)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Disk Reads (Page In)",
           "metric": "",
@@ -2580,7 +2580,7 @@
           "errors": {},
           "expr": "avg by (instance) ((rate(node_vmstat_pgpgout{instance=~\"$node_name\"}[$interval]) * 1024 or irate(node_vmstat_pgpgout{instance=~\"$node_name\"}[5m]) * 1024) or\n(max_over_time(rdsosmetrics_diskIO_writeKbPS{instance=~\"$node_name\"}[$interval]) or max_over_time(rdsosmetrics_diskIO_writeKbPS{instance=~\"$node_name\"}[5m])) * 1024)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Disk Writes (Page Out)",
           "metric": "",
@@ -2591,7 +2591,7 @@
         {
           "expr": "avg by (instance) ((rate(node_vmstat_pgpgin{instance=~\"$node_name\"}[$interval]) * 1024 or irate(node_vmstat_pgpgin{instance=~\"$node_name\"}[5m]) * 1024 ) + (rate(node_vmstat_pgpgout{instance=~\"$node_name\"}[$interval]) * 1024 or irate(node_vmstat_pgpgout{instance=~\"$node_name\"}[5m]) * 1024) or\n((max_over_time(rdsosmetrics_diskIO_writeKbPS{instance=~\"$node_name\"}[$interval]) or max_over_time(rdsosmetrics_diskIO_writeKbPS{instance=~\"$node_name\"}[5m])) +\n(max_over_time(rdsosmetrics_diskIO_readKbPS{instance=~\"$node_name\"}[$interval]) or max_over_time(rdsosmetrics_diskIO_readKbPS{instance=~\"$node_name\"}[5m])))* 1024)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "C"
@@ -2710,7 +2710,7 @@
           "errors": {},
           "expr": "avg by (instance) (max_over_time(node_filefd_maximum{instance=~\"$node_name\"}[$interval]) or max_over_time(node_filefd_maximum{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Limit",
           "metric": "",
@@ -2724,7 +2724,7 @@
           "errors": {},
           "expr": "avg by (instance) (max_over_time(node_filefd_allocated{instance=~\"$node_name\"}[$interval]) or max_over_time(node_filefd_allocated{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Allocated",
           "metric": "",
@@ -2851,7 +2851,7 @@
         {
           "expr": "avg by (instance) ((sum(rate(node_disk_read_time_seconds_total{instance=~\"$node_name\"}[$interval])) / sum(rate(node_disk_reads_completed_total{instance=~\"$node_name\"}[$interval]))) or (sum(irate(node_disk_read_time_seconds_total{instance=~\"$node_name\"}[5m])) / sum(irate(node_disk_reads_completed_total{instance=~\"$node_name\"}[5m])))\nor avg_over_time(aws_rds_read_latency_average{instance=~\"$node_name\"}[$interval])/1000 or avg_over_time(aws_rds_read_latency_average{instance=~\"$node_name\"}[5m])/1000 or\navg_over_time(rdsosmetrics_diskIO_readLatency{instance=~\"$node_name\"}[$interval])/1000 or avg_over_time(rdsosmetrics_diskIO_readLatency{instance=~\"$node_name\"}[5m])/1000)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Read Latency",
           "refId": "A"
@@ -2859,7 +2859,7 @@
         {
           "expr": "avg by (instance) ((sum(rate(node_disk_write_time_seconds_total{instance=~\"$node_name\"}[$interval])) / sum(rate(node_disk_writes_completed_total{instance=~\"$node_name\"}[$interval]))) or (sum(irate(node_disk_write_time_seconds_total{instance=~\"$node_name\"}[5m])) / sum(irate(node_disk_writes_completed_total{instance=~\"$node_name\"}[5m])))\nor (avg_over_time(aws_rds_write_latency_average{instance=~\"$node_name\"}[$interval])/1000 or avg_over_time(aws_rds_write_latency_average{instance=~\"$node_name\"}[5m])/1000) or\n(avg_over_time(rdsosmetrics_diskIO_writeLatency{instance=~\"$node_name\"}[$interval]) or avg_over_time(rdsosmetrics_diskIO_writeLatency{instance=~\"$node_name\"}[5m]))/1000)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Write Latency",
           "refId": "B"
@@ -2867,7 +2867,7 @@
         {
           "expr": "avg by (instance) ((sum(rate(node_disk_read_time_seconds_total{instance=~\"$node_name\"}[1h])) / sum(rate(node_disk_reads_completed_total{instance=~\"$node_name\"}[1h])))\nor avg_over_time(aws_rds_read_latency_average{instance=~\"$node_name\"}[1h])/1000 or avg_over_time(aws_rds_read_latency_average{instance=~\"$node_name\"}[1h])/1000 or\navg_over_time(rdsosmetrics_diskIO_readLatency{instance=~\"$node_name\"}[1h])/1000 or avg_over_time(rdsosmetrics_diskIO_readLatency{instance=~\"$node_name\"}[1h])/1000)",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Avg Read Latency (1h)",
           "refId": "C"
@@ -2875,7 +2875,7 @@
         {
           "expr": "avg by (instance) ((sum(rate(node_disk_write_time_seconds_total{instance=~\"$node_name\"}[1h])) / sum(rate(node_disk_writes_completed_total{instance=~\"$node_name\"}[1h]))) \nor (avg_over_time(aws_rds_write_latency_average{instance=~\"$node_name\"}[$interval])/1000 or avg_over_time(aws_rds_write_latency_average{instance=~\"$node_name\"}[1h])/1000) or\n(avg_over_time(rdsosmetrics_diskIO_writeLatency{instance=~\"$node_name\"}[$interval])/1000 or avg_over_time(rdsosmetrics_diskIO_writeLatency{instance=~\"$node_name\"}[1h])/1000))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Avg Write Latency (1h)",
           "refId": "D"
@@ -3006,7 +3006,7 @@
           "errors": {},
           "expr": "avg by (instance) (sum(rate(node_disk_read_time_seconds_total{instance=~\"$node_name\"}[$interval])) or sum(irate(node_disk_read_time_seconds_total{instance=~\"$node_name\"}[5m])) or\n(sum(rdsosmetrics_diskIO_readIOsPS{instance=~\"$node_name\"})))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Read Load",
           "metric": "",
@@ -3020,7 +3020,7 @@
           "errors": {},
           "expr": "avg by (instance) (sum(rate(node_disk_write_time_seconds_total{instance=~\"$node_name\"}[$interval])) or sum(irate(node_disk_write_time_seconds_total{instance=~\"$node_name\"}[5m])) or (sum(rdsosmetrics_diskIO_writeIOsPS{instance=~\"$node_name\"})))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Write Load",
           "metric": "",
@@ -3031,7 +3031,7 @@
         {
           "expr": "avg by (instance) ((sum(rate(node_disk_read_time_seconds_total{instance=~\"$node_name\"}[$interval])) or sum(irate(node_disk_read_time_seconds_total{instance=~\"$node_name\"}[5m]))) + (sum(rate(node_disk_write_time_seconds_total{instance=~\"$node_name\"}[$interval])) or sum(irate(node_disk_write_time_seconds_total{instance=~\"$node_name\"}[5m]))) or\n(sum(rdsosmetrics_diskIO_writeIOsPS{instance=~\"$node_name\"})) +  (sum(rdsosmetrics_diskIO_readIOsPS{instance=~\"$node_name\"})))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "C"
@@ -3162,7 +3162,7 @@
           "errors": {},
           "expr": "sum(rate(node_network_receive_bytes_total{instance=~\"$node_name\", device!=\"lo\"}[$interval])) or sum(irate(node_network_receive_bytes_total{instance=~\"$node_name\", device!=\"lo\"}[5m])) or sum(max_over_time(rdsosmetrics_network_rx{instance=~\"$node_name\"}[$interval])) or sum(max_over_time(rdsosmetrics_network_rx{instance=~\"$node_name\"}[5m])) ",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Inbound",
           "metric": "",
@@ -3176,7 +3176,7 @@
           "errors": {},
           "expr": "sum(rate(node_network_transmit_bytes_total{instance=~\"$node_name\", device!=\"lo\"}[$interval])) or sum(irate(node_network_transmit_bytes_total{instance=~\"$node_name\", device!=\"lo\"}[5m])) or\nsum(max_over_time(rdsosmetrics_network_tx{instance=~\"$node_name\"}[$interval])) or sum(max_over_time(rdsosmetrics_network_tx{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Outbound",
           "metric": "",
@@ -3438,7 +3438,7 @@
           "expr": "sum(rate(node_network_receive_errs_total{instance=~\"$node_name\", device!=\"lo\"}[$interval])) or \nsum(irate(node_network_receive_errs_total{instance=~\"$node_name\", device!=\"lo\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Receive Errors",
           "metric": "",
@@ -3449,7 +3449,7 @@
         {
           "expr": "sum(rate(node_network_transmit_errs_total{instance=~\"$node_name\", device!=\"lo\"}[$interval])) or\nsum(irate(node_network_transmit_errs_total{instance=~\"$node_name\", device!=\"lo\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Transmit Errors",
           "refId": "B"
@@ -3457,7 +3457,7 @@
         {
           "expr": "sum(rate(node_network_receive_drop_total{instance=~\"$node_name\", device!=\"lo\"}[$interval])) or\nsum(irate(node_network_receive_drop_total{instance=~\"$node_name\", device!=\"lo\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Receive Drop",
           "refId": "C"
@@ -3465,7 +3465,7 @@
         {
           "expr": "sum(rate(node_network_transmit_drop_total{instance=~\"$node_name\", device!=\"lo\"}[$interval])) or \nsum(irate(node_network_transmit_drop_total{instance=~\"$node_name\", device!=\"lo\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Transmit Drop",
           "refId": "D"
@@ -3592,7 +3592,7 @@
           "expr": "avg by (instance) (rate(node_netstat_Tcp_RetransSegs{instance=~\"$node_name\"}[$interval]) or irate(node_netstat_Tcp_RetransSegs{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Segments Retransmitted",
           "metric": "",
@@ -3604,7 +3604,7 @@
           "expr": "avg by (instance) (rate(node_netstat_Tcp_RetransSegs{instance=~\"$node_name\"}[$interval])/rate(node_netstat_Tcp_OutSegs{instance=~\"$node_name\"}[$interval]) or irate(node_netstat_Tcp_RetransSegs{instance=~\"$node_name\"}[5m])/irate(node_netstat_Tcp_OutSegsSegs{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Retransmit Ratio",
           "refId": "A"

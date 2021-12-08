@@ -307,7 +307,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[$interval]) or\nmax_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "A",
@@ -317,7 +317,7 @@
           "expr": "avg by (nodename) (max(node_memory_MemTotal_bytes{instance=~\"$node_name\"}) - (max(node_memory_MemFree_bytes{instance=~\"$node_name\"}) + max(node_memory_Buffers_bytes{instance=~\"$node_name\"}) + (max(node_memory_Cached_bytes{instance=~\"$node_name\"}))))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Used",
           "refId": "D",
@@ -327,7 +327,7 @@
           "expr": "avg by (nodename) (max(node_memory_Cached_bytes{instance=~\"$node_name\"}) without (job))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Cached",
           "refId": "B",
@@ -337,7 +337,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Free",
           "refId": "F",
@@ -347,7 +347,7 @@
           "expr": "(max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[5m])) - \n(max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": true,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Used Swap",
           "refId": "G",
@@ -356,7 +356,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_Buffers_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Buffers_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Buffers",
           "refId": "C"
@@ -454,7 +454,7 @@
           "expr": "avg by (nodename) ((max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemFree_bytes{instance=~\"$node_name\"}[5m])) * 100 /\n(max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_MemTotal_bytes{instance=~\"$node_name\"}[$interval])))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Free",
           "refId": "A"
@@ -586,7 +586,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_Inactive_bytes{instance=~\"$node_name\"}[$interval]) or\nmax_over_time(node_memory_Inactive_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Inactive ",
           "refId": "K",
@@ -595,7 +595,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_Active_bytes{node_name=~\"$node_name\"}[$interval]) or\nmax_over_time(node_memory_Active_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Active ",
           "refId": "J",
@@ -715,7 +715,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_Active_anon_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Active_anon_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Active",
           "refId": "C",
@@ -725,7 +725,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_Inactive_anon_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Inactive_anon_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Inactive",
           "refId": "D",
@@ -850,7 +850,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_Inactive_file_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Inactive_file_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Inactive",
           "refId": "A",
@@ -860,7 +860,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_Active_file_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Active_file_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Active",
           "refId": "B",
@@ -991,7 +991,7 @@
           "expr": "avg by (nodename) (rate(node_vmstat_pswpin{instance=~\"$node_name\"}[$interval]) * 4096 or irate(node_vmstat_pswpin{instance=~\"$node_name\"}[5m]) * 4096)",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Swap In (Reads)",
           "refId": "A",
@@ -1001,7 +1001,7 @@
           "expr": "avg by (node_name) (rate(node_vmstat_pswpout{instance=~\"$node_name\"}[$interval]) * 4096 or irate(node_vmstat_pswpout{instance=~\"$node_name\"}[5m]) * 4096)",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Swap Out (Writes)",
           "refId": "B",
@@ -1010,7 +1010,7 @@
         {
           "expr": "avg by (nodename) ((rate(node_vmstat_pswpin{instance=~\"$node_name\"}[$interval]) * 4096 or \nirate(node_vmstat_pswpin{instance=~\"$node_name\"}[5m]) * 4096) + \n(rate(node_vmstat_pswpout{instance=~\"$node_name\"}[$interval]) * 4096 or \nirate(node_vmstat_pswpout{instance=~\"$node_name\"}[5m]) * 4096))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "C"
@@ -1144,7 +1144,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[$interval]) - max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[$interval]) or\nmax_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[5m]) - max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Used",
           "refId": "A",
@@ -1154,7 +1154,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Free",
           "refId": "B",
@@ -1163,7 +1163,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "C"
@@ -1304,7 +1304,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_PageTables_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_PageTables_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "PageTables ",
           "refId": "G",
@@ -1313,7 +1313,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_SwapCached_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SwapCached_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "SwapCached",
           "refId": "F",
@@ -1323,7 +1323,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_Slab_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Slab_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Slab ",
           "refId": "E",
@@ -1333,7 +1333,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_SwapTotal_bytes{instance=~\"$node_name\"}[$interval]) - max_over_time(node_memory_SwapFree_bytes{instance=~\"$node_name\"}[$interval]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Swap ",
           "refId": "I",
@@ -1343,7 +1343,7 @@
           "expr": "avg by (nodename) (max_over_time(node_memory_HardwareCorrupted_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_HardwareCorrupted_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Harware Corrupted ",
           "refId": "O",
@@ -1352,7 +1352,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_Mapped_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Mapped_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Mapped",
           "refId": "A"
@@ -1360,7 +1360,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_Dirty_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Dirty_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Dirty",
           "refId": "B"
@@ -1368,7 +1368,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_Writeback_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Writeback_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Writeback",
           "refId": "C"
@@ -1376,7 +1376,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_Shmem_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Shmem_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Shmem",
           "refId": "D"
@@ -1384,7 +1384,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_AnonPages_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_AnonPages_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "AnonPages",
           "refId": "H"
@@ -1392,7 +1392,7 @@
         {
           "expr": "avg by (nodename) (max_over_time(node_memory_Writeback_bytesTmp_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Writeback_bytesTmp_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "WritebackTmp",
           "refId": "J"
@@ -1523,7 +1523,7 @@
           "expr": "avg by (instance) (max_over_time(node_memory_VmallocChunk_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_VmallocChunk_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Chunk",
           "refId": "H",
@@ -1533,7 +1533,7 @@
           "expr": "avg by (instance) (max_over_time(node_memory_VmallocUsed_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_VmallocUsed_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Used",
           "refId": "O",
@@ -1543,7 +1543,7 @@
           "expr": "avg by (instance) (max_over_time(node_memory_VmallocTotal_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_VmallocTotal_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "I",
@@ -1669,7 +1669,7 @@
           "expr": "avg by (instance) (max_over_time(node_memory_Shmem_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Shmem_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "B",
@@ -1678,7 +1678,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_Shmem_bytesHugePages{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Shmem_bytesHugePages{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "HugePages",
           "refId": "A"
@@ -1686,7 +1686,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_Shmem_bytesPmdMapped{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Shmem_bytesPmdMapped{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "PmdMapped",
           "refId": "C"
@@ -1809,7 +1809,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_KernelStack_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_KernelStack_bytes{instance=~\"$node_name\"}[5m])) ",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "N",
@@ -1937,7 +1937,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_Committed_AS_bytes{instance=~\"$node_name\"}[$interval]) or\nmax_over_time(node_memory_Committed_AS_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Committed_AS",
           "refId": "A",
@@ -1946,7 +1946,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_CommitLimit_bytes{instance=~\"$node_name\"}[$interval]) or\nmax_over_time(node_memory_CommitLimit_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "CommitLimit",
           "refId": "M",
@@ -2071,7 +2071,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_AnonHugePages_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_AnonHugePages_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "AnonHugePages",
           "refId": "D",
@@ -2080,7 +2080,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_AnonPages_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_AnonPages_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "AnonPages",
           "refId": "G",
@@ -2206,7 +2206,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_SReclaimable_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SReclaimable_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "SReclaimable",
           "refId": "B"
@@ -2214,7 +2214,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_SUnreclaim_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_SUnreclaim_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "SUnreclaim",
           "refId": "C"
@@ -2222,7 +2222,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_Slab_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Slab_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "A",
@@ -2343,7 +2343,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_DirectMap1G_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_DirectMap1G_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Page Size 1G",
           "refId": "J",
@@ -2352,7 +2352,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_DirectMap2M_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_DirectMap2M_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Page Size 2M",
           "refId": "K",
@@ -2361,7 +2361,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_DirectMap4k_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_DirectMap4k_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Page Size 4K",
           "refId": "L",
@@ -2485,7 +2485,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_Bounce_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Bounce_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "N",
@@ -2606,7 +2606,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_NFS_Unstable_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_NFS_Unstable_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "NFS Unstable",
           "refId": "L",
@@ -2725,7 +2725,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_Unevictable_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Unevictable_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Unevictable",
           "refId": "P",
@@ -2734,7 +2734,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_Mlocked_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Mlocked_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "MLocked",
           "refId": "C",
@@ -2859,7 +2859,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_HugePages_Total{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_HugePages_Total_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "HugePages",
           "refId": "L",
@@ -2868,7 +2868,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_Hugepagesize_bytes{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_Hugepagesize_bytes{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Hugepagesize ",
           "refId": "D",
@@ -2998,7 +2998,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_HugePages_Free{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_HugePages_Free{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Free",
           "refId": "I",
@@ -3007,7 +3007,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_HugePages_Rsvd{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_HugePages_Rsvd{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Reserved",
           "refId": "J",
@@ -3017,7 +3017,7 @@
           "expr": "avg by (instance) (max_over_time(node_memory_HugePages_Surp{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_HugePages_Surp{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Surplus",
           "refId": "K",
@@ -3026,7 +3026,7 @@
         {
           "expr": "avg by (instance) (max_over_time(node_memory_HugePages_Total{instance=~\"$node_name\"}[$interval]) or max_over_time(node_memory_HugePages_Total{instance=~\"$node_name\"}[5m]))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total",
           "refId": "A"
@@ -3159,7 +3159,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_free_pages{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_free_pages{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Free",
               "refId": "B",
@@ -3168,7 +3168,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgactivate{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgactivate{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Activated",
               "refId": "A"
@@ -3176,7 +3176,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgdeactivate{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgdeactivate{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Deactivated",
               "refId": "C"
@@ -3277,7 +3277,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgpgin{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgpgin{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "In",
               "refId": "A"
@@ -3285,7 +3285,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgpgout{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgpgout{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Out",
               "refId": "B"
@@ -3402,7 +3402,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_active_file{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_active_file{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Active",
               "refId": "A",
@@ -3411,7 +3411,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_inactive_file{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_inactive_file{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Inactive",
               "refId": "D",
@@ -3420,7 +3420,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_isolated_file{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_isolated_file{instance=~\"$node_name\"}[$interval]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Isolated",
               "refId": "B"
@@ -3537,7 +3537,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_active_anon{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_active_anon{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Active",
               "refId": "B",
@@ -3547,7 +3547,7 @@
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_inactive_anon{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_inactive_anon{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
               "hide": false,
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Inactive",
               "refId": "C",
@@ -3556,7 +3556,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_isolated_anon{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_isolated_anon{instance=~\"$node_name\"}[$interval]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Isolated",
               "refId": "A"
@@ -3564,7 +3564,7 @@
             {
               "expr": "avg by (node_name) (max_over_time(node_vmstat_nr_anon_transparent_hugepages{node_name=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_anon_transparent_hugepages{node_name=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Transparent Huge Pages",
               "refId": "D"
@@ -3679,7 +3679,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_shmem{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_shmem{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Pages",
               "refId": "H",
@@ -3688,7 +3688,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_shmem_hugepages{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_shmem_hugepages{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Hugepages",
               "refId": "B"
@@ -3696,7 +3696,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_shmem_pmdmapped{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_shmem_pmdmapped{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Pmdmapped",
               "refId": "C"
@@ -3824,7 +3824,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_dirty{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_dirty{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Total",
               "refId": "C",
@@ -3833,7 +3833,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_dirty_threshold{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_dirty_threshold{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Threshold",
               "refId": "B"
@@ -3841,7 +3841,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_dirty_background_threshold{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_dirty_background_threshold{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Threshold (Backgroud)",
               "refId": "D"
@@ -3849,7 +3849,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_writeback{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_writeback{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Writeback",
               "refId": "A",
@@ -3858,7 +3858,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_unstable{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_unstable{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Unstable",
               "refId": "E"
@@ -3866,7 +3866,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_writeback_temp{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_writeback_temp{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Writeback (Temporary )",
               "refId": "F",
@@ -3989,7 +3989,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_page_table_pages{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_page_table_pages{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Total",
               "refId": "A",
@@ -4113,7 +4113,7 @@
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_bounce{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_bounce{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
               "hide": false,
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Total",
               "refId": "A",
@@ -4231,7 +4231,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_free_cma{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_free_cma{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Free Contiguous",
               "refId": "G",
@@ -4240,7 +4240,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_vmscan_write{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_vmscan_write{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Written by VM scanner",
               "refId": "B",
@@ -4249,7 +4249,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_vmscan_immediate_reclaim{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_vmscan_immediate_reclaim{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Immediately Reclaimed",
               "refId": "C",
@@ -4258,7 +4258,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_unevictable{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_unevictable{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Unevictable",
               "refId": "A"
@@ -4266,7 +4266,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_mlock{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_mlock{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Mlock",
               "refId": "D"
@@ -4389,7 +4389,7 @@
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_mapped{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_mapped{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
               "hide": false,
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Total",
               "refId": "A",
@@ -4512,7 +4512,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_kernel_stack{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_kernel_stack{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Total",
               "refId": "F",
@@ -4630,7 +4630,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_slab_reclaimable{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_slab_reclaimable{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Reclaimable",
               "refId": "A",
@@ -4639,7 +4639,7 @@
             {
               "expr": "avg by (instance) (max_over_time(node_vmstat_nr_slab_unreclaimable{instance=~\"$node_name\"}[$interval]) or max_over_time(node_vmstat_nr_slab_unreclaimable{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Unreclaimable",
               "refId": "C",
@@ -4648,7 +4648,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_slabs_scanned{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_slabs_scanned{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Scanned",
               "refId": "B"
@@ -4656,7 +4656,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_drop_slab{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_drop_slab{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dropped",
               "refId": "D"
@@ -4789,7 +4789,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgalloc_dma{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgalloc_dma{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma",
               "refId": "B",
@@ -4798,7 +4798,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgalloc_dma32{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgalloc_dma32{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma32",
               "refId": "A",
@@ -4807,7 +4807,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgalloc_normal{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgalloc_normal{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Normal",
               "refId": "C",
@@ -4816,7 +4816,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgalloc_movable{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgalloc_movable{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Movable",
               "refId": "D"
@@ -4933,7 +4933,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgrefill_dma{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgrefill_dma{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma",
               "refId": "B",
@@ -4942,7 +4942,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgrefill_dma32{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgrefill_dma32{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma32",
               "refId": "A",
@@ -4951,7 +4951,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgrefill_normal{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgrefill_normal{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Normal",
               "refId": "C",
@@ -4960,7 +4960,7 @@
             {
               "expr": "avg by (node_name) (rate(node_vmstat_pgrefill_movable{node_name=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgrefill_movable{node_name=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Movable",
               "refId": "D"
@@ -5077,7 +5077,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgscan_direct_dma{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgscan_direct_dma{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma",
               "refId": "B",
@@ -5086,7 +5086,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgscan_direct_dma32{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgscan_direct_dma32{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma32",
               "refId": "A",
@@ -5095,7 +5095,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgscan_direct_normal{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgscan_direct_normal{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Normal",
               "refId": "C",
@@ -5104,7 +5104,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgscan_direct_movable{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgscan_direct_movable{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Movable",
               "refId": "D"
@@ -5221,7 +5221,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgscan_kswapd_dma{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgscan_kswapd_dma{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma",
               "refId": "B",
@@ -5230,7 +5230,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgscan_kswapd_dma32{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgscan_kswapd_dma32{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma32",
               "refId": "A",
@@ -5239,7 +5239,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgscan_kswapd_normal{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgscan_kswapd_normal{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Normal",
               "refId": "C",
@@ -5248,7 +5248,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgscan_kswapd_movable{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgscan_kswapd_movable{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Movable",
               "refId": "D"
@@ -5344,7 +5344,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgsteal_direct_dma{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgsteal_direct_dma{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma",
               "refId": "A"
@@ -5352,7 +5352,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgsteal_direct_dma32{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgsteal_direct_dma32{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma32",
               "refId": "B"
@@ -5360,7 +5360,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgsteal_direct_normal{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgsteal_direct_normal{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Normal",
               "refId": "C"
@@ -5368,7 +5368,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgsteal_direct_movable{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgsteal_direct_movable{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Movable",
               "refId": "D"
@@ -5485,7 +5485,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgsteal_kswapd_dma{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgsteal_kswapd_dma{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma",
               "refId": "B",
@@ -5494,7 +5494,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgsteal_kswapd_dma32{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgsteal_kswapd_dma32{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Dma32",
               "refId": "A",
@@ -5503,7 +5503,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgsteal_kswapd_normal{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgsteal_kswapd_normal{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Normal",
               "refId": "C",
@@ -5512,7 +5512,7 @@
             {
               "expr": "avg by (instance) (rate(node_vmstat_pgsteal_kswapd_movable{instance=~\"$node_name\"}[$interval]) or irate(node_vmstat_pgsteal_kswapd_movable{instance=~\"$node_name\"}[5m]))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "Movable",
               "refId": "D"

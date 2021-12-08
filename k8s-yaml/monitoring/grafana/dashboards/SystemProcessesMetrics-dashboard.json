@@ -228,7 +228,7 @@
         {
           "expr": "topk(5,\n(rate(namedprocess_namegroup_cpu_seconds_total{groupname=~\"$processes\",instance=~\"$host\",mode=\"user\"}[$interval]) \n+\nrate(namedprocess_namegroup_cpu_seconds_total{groupname=~\"$processes\",instance=~\"$host\",mode=\"user\"}[$interval]))\nor \n(irate(namedprocess_namegroup_cpu_seconds_total{groupname=~\"$processes\",instance=~\"$host\",mode=\"user\"}[5m])\n+\nirate(namedprocess_namegroup_cpu_seconds_total{groupname=~\"$processes\",instance=~\"$host\",mode=\"user\"}[5m])))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{groupname}}",
           "metric": "process_namegroup_cpu_seconds_total",
@@ -328,7 +328,7 @@
         {
           "expr": "topk(5,\nrate(namedprocess_namegroup_cpu_seconds_total{groupname=~\"$processes\",instance=~\"$host\",mode=\"system\"}[$interval])\nor \n(\nirate(namedprocess_namegroup_cpu_seconds_total{groupname=~\"$processes\",instance=~\"$host\",mode=\"system\"}[5m])))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{groupname}}",
           "metric": "process_namegroup_cpu_seconds_total",
@@ -442,7 +442,7 @@
         {
           "expr": "topk(5,(\r\n(avg_over_time(namedprocess_namegroup_memory_bytes{groupname=~\"$processes\", memtype=\"swapped\",instance=~\"$host\"}[$interval])+ ignoring (memtype) avg_over_time(namedprocess_namegroup_memory_bytes{groupname=~\"$processes\", memtype=\"resident\",instance=~\"$host\"}[$interval]))\r\nor\r\n(avg_over_time(namedprocess_namegroup_memory_bytes{groupname=~\"$processes\", memtype=\"swapped\",instance=~\"$host\"}[5m])+ ignoring (memtype) avg_over_time(namedprocess_namegroup_memory_bytes{groupname=~\"$processes\", memtype=\"resident\",instance=~\"$host\"}[5m]))\r\n))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{groupname}}",
           "metric": "namedprocess_namegroup_memory_bytes",
@@ -540,7 +540,7 @@
         {
           "expr": "topk(5,\n(avg_over_time(namedprocess_namegroup_memory_bytes{groupname=~\"$processes\", memtype=\"resident\",instance=~\"$host\"}[$interval]) \nor\navg_over_time(namedprocess_namegroup_memory_bytes{groupname=~\"$processes\", memtype=\"resident\",instance=~\"$host\"}[5m])\n))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{groupname}}",
           "metric": "namedprocess_namegroup_memory_bytes",
@@ -638,7 +638,7 @@
         {
           "expr": "topk(5,(\navg_over_time(namedprocess_namegroup_memory_bytes{groupname=~\"$processes\", memtype=\"virtual\",instance=~\"$host\"}[$interval])\nor\navg_over_time(namedprocess_namegroup_memory_bytes{groupname=~\"$processes\", memtype=\"virtual\",instance=~\"$host\"}[5m])))\n",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{groupname}}",
           "metric": "namedprocess_namegroup_memory_bytes",
@@ -737,7 +737,7 @@
           "expr": "topk(5,(\navg_over_time(namedprocess_namegroup_memory_bytes{groupname=~\"$processes\", memtype=\"swapped\",instance=~\"$host\"}[$interval])\nor\navg_over_time(namedprocess_namegroup_memory_bytes{groupname=~\"$processes\", memtype=\"swapped\",instance=~\"$host\"}[5m])))\n",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{groupname}}",
           "metric": "namedprocess_namegroup_memory_bytes",
@@ -848,7 +848,7 @@
         {
           "expr": "topk(5,(rate(namedprocess_namegroup_write_bytes_total{groupname=~\"$processes\",instance=~\"$host\"}[$interval]) or irate(namedprocess_namegroup_write_bytes_total{groupname=~\"$processes\",instance=~\"$host\"}[5m])))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{groupname}}",
           "metric": "namedprocess_namegroup_read_bytes_total",
@@ -946,7 +946,7 @@
         {
           "expr": "topk(5,(rate(namedprocess_namegroup_read_bytes_total{groupname=~\"$processes\",instance=~\"$host\"}[$interval]) or irate(namedprocess_namegroup_read_bytes_total{groupname=~\"$processes\",instance=~\"$host\"}[5m])))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{groupname}}",
           "metric": "namedprocess_namegroup_read_bytes_total",
@@ -1059,7 +1059,7 @@
           "expr": "topk(5,(max_over_time(namedprocess_namegroup_num_procs{groupname=~\"$processes\",instance=~\"$host\"}[$interval]) \nor max_over_time(namedprocess_namegroup_num_procs{groupname=~\"$processes\",instance=~\"$host\"}[5m])))",
           "format": "time_series",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{groupname}}",
           "metric": "process_namegroup_num_procs",
@@ -1156,7 +1156,7 @@
         {
           "expr": "topk(5,(max_over_time(namedprocess_namegroup_num_threads{groupname=~\"$processes\",instance=~\"$host\"}[$interval]) or\nmax_over_time(namedprocess_namegroup_num_threads{groupname=~\"$processes\",instance=~\"$host\"}[5m])))",
           "format": "time_series",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "{{groupname}}",
           "refId": "A"
@@ -1258,7 +1258,7 @@
             {
               "expr": "topk(5,(\nrate(namedprocess_namegroup_context_switches_total{groupname=~\"$processes\",instance=~\"$host\",ctxswitchtype=\"voluntary\"}[$interval]) or\nirate(namedprocess_namegroup_context_switches_total{groupname=~\"$processes\",instance=~\"$host\",ctxswitchtype=\"voluntary\"}[5m])))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "{{groupname}}",
               "refId": "A"
@@ -1348,7 +1348,7 @@
             {
               "expr": "topk(5,(\nrate(namedprocess_namegroup_context_switches_total{groupname=~\"$processes\",instance=~\"$host\",ctxswitchtype=\"nonvoluntary\"}[$interval]) or\nirate(namedprocess_namegroup_context_switches_total{groupname=~\"$processes\",instance=~\"$host\",ctxswitchtype=\"nonvoluntary\"}[5m])))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "{{groupname}}",
               "refId": "A"
@@ -1453,7 +1453,7 @@
               "expr": "topk(5,(max_over_time(namedprocess_namegroup_open_filedesc{groupname=~\"$processes\",instance=~\"$host\"}[$interval]) or\nmax_over_time(namedprocess_namegroup_open_filedesc{groupname=~\"$processes\",instance=~\"$host\"}[5m])))",
               "format": "time_series",
               "hide": false,
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "{{groupname}}",
               "refId": "A"
@@ -1542,7 +1542,7 @@
             {
               "expr": "topk(5,(\nmax_over_time(namedprocess_namegroup_worst_fd_ratio{groupname=~\"$processes\",instance=~\"$host\"}[$interval]) or\nmax_over_time(namedprocess_namegroup_worst_fd_ratio{groupname=~\"$processes\",instance=~\"$host\"}[5m])\n))*100",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "{{groupname}}",
               "refId": "A"
@@ -1647,7 +1647,7 @@
             {
               "expr": "topk(5,(\nrate(namedprocess_namegroup_major_page_faults_total{groupname=~\"$processes\",instance=~\"$host\"}[$interval]) or\nirate(namedprocess_namegroup_major_page_faults_total{groupname=~\"$processes\",instance=~\"$host\"}[5m])))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "{{groupname}}",
               "refId": "A"
@@ -1737,7 +1737,7 @@
             {
               "expr": "topk(5,(\nrate(namedprocess_namegroup_minor_page_faults_total{groupname=~\"$processes\",instance=~\"$host\"}[$interval]) or\nirate(namedprocess_namegroup_minor_page_faults_total{groupname=~\"$processes\",instance=~\"$host\"}[5m])))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "{{groupname}}",
               "refId": "A"
@@ -1843,7 +1843,7 @@
             {
               "expr": "topk(5,(\nmax_over_time(namedprocess_namegroup_states{instance=~\"$host\", groupname=~\"$processes\", state=\"Running\"}[$interval]) or\nmax_over_time(namedprocess_namegroup_states{instance=~\"$host\", groupname=~\"$processes\", state=\"Running\"}[5m])))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "{{groupname}}",
               "refId": "A"
@@ -1936,7 +1936,7 @@
             {
               "expr": "topk(5,(\nmax_over_time(namedprocess_namegroup_states{instance=~\"$host\", groupname=~\"$processes\", state=\"Waiting\"}[$interval]) or\nmax_over_time(namedprocess_namegroup_states{instance=~\"$host\", groupname=~\"$processes\", state=\"Waiting\"}[5m])))",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "{{groupname}}",
               "refId": "A"
@@ -2043,7 +2043,7 @@
             {
               "expr": "topk(5,sum(avg_over_time(namedprocess_namegroup_threads_wchan{instance=~\"$host\", groupname=~\"$processes\"}[$interval])) by (wchan) )",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "{{wchan}}",
               "refId": "A"
@@ -2136,7 +2136,7 @@
             {
               "expr": "topk(5,sum(avg_over_time(namedprocess_namegroup_threads_wchan{instance=~\"$host\", groupname=~\"$processes\"}[$interval])) by (wchan,groupname) )",
               "format": "time_series",
-              "interval": "$interval",
+              "interval": "$__interval",
               "intervalFactor": 1,
               "legendFormat": "{{groupname}} : {{wchan}}",
               "refId": "A"

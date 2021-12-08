@@ -91,7 +91,7 @@
       "height": "",
       "hiddenSeries": false,
       "id": 2,
-      "interval": "$interval",
+      "interval": "$__interval",
       "isNew": true,
       "legend": {
         "alignAsTable": true,
@@ -135,7 +135,7 @@
       "targets": [
         {
           "expr": "ceph_pool_available_bytes{pool=~\"$pool\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Avilable - {{ pool }}",
           "metric": "ceph_pool_available_bytes",
@@ -144,7 +144,7 @@
         },
         {
           "expr": "ceph_pool_used_bytes{pool=~\"$pool\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Used - {{ pool }}",
           "metric": "ceph_pool",
@@ -153,7 +153,7 @@
         },
         {
           "expr": "ceph_pool_used_bytes{pool=~\"$pool\"} + ceph_pool_available_bytes{pool=~\"$pool\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Total - {{ pool }}",
           "metric": "ceph_pool",
@@ -162,7 +162,7 @@
         },
         {
           "expr": "ceph_pool_raw_used_bytes{pool=~\"$pool\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Raw - {{ pool }}",
           "metric": "ceph_pool",
@@ -279,7 +279,7 @@
       "targets": [
         {
           "expr": " ceph_pool_used_bytes{pool=\"$pool\"} / (ceph_pool_available_bytes{pool=\"$pool\"} + ceph_pool_used_bytes{pool=\"$pool\"})",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A",
           "step": 60
@@ -360,7 +360,7 @@
       "targets": [
         {
           "expr": "ceph_pool_objects_total{pool=~\"$pool\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Objects - {{ pool }}",
           "refId": "A",
@@ -368,7 +368,7 @@
         },
         {
           "expr": "ceph_pool_dirty_objects_total{pool=~\"$pool\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Dirty Objects - {{ pool }}",
           "refId": "B",
@@ -437,7 +437,7 @@
       },
       "hiddenSeries": false,
       "id": 4,
-      "interval": "$interval",
+      "interval": "$__interval",
       "isNew": true,
       "legend": {
         "alignAsTable": true,
@@ -467,7 +467,7 @@
       "targets": [
         {
           "expr": "irate(ceph_pool_read_total{pool=~\"$pool\"}[3m])",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Read - {{ pool }}",
           "refId": "B",
@@ -475,7 +475,7 @@
         },
         {
           "expr": "irate(ceph_pool_write_total{pool=~\"$pool\"}[3m])",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Write - {{ pool }}",
           "refId": "A",
@@ -544,7 +544,7 @@
       },
       "hiddenSeries": false,
       "id": 5,
-      "interval": "$interval",
+      "interval": "$__interval",
       "isNew": true,
       "legend": {
         "alignAsTable": true,
@@ -574,7 +574,7 @@
       "targets": [
         {
           "expr": "irate(ceph_pool_read_bytes_total{pool=\"$pool\"}[3m])",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Read Bytes - {{ pool }}",
           "refId": "A",
@@ -582,7 +582,7 @@
         },
         {
           "expr": "irate(ceph_pool_write_bytes_total{pool=\"$pool\"}[3m])",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Written Bytes - {{ pool }}",
           "refId": "B",

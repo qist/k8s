@@ -146,7 +146,7 @@
       "targets": [
         {
           "expr": "ceph_osd_up{osd=\"$osd\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A",
           "step": 60
@@ -252,7 +252,7 @@
       "targets": [
         {
           "expr": "ceph_osd_in{osd=\"$osd\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A",
           "step": 60
@@ -348,7 +348,7 @@
       "targets": [
         {
           "expr": "ceph_osds",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "refId": "A",
           "step": 60
@@ -412,7 +412,7 @@
       },
       "hiddenSeries": false,
       "id": 5,
-      "interval": "$interval",
+      "interval": "$__interval",
       "isNew": true,
       "legend": {
         "alignAsTable": true,
@@ -448,7 +448,7 @@
       "targets": [
         {
           "expr": "ceph_osd_pgs{osd=~\"$osd\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Number of PGs - {{ osd }}",
           "refId": "A",
@@ -456,7 +456,7 @@
         },
         {
           "expr": "avg(ceph_osd_pgs)",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Average Number of PGs in the Cluster",
           "refId": "B",
@@ -586,7 +586,7 @@
       "targets": [
         {
           "expr": "ceph_osd_utilization{osd=\"$osd\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "",
           "refId": "A",
@@ -641,7 +641,7 @@
       },
       "hiddenSeries": false,
       "id": 4,
-      "interval": "$interval",
+      "interval": "$__interval",
       "isNew": true,
       "legend": {
         "alignAsTable": true,
@@ -671,7 +671,7 @@
       "targets": [
         {
           "expr": "ceph_osd_perf_apply_latency_seconds{osd=~\"$osd\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Apply Latency (s) - {{ osd }}",
           "refId": "A",
@@ -679,7 +679,7 @@
         },
         {
           "expr": "ceph_osd_perf_commit_latency_seconds{osd=~\"$osd\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Commit Latency (s) - {{ osd }}",
           "refId": "B",
@@ -748,7 +748,7 @@
       },
       "hiddenSeries": false,
       "id": 2,
-      "interval": "$interval",
+      "interval": "$__interval",
       "isNew": true,
       "legend": {
         "alignAsTable": true,
@@ -779,7 +779,7 @@
         {
           "expr": "ceph_osd_avail_bytes{osd=~\"$osd\"}",
           "hide": false,
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Available - {{ osd }}",
           "metric": "ceph_osd_avail_bytes",
@@ -788,7 +788,7 @@
         },
         {
           "expr": "ceph_osd_used_bytes{osd=~\"$osd\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Used - {{ osd }}",
           "metric": "ceph_osd_avail_bytes",
@@ -858,7 +858,7 @@
       },
       "hiddenSeries": false,
       "id": 9,
-      "interval": "$interval",
+      "interval": "$__interval",
       "isNew": true,
       "legend": {
         "alignAsTable": true,
@@ -888,7 +888,7 @@
       "targets": [
         {
           "expr": "ceph_osd_variance{osd=~\"$osd\"}",
-          "interval": "$interval",
+          "interval": "$__interval",
           "intervalFactor": 1,
           "legendFormat": "Available - {{ osd }}",
           "metric": "ceph_osd_avail_bytes",
