@@ -5059,8 +5059,16 @@ spec:
         app: flannel
     spec:
       hostNetwork: true
-      nodeSelector:
-        beta.kubernetes.io/arch: amd64
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+      priorityClassName: system-node-critical                
       tolerations:
         - effect: NoSchedule
           operator: Exists
@@ -5070,6 +5078,17 @@ spec:
           operator: Exists
       serviceAccountName: flannel
       initContainers:
+      - name: install-cni-plugin
+        image: rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.0
+        command:
+        - cp
+        args:
+        - -f
+        - /flannel
+        - /opt/cni/bin/flannel
+        volumeMounts:
+        - name: cni-plugin
+          mountPath: /opt/cni/bin      
       - name: install-cni
         image: ${FLANNEL_VERSION}
         command:
@@ -5118,6 +5137,9 @@ spec:
         - name: run
           hostPath:
             path: /run
+        - name: cni-plugin
+          hostPath:
+            path: ${CNI_BIN_DIR}            
         - name: cni
           hostPath:
             path: ${CNI_CONF_DIR}
@@ -5276,7 +5298,7 @@ spec:
       volumes:
       - name: lib-modules
         hostPath:
-          path: /lib/modules
+          path: /lib/modules        
       - name: cni-conf-dir
         hostPath:
           path: ${CNI_CONF_DIR}
