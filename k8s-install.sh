@@ -4,7 +4,7 @@
 ###########################################################在部署中会重启服务器及更新系统需要在全新环境部署不然重启对业务有影响############################################
 ###########################################支持操作系统centos7，centos8，Ubuntu维护版本非维护版本可能源有问题，openSUSE Leap 15.0及上版本##################################
 # 开启 下载代理 国内尽量配置
-Proxy() {
+Proxy(){
 # export http_proxy=http://127.0.0.1:7890/
 # export https_proxy=http://127.0.0.1:7890/
 test
@@ -4714,12 +4714,17 @@ schedulerConfig(){
       else
       FEATURE_GATES="--leader-elect=true"
    fi
+
+if [[ `expr ${KUBERNETES_VER} \< 1.23.0` -eq 1 ]]; then
+BIND_ADDRESS=`echo -e "--bind-address={{ $KUBELET_IPV4 }} \\\\\\\\\n--address=127.0.0.1"`
+else
+BIND_ADDRESS="--bind-address=0.0.0.0"
+fi
 # 创建kube-scheduler 启动配置文件
 cat > ${HOST_PATH}/roles/kube-scheduler/templates/kube-scheduler << EOF
 KUBE_SCHEDULER_OPTS=" \\
                    --logtostderr=${LOGTOSTDERR} \\
-                   --address=127.0.0.1 \\
-                   --bind-address={{ $KUBELET_IPV4 }} \\
+                   ${BIND_ADDRESS} \\
                    ${FEATURE_GATES} \\
                    --kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authentication-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
