@@ -79,7 +79,7 @@ K8S_VIP_PORT=6443
 # 是否自动安装 K8S 集群 ON 开启 OFF 关闭
 INSTALL_K8S=OFF
 # 配置容器运行时 DOCKER,CONTAINERD,CRIO 默认docker
-RUNTIME=CRIO
+RUNTIME=DOCKER
 # 网络插件 选择 flannel,kube-router 默认 flannel 
 # calico 插件下载地址
 # https://docs.projectcalico.org/manifests/calico.yaml
@@ -132,26 +132,26 @@ export HOST_PATH=`pwd`
 export DOWNLOAD_PATH=${HOST_PATH}/download
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.5.0
+export ETCD_VERSION=v3.5.1
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.22.1
+export KUBERNETES_VERSION=v1.23.0
 # cni 版本
-export CNI_VERSION=v0.9.1
+export CNI_VERSION=v1.0.1
 # iptables
 export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
 export CFSSL_VERSION=1.4.1
 # docker 版本
-export DOCKER_VERSION=20.10.8
+export DOCKER_VERSION=20.10.11
 # containerd 版本
-export CONTAINERD_VERSION=1.5.5
+export CONTAINERD_VERSION=1.5.8
 # crictl 版本
 export CRICTL_VERSION=v1.22.0
 # runc 版本
-export RUNC_VERSION=v1.0.2
+export RUNC_VERSION=v1.0.3
 # cri-o 版本
-export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/k8s-conform-cri-o/artifacts/cri-o.amd64.b27d974e13c3f9e2baa2d848ca554c80434ea88c.tar.gz"
-export CRIO_VERSION=v1.21.2
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/k8s-conform-cri-o/artifacts/cri-o.amd64.61748dc51bdf1af367b8a68938dbbc81c593b95d.tar.gz"
+export CRIO_VERSION=v1.21.4
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel 插件选择
 FLANNEL_VERSION="quay.io/coreos/flannel:v0.14.0"
