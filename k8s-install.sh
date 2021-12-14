@@ -2194,7 +2194,6 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - { key: 'kernel.softlockup_panic', value: '1' }
       - { key: 'fs.file-max', value: '2097152' } 
       - { key: 'fs.nr_open', value: '2097152' }
-      - { key: 'fs.may_detach_mounts', value: '1' }
       - { key: 'kernel.pid_max', value: '4194303' } 
       - { key: 'fs.inotify.max_user_instances', value: '8192' }
       - { key: 'fs.inotify.max_queued_events', value: '16384' }
@@ -2242,6 +2241,17 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - { key: 'net.netfilter.nf_conntrack_tcp_timeout_fin_wait', value: '12' }
       - { key: 'net.netfilter.nf_conntrack_tcp_timeout_close', value: '3' }
       - { key: 'net.ipv4.conf.all.route_localnet', value: '1' }
+- name: Add the sysctl
+  sysctl:
+    name: '{{ item.key }}'
+    value: '{{ item.value }}' 
+    sysctl_set: yes 
+    state: present 
+    reload: yes
+    ignoreerrors: yes
+  with_items:
+      - { key: 'fs.may_detach_mounts', value: '1' }
+  when: 'kernel_shell_output.stdout|int <= 3'      
 - name: Add or modify hard nofile limits for wildcard domain
   pam_limits:
     domain: '*'
