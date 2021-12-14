@@ -396,12 +396,6 @@ data:
           target_label: container
           replacement: $1
           action: replace          
-        - source_labels: [__meta_kubernetes_service_name]
-          separator: ;
-          regex: (.*)
-          target_label: job
-          replacement: $1
-          action: replace
       - job_name: kube-state-metrics/0
         honor_labels: true
         honor_timestamps: true
