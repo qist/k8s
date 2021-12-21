@@ -42,11 +42,11 @@ spec:
         - containerPort: 6443
         resources:
           limits:
-            cpu: 500m
-            memory: 400Mi
+            cpu: 600m
+            memory: 1Gi
           requests:
-            cpu: 500m
-            memory: 400Mi
+            cpu: 600m
+            memory: 1Gi
         volumeMounts:
         - mountPath: /tmp
           name: tmpfs
