@@ -76,8 +76,8 @@ data:
         nodeQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>, id='/'}[1m])) by (<<.GroupBy>>)
         resources:
           overrides:
-            instance:
-              resource: nodes
+            node:
+              resource: node
             namespace:
               resource: namespace
             pod:
@@ -88,8 +88,8 @@ data:
         nodeQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>,id='/'}) by (<<.GroupBy>>)
         resources:
           overrides:
-            instance:
-              resource: nodes
+            node:
+              resource: node
             namespace:
               resource: namespace
             pod:
