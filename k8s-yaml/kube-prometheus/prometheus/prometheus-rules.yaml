@@ -17,6 +17,8 @@ spec:
           )
         )
       record: instance:node_num_cpu:sum
+    - expr: max(label_replace(kube_pod_info{job="kube-state-metrics"}, "pod", "$1", "pod", "(.*)")) by (node, namespace, pod)
+      record: 'node_namespace_pod:kube_pod_info:'      
     - expr: |
         1 - avg without (cpu, mode) (
           rate(node_cpu_seconds_total{job="node-exporter", mode="idle"}[1m])
