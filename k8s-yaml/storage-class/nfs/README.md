@@ -1,3 +1,7 @@
+# 创建命名空间
+```
+kubectl create namespace clusterstorage
+```
 # nfs storageClass 部署
 ```
 # 修改nfs-deployment.yaml server path 改成自己nfs 服务器配置

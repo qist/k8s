@@ -1,3 +1,7 @@
+# 创建命名空间
+```
+kubectl create namespace clusterstorage
+```
 # cephfs storageClass 部署
 ```
 # 获取ceph secret  base64

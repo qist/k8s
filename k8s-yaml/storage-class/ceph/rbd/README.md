@@ -1,3 +1,7 @@
+# 创建命名空间
+```
+kubectl create namespace clusterstorage
+```
 # rbd storageClass 部署
 ```
 #进入ceph 创建存储空间
