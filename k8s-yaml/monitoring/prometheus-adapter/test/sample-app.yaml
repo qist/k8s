@@ -59,7 +59,6 @@ spec:
   metrics:
   - pods:
       metric:
-       # name: coredns_dns_request_count # 低于1.7 版本使用
         name: http_requests
       target:
         averageValue: 500m
