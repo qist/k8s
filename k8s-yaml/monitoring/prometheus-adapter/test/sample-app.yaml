@@ -50,19 +50,23 @@ spec:
         - name: http
           containerPort: 8080
 ---
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
-apiVersion: autoscaling/v2beta1
 metadata:
   name: sample-app
 spec:
+  maxReplicas: 10
+  metrics:
+  - pods:
+      metric:
+       # name: coredns_dns_request_count # 低于1.7 版本使用
+        name: http_requests
+      target:
+        averageValue: 500m
+        type: AverageValue
+    type: Pods
+  minReplicas: 2
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: sample-app
-  minReplicas: 1
-  maxReplicas: 10
-  metrics:
-  - type: Pods
-    pods:
-      metricName: http_requests
-      targetAverageValue: 500m
