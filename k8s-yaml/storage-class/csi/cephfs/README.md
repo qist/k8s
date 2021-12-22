@@ -2,11 +2,11 @@
 ```
 kubectl create namespace clusterstorage
 ```
-# 获取ceph secret  base64
+# 获取ceph secret 
 ```
-ceph auth get-key client.admin | base64
-# [root@ceph-adm ~]# ceph auth get-key client.admin | base64
-QVFDcCtybGFsaU9XTGhBQWoyZTI1NUd1ZU9SSnl4NXpUeHFrWVE9PQ==
+ceph auth get-key client.admin 
+# [root@ceph-adm ~]# ceph auth get-key client.admin
+AQAZYdJd6UnhIxAAeFPD0RR8+fSj5n6LffYXaQ==
 ```
 # csi cephfs 部署 支持ceph 14 及以上版本 低于建议部署cephfs-provisioner
 配置参考

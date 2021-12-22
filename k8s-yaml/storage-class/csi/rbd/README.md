@@ -24,12 +24,12 @@ ceph -n client.kube --keyring=kube.keyring osd pool ls
 rbd
 kube
 ```
-#获取key base64
+#获取key 
 ```
 client.kube
-ceph auth get-key client.kube | base64
-#[root@ceph-adm ~]# ceph auth get-key client.kube | base64
-QVFDMTY5ZGN1a2dETWhBQVpDY2hOQ09mY1lwWGZXMU5HRU4wSGc9PQ==
+ceph auth get-key client.kube 
+#[root@ceph-adm ~]# ceph auth get-key client.kube 
+AQApbtJd+5MpMxAApoLnIKuN74Cc3bJUgr7Xyg==
 ```
 # csi rbd 部署
 先部署vault
