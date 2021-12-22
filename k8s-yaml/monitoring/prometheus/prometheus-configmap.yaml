@@ -378,6 +378,12 @@ data:
           target_label: pod
           replacement: $1
           action: replace
+        - source_labels: [__meta_kubernetes_pod_node_name]
+          separator: ;
+          regex: (.*)
+          target_label: node
+          replacement: $1
+          action: replace          
         - source_labels: [__scheme__]
           separator: ;
           regex: (.*)
@@ -787,6 +793,12 @@ data:
           target_label: job
           replacement: $1
           action: replace
+        - source_labels: [__meta_kubernetes_pod_node_name]
+          separator: ;
+          regex: (.*)
+          target_label: node
+          replacement: $1
+          action: replace           
         - source_labels: [__scheme__]
           separator: ;
           regex: (.*)

@@ -70,32 +70,63 @@ data:
         matches: ^(.*)_seconds_total$
         as: ""
       metricsQuery: sum(rate(<<.Series>>{<<.LabelMatchers>>}[1m])) by (<<.GroupBy>>)
-    resourceRules:
-      cpu:
-        containerQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>}[1m])) by (<<.GroupBy>>)
-        nodeQuery: sum(rate(container_cpu_usage_seconds_total{<<.LabelMatchers>>, id='/'}[1m])) by (<<.GroupBy>>)
-        resources:
-          overrides:
-            node:
-              resource: node
-            namespace:
-              resource: namespace
-            pod:
-              resource: pod
-        containerLabel: container
-      memory:
-        containerQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>}) by (<<.GroupBy>>)
-        nodeQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>,id='/'}) by (<<.GroupBy>>)
-        resources:
-          overrides:
-            node:
-              resource: node
-            namespace:
-              resource: namespace
-            pod:
-              resource: pod
-        containerLabel: container
-      window: 1m
+    "resourceRules":
+      "cpu":
+        "containerLabel": "container"
+        "containerQuery": |
+          sum by (<<.GroupBy>>) (
+            irate (
+                container_cpu_usage_seconds_total{<<.LabelMatchers>>,pod!=""}[120s]
+            )
+          )
+        "nodeQuery": |
+          sum by (<<.GroupBy>>) (
+            1 - irate(
+              node_cpu_seconds_total{mode="idle"}[60s]
+            )
+            * on(namespace, pod) group_left(node) (
+              node_namespace_pod:kube_pod_info:{<<.LabelMatchers>>}
+            )
+          )
+          or sum by (<<.GroupBy>>) (
+            1 - irate(
+              windows_cpu_time_total{mode="idle", job="windows-exporter",<<.LabelMatchers>>}[4m]
+            )
+          )
+        "resources":
+          "overrides":
+            "namespace":
+              "resource": "namespace"
+            "node":
+              "resource": "node"
+            "pod":
+              "resource": "pod"
+      "memory":
+        "containerLabel": "container"
+        "containerQuery": |
+          sum by (<<.GroupBy>>) (
+            container_memory_working_set_bytes{<<.LabelMatchers>>,pod!=""}
+          )
+        "nodeQuery": |
+          sum by (<<.GroupBy>>) (
+            node_memory_MemTotal_bytes{job="node-exporter",<<.LabelMatchers>>}
+            -
+            node_memory_MemAvailable_bytes{job="node-exporter",<<.LabelMatchers>>}
+          )
+          or sum by (<<.GroupBy>>) (
+            windows_cs_physical_memory_bytes{job="windows-exporter",<<.LabelMatchers>>}
+            -
+            windows_memory_available_bytes{job="windows-exporter",<<.LabelMatchers>>}
+          )
+        "resources":
+          "overrides":
+            "node":
+              "resource": "node"
+            "namespace":
+              "resource": "namespace"
+            "pod":
+              "resource": "pod"
+      "window": "5m"
     externalRules:
     - seriesQuery: '{__name__=~"^.*_queue_(length|size)$",namespace!=""}'
       resources:
