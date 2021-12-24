@@ -70,16 +70,16 @@ data:
         matches: ^(.*)_seconds_total$
         as: ""
       metricsQuery: sum(rate(<<.Series>>{<<.LabelMatchers>>}[1m])) by (<<.GroupBy>>)
-    "resourceRules":
-      "cpu":
-        "containerLabel": "container"
-        "containerQuery": |
+    resourceRules:
+      cpu:
+        containerLabel: container
+        containerQuery: |
           sum by (<<.GroupBy>>) (
             irate (
                 container_cpu_usage_seconds_total{<<.LabelMatchers>>,pod!=""}[120s]
             )
           )
-        "nodeQuery": |
+        nodeQuery: |
           sum by (<<.GroupBy>>) (
             1 - irate(
               node_cpu_seconds_total{mode="idle"}[60s]
@@ -93,21 +93,21 @@ data:
               windows_cpu_time_total{mode="idle", job="windows-exporter",<<.LabelMatchers>>}[4m]
             )
           )
-        "resources":
-          "overrides":
-            "namespace":
-              "resource": "namespace"
-            "node":
-              "resource": "node"
-            "pod":
-              "resource": "pod"
-      "memory":
-        "containerLabel": "container"
-        "containerQuery": |
+        resources:
+          overrides:
+            namespace:
+              resource: namespace
+            node:
+              resource: node
+            pod:
+              resource: pod
+      memory:
+        containerLabel: container
+        containerQuery: |
           sum by (<<.GroupBy>>) (
             container_memory_working_set_bytes{<<.LabelMatchers>>,pod!=""}
           )
-        "nodeQuery": |
+        nodeQuery: |
           sum by (<<.GroupBy>>) (
             node_memory_MemTotal_bytes{job="node-exporter",<<.LabelMatchers>>}
             -
@@ -118,15 +118,15 @@ data:
             -
             windows_memory_available_bytes{job="windows-exporter",<<.LabelMatchers>>}
           )
-        "resources":
-          "overrides":
-            "node":
-              "resource": "node"
-            "namespace":
-              "resource": "namespace"
-            "pod":
-              "resource": "pod"
-      "window": "5m"
+        resources:
+          overrides:
+            node:
+              resource: node
+            namespace:
+              resource: namespace
+            pod:
+              resource: pod
+      window: 5m
     externalRules:
     - seriesQuery: '{__name__=~"^.*_queue_(length|size)$",namespace!=""}'
       resources:
