@@ -60,7 +60,7 @@ data:
 
     redis-server /conf/redis.conf &
     # Discover peers
-    wget https://storage.googleapis.com/kubernetes-release/pets/peer-finder -O /bin/peer-finder
+    wget https://gio.tycng.com/peer-finder -O /bin/peer-finder
     chmod u+x /bin/peer-finder
     peer-finder -on-start 'tee > /conf/initial_peers' -service redis-cluster -ns $POD_NAMESPACE
 
@@ -112,7 +112,7 @@ spec:
       #hostNetwork: true
       containers:
       - name: redis-cluster
-        image:  redis:3.2.1
+        image: redis:3.2.1
         ports:
         - containerPort: 6379
           name: client
@@ -141,22 +141,32 @@ spec:
             - -c
             - "redis-cli -h $(hostname) ping"
           initialDelaySeconds: 20
-          periodSeconds: 3
+          periodSeconds: 3         
         env:
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-        - name: conf
-          mountPath: /conf
+        - name: conf-volume
+          mountPath: /conf        
+        - name: redis-conf
+          mountPath: /conf/redis.conf
+          subPath: redis.conf
+          readOnly: false
+        - name: bootstrap-conf
+          mountPath: /conf/bootstrap-pod.sh
+          subPath: bootstrap-pod.sh
           readOnly: false
         - name: podinfo
           mountPath: /etc/podinfo
-          readOnly: false
+          readOnly: false          
       volumes:
+      - name: conf-volume
+        emptyDir: 
+          medium: Memory      
       # Insert our pre-baked Redis configuration file into /conf/redis.conf
-      - name: conf
+      - name: redis-conf
         configMap:
           name: redis-cluster-config
           items: 
@@ -164,6 +174,12 @@ spec:
             path: redis.conf
           - key: bootstrap-pod.sh  # TODO: Move this or extract it into its own Docker image
             path: bootstrap-pod.sh
+      - name: bootstrap-conf
+        configMap:
+          name: redis-cluster-config
+          items: 
+          - key: bootstrap-pod.sh  # TODO: Move this or extract it into its own Docker image
+            path: bootstrap-pod.sh            
       # The init container will use this info to find cluster peers
       - name: podinfo
         downwardAPI:
