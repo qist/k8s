@@ -60,7 +60,8 @@ data:
 
     redis-server /conf/redis.conf &
     # Discover peers
-    wget https://gio.tycng.com/peer-finder -O /bin/peer-finder
+    # wget https://gio.tycng.com/peer-finder -O /bin/peer-finder
+    cp /tmp/peer-finder/peer-finder /bin/peer-finder
     chmod u+x /bin/peer-finder
     peer-finder -on-start 'tee > /conf/initial_peers' -service redis-cluster -ns $POD_NAMESPACE
 
@@ -110,9 +111,43 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       #hostNetwork: true
+      initContainers:
+      - name: init-sysctl
+        image: busybox
+        command:
+          - /bin/sh
+          - '-c'
+          - |
+            mount -o remount rw /proc/sys
+            sysctl -w net.core.somaxconn=65535
+            sysctl -w net.ipv4.ip_local_port_range="1024 65535"
+            sysctl -w kernel.core_uses_pid=0
+            #sysctl -w fs.file-max=1048576
+            #sysctl -w fs.inotify.max_user_instances=16384
+            #sysctl -w fs.inotify.max_user_watches=1048576
+            #sysctl -w fs.inotify.max_queued_events=16384
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          capabilities:
+            add:
+              - SYS_ADMIN
+            drop:
+              - ALL
+      - name: install-peer-finder
+        image: busybox
+        command:
+        - wget
+        args:
+        - --no-check-certificate
+        - https://gio.tycng.com/peer-finder
+        - -O
+        - /tmp/peer-finder/peer-finder
+        volumeMounts:
+        - name: peer-finder
+          mountPath: /tmp/peer-finder
       containers:
       - name: redis-cluster
-        image: redis:3.2.1
+        image: docker.io/library/redis:6.2.6
         ports:
         - containerPort: 6379
           name: client
@@ -160,7 +195,9 @@ spec:
           readOnly: false
         - name: podinfo
           mountPath: /etc/podinfo
-          readOnly: false          
+          readOnly: false
+        - name: peer-finder
+          mountPath: /tmp/peer-finder          
       volumes:
       - name: conf-volume
         emptyDir: 
@@ -172,14 +209,15 @@ spec:
           items: 
           - key: redis.conf
             path: redis.conf
-          - key: bootstrap-pod.sh  # TODO: Move this or extract it into its own Docker image
-            path: bootstrap-pod.sh
       - name: bootstrap-conf
         configMap:
           name: redis-cluster-config
           items: 
           - key: bootstrap-pod.sh  # TODO: Move this or extract it into its own Docker image
-            path: bootstrap-pod.sh            
+            path: bootstrap-pod.sh
+      - name: peer-finder
+        emptyDir: 
+          medium: Memory           
       # The init container will use this info to find cluster peers
       - name: podinfo
         downwardAPI:
