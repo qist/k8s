@@ -2779,17 +2779,31 @@ cat > ${HOST_PATH}/roles/docker/tasks/main.yml << EOF
 #      - runc
 #  when: docker_path_register.stat.exists == False
 #  ignore_errors: True 
-- name: mount docker data 
-  lineinfile: 
-    dest: /etc/fstab
-    line: '${DATA_ROOT} /var/lib/docker none defaults,bind,nofail 0 0'
-- name: mount docker exec 
-  lineinfile: 
-    dest: /etc/fstab
-    line: '${EXEC_ROOT} /run/docker none defaults,bind,nofail 0 0'
-- name: mount docker
-  shell: mount -a
-  ignore_errors: yes     
+- name: Mount docker data a volume
+  mount:
+    path: /var/lib/docker
+    src:  "${DATA_ROOT}"
+    opts: defaults,bind,nofail
+    state: mounted
+    fstype: none  
+- name: Mount docker exec a volume
+  mount:
+    path: /run/docker
+    src:  "${EXEC_ROOT}"
+    opts: defaults,bind,nofail
+    state: mounted
+    fstype: none 
+#- name: mount docker data 
+#  lineinfile: 
+#    dest: /etc/fstab
+#    line: '${DATA_ROOT} /var/lib/docker none defaults,bind,nofail 0 0'
+#- name: mount docker exec 
+#  lineinfile: 
+#    dest: /etc/fstab
+#    line: '${EXEC_ROOT} /run/docker none defaults,bind,nofail 0 0'
+#- name: mount docker
+#  shell: mount -a
+#  ignore_errors: yes     
 - name: copy "{{ item }}"
   template: 
     src: '{{ item }}'
@@ -3144,18 +3158,32 @@ cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
     path: "${CONTAINERD_PATH}/run/containerd"
     state: directory
     owner: root
-    group: root    
-- name: mount containerd data 
-  lineinfile:
-    dest: /etc/fstab
-    line: '${CONTAINERD_PATH}/containerd /var/lib/containerd none defaults,bind,nofail 0 0'
-- name: mount containerd exec 
-  lineinfile:
-    dest: /etc/fstab
-    line: '${CONTAINERD_PATH}/run/containerd /run/containerd none defaults,bind,nofail 0 0'     
-- name: mount containerd
-  shell: mount -a
-  ignore_errors: yes
+    group: root
+- name: Mount containerd data volume
+  mount:
+    path: /var/lib/containerd
+    src:  "${CONTAINERD_PATH}/containerd"
+    opts: defaults,bind,nofail
+    state: mounted
+    fstype: none 
+- name: Mount containerd exec volume
+  mount:
+    path: /run/containerd
+    src:  "${CONTAINERD_PATH}/run/containerd"
+    opts: defaults,bind,nofail
+    state: mounted
+    fstype: none     
+#- name: mount containerd data 
+#  lineinfile:
+#    dest: /etc/fstab
+#    line: '${CONTAINERD_PATH}/containerd /var/lib/containerd none defaults,bind,nofail 0 0'
+#- name: mount containerd exec 
+#  lineinfile:
+#    dest: /etc/fstab
+#    line: '${CONTAINERD_PATH}/run/containerd /run/containerd none defaults,bind,nofail 0 0'     
+#- name: mount containerd
+#  shell: mount -a
+#  ignore_errors: yes
 - name:  copy to containerd service
   template: 
     src: '{{ item }}' 
@@ -3766,19 +3794,33 @@ cat > ${HOST_PATH}/roles/crio/tasks/main.yml  << EOF
     path: "${RUNROOT}"
     state: directory
     owner: root
-    group: root    
-- name: mount CRIO data 
-  lineinfile: 
-    dest: /etc/fstab
-    line: '${CRIO_ROOT} /var/lib/containers/storage none defaults,bind,nofail 0 0'
-- name: mount CRIO exec 
-  lineinfile: 
-    dest: /etc/fstab
-    line: '${RUNROOT} /run/containers/storage none defaults,bind,nofail 0 0' 
-    
-- name: mount CRIO
-  shell: mount -a
-  ignore_errors: yes       
+    group: root  
+- name: Mount CRIO data  volume
+  mount:
+    path: /var/lib/containers/storage
+    src:  "${CRIO_ROOT}"
+    opts: defaults,bind,nofail
+    state: mounted
+    fstype: none 
+- name: Mount CRIO exec volume
+  mount:
+    path: /run/containers/storage
+    src:  "${RUNROOT}"
+    opts: defaults,bind,nofail
+    state: mounted
+    fstype: none     
+#- name: mount CRIO data 
+#  lineinfile: 
+#    dest: /etc/fstab
+#    line: '${CRIO_ROOT} /var/lib/containers/storage none defaults,bind,nofail 0 0'
+#- name: mount CRIO exec 
+#  lineinfile: 
+#    dest: /etc/fstab
+#    line: '${RUNROOT} /run/containers/storage none defaults,bind,nofail 0 0' 
+#    
+#- name: mount CRIO
+#  shell: mount -a
+#  ignore_errors: yes       
 - name:  copy to crio service
   template: 
     src: '{{ item }}' 
@@ -4058,14 +4100,21 @@ cat > ${HOST_PATH}/roles/kubelet/tasks/main.yml << EOF
     path: "/var/lib/kubelet"
     state: directory
     owner: root
-    group: root      
-- name: mount kubelet 
-  lineinfile: 
-    dest: /etc/fstab
-    line: '${POD_RUNING_PATH} /var/lib/kubelet none defaults,bind,nofail 0 0'  
-- name: mount kubelet 
-  shell: mount -a
-  ignore_errors: yes   
+    group: root  
+- name: Mount kubelet a volume
+  mount:
+    path: /var/lib/kubelet
+    src:  "${POD_RUNING_PATH}"
+    opts: defaults,bind,nofail
+    state: mounted
+    fstype: none    
+#- name: mount kubelet 
+#  lineinfile: 
+#    dest: /etc/fstab
+#    line: '${POD_RUNING_PATH} /var/lib/kubelet none defaults,bind,nofail 0 0'  
+#- name: mount kubelet 
+#  shell: mount -a
+#  ignore_errors: yes   
 - name: copy kubelet to ${K8S_PATH}
   copy: 
     src: bin 

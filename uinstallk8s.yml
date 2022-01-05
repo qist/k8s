@@ -1,6 +1,6 @@
 - hosts: all
   user: root
-  tasks:
+  tasks: 
     - name: disable service all
       service:
         name: '{{ item }}'
@@ -61,16 +61,51 @@
           - docker
           - cni
       ignore_errors: True
-    - name: Remove file (delete file)
-      file:
-        path: "/apps/{{ item }}"
+
+    - name: Unmount k8s volume
+      mount:
+        path: "{{ item }}"
         state: absent
       with_items:
-          - etcd
-          - k8s
-          - work
-          - docker
-          - cni
-          - crio
-          - containerd          
+          - /var/lib/docker
+          - /run/docker 
+          - /var/lib/kubelet 
+          - /var/lib/containers/storage  
+          - /run/containers/storage  
+          - /var/lib/containerd  
+          - /run/containerd         
+#    - name: remove  mount K8S
+#      lineinfile: 
+#        dest: /etc/fstab
+#        regexp: "^{{ item }}"
+#        line: "#{{ item }}" 
+#        state: absent  
+#      with_items:
+#          - /apps/docker/data
+#          - /apps/docker/root
+#          - /apps/work/kubernetes/kubelet
+#          - /apps/crio/lib/containers/storage
+#          - /apps/crio/run/containers/storage
+#          - /apps/containerd/containerd
+#          - /apps/containerd/run/containerd          
+    - name: Remove file (delete file)
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+          - /apps/etcd
+          - /apps/k8s
+          - /apps/work
+          - /apps/docker
+          - /opt/cni
+          - /apps/crio
+          - /apps/containerd
+          - /var/lib/docker
+          - /run/docker 
+          - /var/lib/kubelet 
+          - /var/lib/containers/storage  
+          - /run/containers/storage  
+          - /var/lib/containerd  
+          - /run/containerd         
       ignore_errors: True
+      
