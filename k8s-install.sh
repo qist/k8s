@@ -2213,6 +2213,12 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - { key: 'net.ipv4.tcp_rmem', value: '4096 12582912 16777216' }
       - { key: 'vm.swappiness', value: '0' }
       - { key: 'kernel.sysrq', value: '1' }
+      - { key: 'vm.min_free_kbytes', value: '262144' }
+      - { key: 'kernel.msgmnb', value: '65535' } 
+      - { key: 'kernel.msgmax', value: '65535' }
+      - { key: 'kernel.shmmax', value: '68719476736' }
+      - { key: 'kernel.shmall', value: '4294967296' }
+      - { key: 'kernel.core_uses_pid', value: '1' } 
       - { key: 'net.ipv4.neigh.default.gc_stale_time', value: '120' }
       - { key: 'net.ipv4.neigh.default.gc_thresh1', value: '0' }
       - { key: 'net.ipv4.neigh.default.gc_thresh2', value: '4096' }
