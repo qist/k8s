@@ -3,7 +3,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: redirect
-  namespace: ingress-system
+  namespace: kubernetes-dashboard
 spec:
   redirectScheme:
     scheme: https
@@ -43,7 +43,7 @@ metadata:
   namespace: kubernetes-dashboard
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
-    traefik.ingress.kubernetes.io/router.middlewares: ingress-system-redirect@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: kubernetes-dashboard-redirect@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:

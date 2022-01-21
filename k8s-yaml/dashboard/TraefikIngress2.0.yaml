@@ -1,3 +1,32 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect
+  namespace: kubernetes-dashboard
+spec:
+  redirectScheme:
+    scheme: https
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard-web
+  namespace: kubernetes-dashboard
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: kubernetes-dashboard-redirect@kubernetescrd
+spec:
+  rules:
+  - host: dashboard.tycng.com
+    http:
+      paths:
+        - backend:
+            serviceName: kubernetes-dashboard
+            servicePort: 443
+---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
