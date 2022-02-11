@@ -187,23 +187,57 @@
     url: http://mirrors.aliyun.com/repo/epel-7.repo
     dest: /etc/yum.repos.d/epel.repo
   when: ansible_distribution_major_version == '7'
-- name: CentOS 8 repo
-  get_url:
-    url: https://mirrors.aliyun.com/repo/Centos-8.repo
-    dest: /etc/yum.repos.d/CentOS-Base.repo
-    force: yes
-  when: ansible_distribution_major_version == '8'
+#- name: CentOS 8 repo Stream
+#  get_url:
+#    url: https://mirrors.aliyun.com/repo/Centos-8.repo
+#    dest: /etc/yum.repos.d/CentOS-Base.repo
+#    force: yes
+#  when: ansible_distribution_major_version == '8'
+- name: enabled centos8 Stream
+  lineinfile: 
+    dest: '/etc/yum.repos.d/{{ item }}'
+    regexp: "^enabled=0"
+    line: "enabled=1" 
+  with_items:
+      - CentOS-Stream-AppStream.repo
+      - CentOS-Stream-PowerTools.repo
+      - CentOS-Stream-BaseOS.repo
+      - CentOS-Stream-Extras.repo
+  when: ansible_distribution_major_version == '8'  and  ansible_os_family == 'RedHat'
+- name: remove centos8 Stream
+  lineinfile: 
+    dest: '/etc/yum.repos.d/{{ item }}'
+    regexp: "^mirrorlist"
+    line: "#mirrorlist" 
+    state: absent
+  with_items:
+      - CentOS-Stream-AppStream.repo
+      - CentOS-Stream-PowerTools.repo
+      - CentOS-Stream-BaseOS.repo
+      - CentOS-Stream-Extras.repo 
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
+- name: is set centos8 Stream
+  replace:
+    path: '/etc/yum.repos.d/{{ item }}'
+    regexp: '^#baseurl=http://mirror.centos.org/\$contentdir'
+    replace: 'baseurl=https://mirrors.aliyun.com/centos'
+  with_items:
+      - CentOS-Stream-AppStream.repo
+      - CentOS-Stream-PowerTools.repo
+      - CentOS-Stream-BaseOS.repo
+      - CentOS-Stream-Extras.repo
+  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
 - name: install the epel-release rpm from a remote repo
   yum:
     name: https://mirrors.aliyun.com/epel/epel-release-latest-8.noarch.rpm
     state: present
   when: ansible_distribution_major_version == '8'
-- name: enabled centos8 epel
-  lineinfile: 
-    dest: '/etc/yum.repos.d/CentOS-Base.repo'
-    regexp: "^enabled=0"
-    line: "enabled=1" 
-  when: ansible_distribution_major_version == '8' 
+#- name: enabled centos8 epel
+#  lineinfile: 
+#    dest: '/etc/yum.repos.d/CentOS-Base.repo'
+#    regexp: "^enabled=0"
+#    line: "enabled=1" 
+#  when: ansible_distribution_major_version == '8' 
 - name: remove centos8 epel
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
