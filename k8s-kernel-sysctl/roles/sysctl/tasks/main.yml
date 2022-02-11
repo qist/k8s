@@ -246,7 +246,6 @@
     state: absent
   with_items:
       - epel-modular.repo
-      - epel-playground.repo
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
@@ -258,7 +257,6 @@
     replace: 'baseurl=https://mirrors.aliyun.com'
   with_items:
       - epel-modular.repo
-      - epel-playground.repo
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo

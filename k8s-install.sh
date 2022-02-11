@@ -2460,7 +2460,6 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
     state: absent
   with_items:
       - epel-modular.repo
-      - epel-playground.repo
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
@@ -2472,7 +2471,6 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
     replace: 'baseurl=https://mirrors.aliyun.com'
   with_items:
       - epel-modular.repo
-      - epel-playground.repo
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
