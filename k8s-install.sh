@@ -2,7 +2,7 @@
 ###########################################################K8S一键自动安装#################################################################################################
 ###########################################################K8S 版本支持在v1.15.0 及以上版本################################################################################
 ###########################################################在部署中会重启服务器及更新系统需要在全新环境部署不然重启对业务有影响############################################
-###########################################支持操作系统centos7，centos8，Ubuntu维护版本非维护版本可能源有问题，openSUSE Leap 15.0及上版本##################################
+#########################支持操作系统centos7，centos8-Stream版本原centos8源已经不再更新，Ubuntu维护版本非维护版本可能源有问题，openSUSE Leap 15.0及上版本##################
 # 开启 下载代理 国内尽量配置
 Proxy(){
 # export http_proxy=http://127.0.0.1:7890/
@@ -2383,10 +2383,10 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
     regexp: "^enabled=0"
     line: "enabled=1" 
   with_items:
-      - CentOS-Linux-AppStream.repo
-      - CentOS-Linux-PowerTools.repo
-      - CentOS-Linux-BaseOS.repo
-      - CentOS-Linux-Extras.repo
+      - CentOS-Stream-AppStream.repo
+      - CentOS-Stream-PowerTools.repo
+      - CentOS-Stream-BaseOS.repo
+      - CentOS-Stream-Extras.repo
   when: ansible_distribution_major_version == '8'  and  ansible_os_family == 'RedHat'
 - name: remove centos8 BaseOS
   lineinfile: 
@@ -2395,10 +2395,10 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
     line: "#mirrorlist" 
     state: absent
   with_items:
-      - CentOS-Linux-AppStream.repo
-      - CentOS-Linux-PowerTools.repo
-      - CentOS-Linux-BaseOS.repo
-      - CentOS-Linux-Extras.repo 
+      - CentOS-Stream-AppStream.repo
+      - CentOS-Stream-PowerTools.repo
+      - CentOS-Stream-BaseOS.repo
+      - CentOS-Stream-Extras.repo 
   when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
 - name: is set centos8 BaseOS
   replace:
@@ -2406,10 +2406,10 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
     regexp: '^#baseurl=http://mirror.centos.org/\\\$contentdir'
     replace: 'baseurl=https://mirrors.aliyun.com/centos'
   with_items:
-      - CentOS-Linux-AppStream.repo
-      - CentOS-Linux-PowerTools.repo
-      - CentOS-Linux-BaseOS.repo
-      - CentOS-Linux-Extras.repo
+      - CentOS-Stream-AppStream.repo
+      - CentOS-Stream-PowerTools.repo
+      - CentOS-Stream-BaseOS.repo
+      - CentOS-Stream-Extras.repo
   when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
  
 - name: enabled Rocky BaseOS
