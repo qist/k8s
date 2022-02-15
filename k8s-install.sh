@@ -381,6 +381,8 @@ RUNROOT=$TOTAL_PATH/crio/run/containers/storage
 DECRYPTION_KEYS_PATH=$TOTAL_PATH/crio/keys/
 # conmon 存放路径类似containerd-shim 
 CONMON_PATH=$TOTAL_PATH/crio/bin/conmon
+# WorkingDirectory PATH
+WORKINGDIRECTORY=$TOTAL_PATH/crio
 # cri-o 环境变量
 CONMON_ENV=$TOTAL_PATH/crio/bin
 # hooks_dir 路径 必须存储 
@@ -3349,7 +3351,7 @@ decryption_keys_path = "${DECRYPTION_KEYS_PATH}"
 
 # Path to the conmon binary, used for monitoring the OCI runtime.
 # Will be searched for using \$PATH if empty.
-conmon = "${CONMON_PATH}"
+conmon = ""
 
 # Cgroup setting for conmon
 conmon_cgroup = "system.slice"
@@ -3524,11 +3526,15 @@ pinns_path = "${PINNS_PATH}"
 # - runtime_root (optional, string): root directory for storage of containers
 #   state.
 
+[crio.runtime.runtimes.runc]
+runtime_path = ""
+runtime_type = "oci"
+runtime_root = ""
 
 [crio.runtime.runtimes.crun]
-runtime_path = "${RUNTIME_PATH}"
-runtime_type = "oci"RUNTIME_PATH
-runtime_root = "${RUNTIME_ROOT}"
+runtime_path = ""
+runtime_type = "oci"
+runtime_root = ""
 
 # allowed_annotations is a slice of experimental annotations that this 
 #  workload is allowed to process. The currently recognized values are: 
@@ -3648,6 +3654,8 @@ Documentation=https://github.com/github.com/cri-o/cri-o
 [Service]
 Type=notify
 ${CONTAINER_CGROUP}
+Environment=PATH=${CONMON_ENV}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+WorkingDirectory=${WORKINGDIRECTORY}
 ExecStartPre=-/sbin/modprobe br_netfilter
 ExecStartPre=-/sbin/modprobe overlay
 ExecStart=${CRIO_PATH}/bin/crio --config ${CRIO_PATH}/etc/crio.conf --log-level info 
