@@ -393,10 +393,10 @@ CONTAINER_EXITS_DIR=$TOTAL_PATH/crio/run/crio/exits
 NAMESPACES_DIR=$TOTAL_PATH/crio/run
 # pinns_path is the path to find the pinns binary, which is needed to manage namespace lifecycle
 PINNS_PATH=$TOTAL_PATH/crio/bin/pinns
-# runc 路径
-RUNTIME_PATH=$TOTAL_PATH/crio/bin/runc
+# crun 路径
+RUNTIME_PATH=$TOTAL_PATH/crio/bin/crun
 # runtime 运行路径
-RUNTIME_ROOT=$TOTAL_PATH/crio/run/runc
+RUNTIME_ROOT=$TOTAL_PATH/crio/run/crun
 # pause_image 地址
 PAUSE_IMAGE=${POD_INFRA_CONTAINER_IMAGE}
 # crio.sock 路径
@@ -3338,7 +3338,7 @@ default_ulimits = [
 
 # default_runtime is the _name_ of the OCI runtime to be used as the default.
 # The name is matched against the runtimes map below.
-default_runtime = "runc"
+default_runtime = "crun"
 
 # If true, the runtime will not use pivot_root, but instead use MS_MOVE.
 no_pivot = false
@@ -3525,10 +3525,19 @@ pinns_path = "${PINNS_PATH}"
 #   state.
 
 
-[crio.runtime.runtimes.runc]
+[crio.runtime.runtimes.crun]
 runtime_path = "${RUNTIME_PATH}"
-runtime_type = "oci"
+runtime_type = "oci"RUNTIME_PATH
 runtime_root = "${RUNTIME_ROOT}"
+
+# allowed_annotations is a slice of experimental annotations that this 
+#  workload is allowed to process. The currently recognized values are: 
+#  "io.kubernetes.cri-o.userns-mode" for configuring a user namespace for 
+#  the pod. "io.kubernetes.cri-o.Devices" for configuring devices for the pod.
+
+allowed_annotations = [
+    "io.containers.trace-syscall",
+]
 
 
 # Kata Containers is an OCI runtime, where containers are run inside lightweight
