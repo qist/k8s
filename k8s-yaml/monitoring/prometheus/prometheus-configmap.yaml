@@ -787,11 +787,11 @@ data:
           target_label: pod
           replacement: $1
           action: replace
-        - source_labels: [__meta_kubernetes_pod_controller_name]
+        - source_labels: [__meta_kubernetes_pod_label_k8s_app, __meta_kubernetes_pod_label_app]
           separator: ;
-          regex: (.*)
+          regex: (.*);(.*)
           target_label: job
-          replacement: $1
+          replacement: $1$2
           action: replace
         - source_labels: [__meta_kubernetes_pod_node_name]
           separator: ;
