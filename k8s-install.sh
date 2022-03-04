@@ -395,10 +395,10 @@ CONTAINER_EXITS_DIR=$TOTAL_PATH/crio/run/crio/exits
 NAMESPACES_DIR=$TOTAL_PATH/crio/run
 # pinns_path is the path to find the pinns binary, which is needed to manage namespace lifecycle
 PINNS_PATH=$TOTAL_PATH/crio/bin/pinns
-# crun 路径
-RUNTIME_PATH=$TOTAL_PATH/crio/bin/crun
+# runc 路径
+RUNTIME_PATH=$TOTAL_PATH/crio/bin/runc
 # runtime 运行路径
-RUNTIME_ROOT=$TOTAL_PATH/crio/run/crun
+RUNTIME_ROOT=$TOTAL_PATH/crio/run/runc
 # pause_image 地址
 PAUSE_IMAGE=${POD_INFRA_CONTAINER_IMAGE}
 # crio.sock 路径
@@ -3340,7 +3340,7 @@ default_ulimits = [
 
 # default_runtime is the _name_ of the OCI runtime to be used as the default.
 # The name is matched against the runtimes map below.
-default_runtime = "crun"
+default_runtime = "runc"
 
 # If true, the runtime will not use pivot_root, but instead use MS_MOVE.
 no_pivot = false
