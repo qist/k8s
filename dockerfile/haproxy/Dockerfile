@@ -2,7 +2,7 @@
 FROM alpine
 
 # 作者信息
-MAINTAINER  qist Docker Maintainers "87984115@qq.com"
+LABEL MAINTAINER="qist Docker Maintainers 87984115@qq.com"
 
 # 修改源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
@@ -60,7 +60,7 @@ RUN HAPROXY_CONFIG="\
 
 FROM alpine 
 # 作者信息
-MAINTAINER qist Docker Maintainers "87984115@qq.com"
+LABEL MAINTAINER="qist Docker Maintainers 87984115@qq.com"
 
 # 修改源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories

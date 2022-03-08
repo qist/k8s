@@ -2,7 +2,7 @@
 FROM alpine
 
 # 作者信息
-MAINTAINER PHP 7.4.1 Docker Maintainers "87984115@qq.com"
+LABEL MAINTAINER="PHP 7.4.1 Docker Maintainers 87984115@qq.com"
 
 # 修改源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories

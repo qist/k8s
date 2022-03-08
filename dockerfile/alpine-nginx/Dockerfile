@@ -2,7 +2,7 @@
 FROM alpine
 
 # 作者信息
-MAINTAINER nginx 1.17.7 Docker Maintainers "87984115@qq.com"
+LABEL  MAINTAINER="nginx 1.17.7 Docker Maintainers 87984115@qq.com"
 
 # 修改源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
@@ -134,7 +134,7 @@ RUN NGINX_CONFIG="\
 
 FROM alpine 
 # 作者信息
-MAINTAINER Qist Docker Maintainers "87984115@qq.com"
+LABEL MAINTAINER="Qist Docker Maintainers 87984115@qq.com"
 
 # 修改源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
