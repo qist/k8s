@@ -2,7 +2,7 @@
 FROM alpine
 
 # 作者信息
-LABEL  MAINTAINER="nginx 1.17.7 Docker Maintainers 87984115@qq.com"
+LABEL  MAINTAINER="nginx 1.21.6 Docker Maintainers 87984115@qq.com"
 
 # 修改源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
@@ -13,9 +13,9 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV NGINX_VERSION 1.17.7
+ENV NGINX_VERSION 1.21.6 
 
-ENV OPENSSL_VERSION 1.1.1d
+ENV OPENSSL_VERSION 1.1.1m
 
 
 # 编译安装NGINX
@@ -108,6 +108,8 @@ RUN NGINX_CONFIG="\
         gettext-dev \
         libzip \
         git \
+        cmake \
+        g++ \
         libzip-dev \
         && curl -fSL https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz -o /tmp/openssl-$OPENSSL_VERSION.tar.gz \
         && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o /tmp/nginx-$NGINX_VERSION.tar.gz \
@@ -128,7 +130,13 @@ RUN NGINX_CONFIG="\
         && mkdir -p /var/lib/nginx/cache \
         && ./configure $NGINX_CONFIG \
         && make -j$(getconf _NPROCESSORS_ONLN) \
-        && make install 
+        && make install \
+        && git clone https://github.com/microsoft/mimalloc.git /tmp/mimalloc \
+        && mkdir -p /tmp/mimalloc/out/release \
+        && cd /tmp/mimalloc/out/release \
+        && cmake -DMI_SECURE=OFF ../.. \
+        && make install \
+        && apk del .build-deps
 
 # 构建confd nginx 镜像
 
@@ -144,6 +152,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 COPY --from=0  /usr/bin/nginx /usr/bin/nginx
 COPY --from=0  /etc/nginx  /etc/nginx
 COPY --from=0  /var/lib/nginx /var/lib/nginx
+COPY --from=0  /usr/local/lib/ /usr/local/lib/
 
 # 安装ca 证书
 RUN apk update && \
@@ -162,8 +171,9 @@ RUN  mkdir -p /var/lib/nginx/cache \
           && ln -sf /dev/stderr /var/log/nginx/error.log \
           && mkdir -p /var/cache/nginx/client_temp
 
-# copy 配置到镜像中 
-       
+# 设置环境变量 
+ENV LD_PRELOAD=/usr/local/lib/libmimalloc.so
+# copy 配置到镜像中       
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY conf.d /etc/nginx/conf.d
 COPY vhost /etc/nginx/vhost
