@@ -13,8 +13,8 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV HAPROXY_VERSION 2.4.0
-ENV HAPROXY_URL http://www.haproxy.org/download/2.4/src/haproxy-2.4.0.tar.gz
+ENV HAPROXY_VERSION 2.5.4
+ENV HAPROXY_URL http://www.haproxy.org/download/2.5/src/haproxy-2.5.4.tar.gz
 
 # 代理
 # ENV http_proxy http://192.168.0.151:7890
@@ -80,8 +80,8 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV HAPROXY_VERSION 2.4.0
-ENV HAPROXY_URL http://www.haproxy.org/download/2.4/src/haproxy-2.4.0.tar.gz
+ENV HAPROXY_VERSION 2.5.4
+ENV HAPROXY_URL http://www.haproxy.org/download/2.5/src/haproxy-2.5.4.tar.gz
 # 监听端口
 ENV HOST_PORT 6443
 ENV LD_PRELOAD=/usr/local/lib/libmimalloc.so
