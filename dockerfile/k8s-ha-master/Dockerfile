@@ -13,9 +13,10 @@ RUN apk update && \
 
 # 设置环境变量
 
-ENV NGINX_VERSION 1.21.0
+ENV NGINX_VERSION 1.21.6 
 
-ENV OPENSSL_VERSION 1.1.1k
+ENV OPENSSL_VERSION 1.1.1m
+
 # ENV http_proxy http://192.168.0.151:7890
 # ENV https_proxy http://192.168.0.151:7890
 
@@ -106,19 +107,27 @@ RUN NGINX_CONFIG="\
         libzip \
         git \
         libzip-dev \
+        cmake \
+        g++ \
         && curl -fSL  https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz -o /tmp/openssl-$OPENSSL_VERSION.tar.gz \
         && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o /tmp/nginx-$NGINX_VERSION.tar.gz \
         && cd /tmp \
         && git clone https://github.com/zhouchangxun/ngx_healthcheck_module.git /tmp/ngx_healthcheck_module \
         && git clone https://github.com/vozlt/nginx-module-stream-sts.git /tmp/nginx-module-stream-sts \
-        && git clone https://github.com/vozlt/nginx-module-sts.git /tmp/nginx-module-sts \        
+        && git clone https://github.com/vozlt/nginx-module-sts.git /tmp/nginx-module-sts \
+        && git clone https://github.com/microsoft/mimalloc.git /tmp/mimalloc \
         && tar -xzf openssl-$OPENSSL_VERSION.tar.gz \
         && tar -xzf nginx-$NGINX_VERSION.tar.gz \
         && cd  /tmp/nginx-$NGINX_VERSION \
         && git apply ../ngx_healthcheck_module/nginx_healthcheck_for_nginx_1.19+.patch \
         && ./configure $NGINX_CONFIG \
         && make -j$(getconf _NPROCESSORS_ONLN) \
-        && make install
+        && make install \
+        && mkdir -p /tmp/mimalloc/out/release \
+        && cd /tmp/mimalloc/out/release \
+        && cmake -DMI_SECURE=OFF ../.. \
+        && make install \
+        && apk del .build-deps        
 
 # 构建confd nginx 镜像
 
@@ -134,10 +143,7 @@ RUN apk update && \
     apk add --no-cache ca-certificates 
 
 # 设置环境变量
-
-ENV NGINX_VERSION 1.21.0
-
-ENV OPENSSL_VERSION 1.1.1k
+ENV LD_PRELOAD=/usr/local/lib/libmimalloc.so
 # nginx 进行使用cpu 数量
 ENV CPU_NUM 4
 # nginx 监听端口
@@ -159,7 +165,8 @@ RUN  mkdir -p /var/lib/nginx/cache \
 #COPY 编译结果  
 
 COPY --from=0  /usr/sbin/nginx /usr/sbin/nginx
-COPY --from=0  /etc/nginx  /etc/nginx  
+COPY --from=0  /etc/nginx  /etc/nginx
+COPY --from=0  /usr/local/lib /usr/local/lib
 ADD confd  /usr/sbin/confd
 ADD conf.d /etc/confd/conf.d 
 ADD templates /etc/confd/templates

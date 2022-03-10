@@ -49,12 +49,21 @@ RUN HAPROXY_CONFIG="\
 		tar \
 		zlib-dev \
         curl \
+        git \
+        cmake \
+        g++ \
         && curl -fSL "$HAPROXY_URL" -o /tmp/haproxy-${HAPROXY_VERSION}.tar.gz \
         && cd /tmp \
         && tar -xzf haproxy-${HAPROXY_VERSION}.tar.gz \
         && cd  /tmp/haproxy-${HAPROXY_VERSION} \
         && make -j$(getconf _NPROCESSORS_ONLN) all $HAPROXY_CONFIG \
-        && make install-bin  $HAPROXY_CONFIG
+        && make install-bin  $HAPROXY_CONFIG \
+        && git clone https://github.com/microsoft/mimalloc.git /tmp/mimalloc \
+        && mkdir -p /tmp/mimalloc/out/release \
+        && cd /tmp/mimalloc/out/release \
+        && cmake -DMI_SECURE=OFF ../.. \
+        && make install \
+        && apk del .build-deps       
 
 # 构建confd nginx 镜像
 
@@ -75,6 +84,7 @@ ENV HAPROXY_VERSION 2.4.0
 ENV HAPROXY_URL http://www.haproxy.org/download/2.4/src/haproxy-2.4.0.tar.gz
 # 监听端口
 ENV HOST_PORT 6443
+ENV LD_PRELOAD=/usr/local/lib/libmimalloc.so
 # 后端转发端口
 ENV BACKEND_PORT 5443
 RUN  apk add  --no-cache  \ 
@@ -88,6 +98,7 @@ RUN  apk add  --no-cache  \
 #COPY 编译结果  
 
 COPY --from=0  /usr/sbin/haproxy /usr/sbin/haproxy
+COPY --from=0  /usr/local/lib /usr/local/lib
 ADD confd  /usr/sbin/confd
 ADD conf.d /etc/confd/conf.d 
 ADD templates /etc/confd/templates

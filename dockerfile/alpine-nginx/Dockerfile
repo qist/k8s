@@ -122,6 +122,7 @@ RUN NGINX_CONFIG="\
         && git clone https://github.com/openresty/echo-nginx-module.git /tmp/echo-nginx-module \
         && git clone https://github.com/weibocom/nginx-upsync-module.git /tmp/nginx-upsync-module \
         && git clone https://github.com/openresty/headers-more-nginx-module.git /tmp/headers-more-nginx-module \
+        && git clone https://github.com/microsoft/mimalloc.git /tmp/mimalloc \        
         && cd /tmp \
         && tar -xzf openssl-$OPENSSL_VERSION.tar.gz \
         && tar -xzf nginx-$NGINX_VERSION.tar.gz \
@@ -131,7 +132,6 @@ RUN NGINX_CONFIG="\
         && ./configure $NGINX_CONFIG \
         && make -j$(getconf _NPROCESSORS_ONLN) \
         && make install \
-        && git clone https://github.com/microsoft/mimalloc.git /tmp/mimalloc \
         && mkdir -p /tmp/mimalloc/out/release \
         && cd /tmp/mimalloc/out/release \
         && cmake -DMI_SECURE=OFF ../.. \
@@ -152,7 +152,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 COPY --from=0  /usr/bin/nginx /usr/bin/nginx
 COPY --from=0  /etc/nginx  /etc/nginx
 COPY --from=0  /var/lib/nginx /var/lib/nginx
-COPY --from=0  /usr/local/lib/ /usr/local/lib/
+COPY --from=0  /usr/local/lib /usr/local/lib
 
 # 安装ca 证书
 RUN apk update && \
