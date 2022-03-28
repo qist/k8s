@@ -4078,15 +4078,6 @@ WantedBy=multi-user.target
 EOF
 # kubelet 二进制安装playbook
 cat > ${HOST_PATH}/roles/kubelet/tasks/main.yml << EOF
-- name: btrfs
-  shell: 'mount |grep \\${TOTAL_PATH}| grep btrfs'
-  ignore_errors: yes
-  register: btrfs_result
-
-- name: btrfs
-  shell: 'mount |grep \/| grep btrfs'
-  ignore_errors: yes
-  register: btr_result
 #disable swap
 - name: disable swap
   shell: "([ $(swapon -s | wc -l) -ge 1 ] && (swapoff -a && echo disable)) || echo already"
