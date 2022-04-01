@@ -2550,6 +2550,9 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - ceph-common
     state: latest
   when: ansible_pkg_mgr == "yum"
+- name: dpkg  update db
+  shell: dpkg --configure -a
+  when: ansible_pkg_mgr == "apt"
 - name: Only run "update_cache=yes"
   apt:
     update_cache: yes
