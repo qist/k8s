@@ -4,6 +4,7 @@ metadata:
   name: prometheus-dashboard
   namespace: monitoring
 spec:
+  ingressClassName: nginx
   rules:
     - host: prometheus.tycng.com
       http:
