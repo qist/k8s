@@ -285,7 +285,7 @@ spec:
     app: prometheus-k8s
   sessionAffinity: ClientIP
 EOF
-### blackbox-exporter 集群内部ingresses监控注释方法 由于prometheus 不还不支持1.22 ingresses api 所以只能监控1.22版本一下ingresses
+### blackbox-exporter 集群内部ingresses监控注释方法
 cat << EOF | kubectl apply -f -
 kind: Ingress
 apiVersion: networking.k8s.io/v1
