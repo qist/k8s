@@ -15,6 +15,7 @@
           - kube-controller-manager
           - kube-apiserver
           - etcd
+          - cri-docker
       ignore_errors: True
     - name: Reboot system
       reboot:
@@ -34,6 +35,8 @@
           - kube-apiserver.service
           - etcd.service
           - docker.socket
+          - cri-docker.sock
+          - cri-docker.service
       ignore_errors: True
     - name: Remove file (delete file)
       file:
@@ -49,6 +52,7 @@
           - runc
           - ctr
           - containerd
+          - cri-dockerd
       ignore_errors: True
     - name: Remove file (delete file)
       file:
@@ -106,6 +110,7 @@
           - /var/lib/containers/storage  
           - /run/containers/storage  
           - /var/lib/containerd  
-          - /run/containerd         
+          - /run/containerd
+          - /var/lib/cni
       ignore_errors: True
       

@@ -1,18 +1,18 @@
 #!/bin/bash
 ###########################################################K8S一键自动安装#################################################################################################
-###########################################################K8S 版本支持在v1.15.0 及以上版本################################################################################
+###########################################################K8S 版本支持在v1.24.0 及以上版本################################################################################
 ###########################################################在部署中会重启服务器及更新系统需要在全新环境部署不然重启对业务有影响############################################
 #########################支持操作系统centos7，centos8-Stream版本原centos8源已经不再更新，Ubuntu维护版本非维护版本可能源有问题，openSUSE Leap 15.0及上版本##################
 # 开启 下载代理 国内尽量配置
-Proxy(){
-# export http_proxy=http://127.0.0.1:7890/
-# export https_proxy=http://127.0.0.1:7890/
-test
+Proxy() {
+  # export http_proxy=http://127.0.0.1:7890/
+  # export https_proxy=http://127.0.0.1:7890/
+  test
 }
 # 卸载 代理
 UNProxy() {
-unset http_proxy
-unset https_proxy
+  unset http_proxy
+  unset https_proxy
 }
 
 ###########################################################################################################################################################################
@@ -80,10 +80,10 @@ K8S_VIP_PORT=6443
 INSTALL_K8S=OFF
 # 配置容器运行时 DOCKER,CONTAINERD,CRIO 默认docker
 RUNTIME=DOCKER
-# 网络插件 选择 flannel,kube-router 默认 flannel 
+# 网络插件 选择 flannel,kube-router 默认 flannel
 # calico 插件下载地址
 # https://docs.projectcalico.org/manifests/calico.yaml
-# https://docs.projectcalico.org/manifests/calico-typha.yaml 
+# https://docs.projectcalico.org/manifests/calico-typha.yaml
 NET_PLUG=flannel
 #K8S events 存储ETCD 集群 默认关闭OFF ON开启
 K8S_EVENTS=OFF
@@ -108,12 +108,12 @@ LOGTOSTDERR=true
 ALSOLOGTOSTDERR=true
 # 设置输出日志级别
 LEVEL_LOG="2"
-# 启用特性 处于Alpha 或者Beta 阶段 https://kubernetes.io/zh/docs/reference/command-line-tools-reference/feature-gates/ 
+# 启用特性 处于Alpha 或者Beta 阶段 https://kubernetes.io/zh/docs/reference/command-line-tools-reference/feature-gates/
 # RemoveSelfLink=false 1.20 以后使用provisioner 方式部署动态StorageClass 使用默认true
 FEATURE_GATES_OPT="ServiceTopology=true,EndpointSlice=true,TTLAfterFinished=true"
 
 ########################################################################################################################################################################
-######################################################### 负载均衡插件及镜像   尽量下载使用私有仓库镜像地址这样部署很快        #########################################                                
+######################################################### 负载均衡插件及镜像   尽量下载使用私有仓库镜像地址这样部署很快        #########################################
 ########################################################################################################################################################################
 ## kube-apiserver ha proxy 配置
 # nginx 启动进程数 auto 当前机器cpu 核心数的进程数
@@ -127,36 +127,40 @@ POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause:3.6"
 #############################################                    一般参数修改                                    ########################################################
 #########################################################################################################################################################################
 # 设置工作目录
-export HOST_PATH=`pwd`
+export HOST_PATH=$(pwd)
 # 设置下载文件目录
 export DOWNLOAD_PATH=${HOST_PATH}/download
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.5.1
+export ETCD_VERSION=v3.5.4
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.23.0
+export KUBERNETES_VERSION=v1.24.0
 # cni 版本
-export CNI_VERSION=v1.0.1
+export CNI_VERSION=v1.1.1
 # iptables
 export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
 export CFSSL_VERSION=1.4.1
 # docker 版本
-export DOCKER_VERSION=20.10.11
+export DOCKER_VERSION=20.10.14
+# docker cri 版本
+export CRI_DOCKER_VERSION=v0.2.0
 # containerd 版本
-export CONTAINERD_VERSION=1.5.8
+export CONTAINERD_VERSION=1.6.4
 # crictl 版本
-export CRICTL_VERSION=v1.22.0
+export CRICTL_VERSION=v1.24.0
 # runc 版本
-export RUNC_VERSION=v1.0.3
+export RUNC_VERSION=v1.1.1
 # cri-o 版本
-export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/k8s-conform-cri-o/artifacts/cri-o.amd64.61748dc51bdf1af367b8a68938dbbc81c593b95d.tar.gz"
-export CRIO_VERSION=v1.21.4
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.c0b2474b80fd0844b883729bda88961bed7b472b.tar.gz"
+export CRIO_VERSION=v1.23.2
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
+# flannel cni 
+FLANNEL_CNI_PLUGIN="rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.1"
 # flannel 插件选择
-FLANNEL_VERSION="quay.io/coreos/flannel:v0.14.0"
+FLANNEL_VERSION="rancher/mirrored-flannelcni-flannel:v0.17.0"
 # kube-router 镜像
-KUBE_ROUTER_INIT=busybox
+KUBE_ROUTER_INIT="docker.io/cloudnativelabs/kube-router"
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
 # coredns 镜像
 COREDNS_IMAGE=coredns/coredns
@@ -172,7 +176,7 @@ ETCD_WAL_DIR=$TOTAL_PATH/etcd/data/default.etcd/wal
 K8S_PATH=$TOTAL_PATH/k8s
 # K8S pod 运行目录
 POD_ROOT_DIR=$TOTAL_PATH/work
-# kubelet pod manifest path 
+# kubelet pod manifest path
 POD_MANIFEST_PATH=${POD_ROOT_DIR}/kubernetes/manifests
 # kubelet pod runing 目录
 POD_RUNING_PATH=${POD_ROOT_DIR}/kubernetes/kubelet
@@ -217,14 +221,14 @@ QUOTA_BACKEND_BYTES=17179869184
 #集群初始化名称
 INITIAL_CLUSTER_TOKEN=k8s-cluster
 if [ ${K8S_EVENTS} == "ON" ]; then
-# etcd events集群配置
-ETCD_EVENTS_HOSTNAMES="\"${ETCD_EVENTS_MEMBER_1_HOSTNAMES}\",\"${ETCD_EVENTS_MEMBER_2_HOSTNAMES}\",\"${ETCD_EVENTS_MEMBER_3_HOSTNAMES}\""
-ETCD_EVENTS_IPS="\"${ETCD_EVENTS_MEMBER_1_IP}\",\"${ETCD_EVENTS_MEMBER_2_IP}\",\"${ETCD_EVENTS_MEMBER_3_IP}\""
-#集群初始化名称
-INITIAL_CLUSTER_TOKEN_EVENTS=k8s-events-cluster
-# etcd 集群间通信的 IP 和端口
-INITIAL_EVENTS_CLUSTER="${ETCD_EVENTS_MEMBER_1_HOSTNAMES}=https://${ETCD_EVENTS_MEMBER_1_IP}:2380,${ETCD_EVENTS_MEMBER_2_HOSTNAMES}=https://${ETCD_EVENTS_MEMBER_2_IP}:2380,${ETCD_EVENTS_MEMBER_3_HOSTNAMES}=https://${ETCD_EVENTS_MEMBER_3_IP}:2380"
-ENDPOINTS="${ENDPOINTS} --etcd-servers-overrides=/events#https://${ETCD_EVENTS_MEMBER_1_IP}:2379;https://${ETCD_EVENTS_MEMBER_2_IP}:2379;https://${ETCD_EVENTS_MEMBER_3_IP}:2379"
+  # etcd events集群配置
+  ETCD_EVENTS_HOSTNAMES="\"${ETCD_EVENTS_MEMBER_1_HOSTNAMES}\",\"${ETCD_EVENTS_MEMBER_2_HOSTNAMES}\",\"${ETCD_EVENTS_MEMBER_3_HOSTNAMES}\""
+  ETCD_EVENTS_IPS="\"${ETCD_EVENTS_MEMBER_1_IP}\",\"${ETCD_EVENTS_MEMBER_2_IP}\",\"${ETCD_EVENTS_MEMBER_3_IP}\""
+  #集群初始化名称
+  INITIAL_CLUSTER_TOKEN_EVENTS=k8s-events-cluster
+  # etcd 集群间通信的 IP 和端口
+  INITIAL_EVENTS_CLUSTER="${ETCD_EVENTS_MEMBER_1_HOSTNAMES}=https://${ETCD_EVENTS_MEMBER_1_IP}:2380,${ETCD_EVENTS_MEMBER_2_HOSTNAMES}=https://${ETCD_EVENTS_MEMBER_2_IP}:2380,${ETCD_EVENTS_MEMBER_3_HOSTNAMES}=https://${ETCD_EVENTS_MEMBER_3_IP}:2380"
+  ENDPOINTS="${ENDPOINTS} --etcd-servers-overrides=/events#https://${ETCD_EVENTS_MEMBER_1_IP}:2379;https://${ETCD_EVENTS_MEMBER_2_IP}:2379;https://${ETCD_EVENTS_MEMBER_3_IP}:2379"
 fi
 # kubernetes 相关配置
 # 公共配置
@@ -232,11 +236,11 @@ fi
 TLS_CIPHER="TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_GCM_SHA256"
 # kube-apiserver 配置
 # K8S ETCD存储 目录名字
-ETCD_PREFIX="/registry" 
+ETCD_PREFIX="/registry"
 K8S_SSL="\"${K8S_VIP}\",\"127.0.0.1\""
 # 生成 EncryptionConfig 所需的加密 key
 ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
-# kubectl 连接 kube-apiserver 
+# kubectl 连接 kube-apiserver
 export KUBE_APISERVER="https://${K8S_VIP}:${SECURE_PORT}"
 # kubernetes 集群节点链接 kube-apiserver 配置
 KUBE_API_KUBELET="https://${MASTER_IP}:${K8S_VIP_PORT}"
@@ -244,7 +248,7 @@ KUBE_API_KUBELET="https://${MASTER_IP}:${K8S_VIP_PORT}"
 RUNTIME_CONFIG="api/all=true"
 #开启插件enable-admission-plugins #AlwaysPullImages 启用istio 不能自动注入需要手动执行注入
 ENABLE_ADMISSION_PLUGINS="DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceExists,NamespaceLifecycle,NodeRestriction,PodNodeSelector,PersistentVolumeClaimResize,PodTolerationRestriction,ResourceQuota,ServiceAccount,StorageObjectInUseProtection,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
-#禁用插件disable-admission-plugins 
+#禁用插件disable-admission-plugins
 DISABLE_ADMISSION_PLUGINS="ExtendedResourceToleration,ImagePolicyWebhook,LimitPodHardAntiAffinityTopology,NamespaceAutoProvision,Priority,EventRateLimit,PodSecurityPolicy"
 # 设置api 副本数
 APISERVER_COUNT="3"
@@ -252,8 +256,6 @@ APISERVER_COUNT="3"
 MAX_MUTATING_REQUESTS_INFLIGHT="500"
 # api 非突变请求的最大数目
 MAX_REQUESTS_INFLIGHT="1500"
-# 内存配置选项和node数量的关系，单位是MB： target-ram-mb=node_nums * 60
-TARGET_RAM_MB="300"
 # 指示notReady:NoExecute的容忍秒数，默认情况下添加到没有这种容忍的每个pod中。 默认 300
 DEFAULT_NOT_READY_TOLERATION_SECONDS=30
 # 指示对不可到达的:NoExecute的容忍秒数,默认情况下添加到没有这种容忍的每个pod中。默认 300
@@ -273,7 +275,7 @@ CONCURRENT_GC_SYNCS=30
 NODE_MONITOR_GRACE_PERIOD=30s
 #在NodeController中同步节点状态的周期。默认5s
 NODE_MONITOR_PERIOD=5s
-# 删除失败节点上的pods的宽限期。默认5m 
+# 删除失败节点上的pods的宽限期。默认5m
 POD_EVICTION_TIMEOUT=1m0s
 # 我们允许启动节点在标记为不健康之前没有响应的时间。，默认1m0s。
 NODE_STARTUP_GRACE_PERIOD=20s
@@ -282,7 +284,7 @@ TERMINATED_POD_GC_THRESHOLD=50
 # kubelet 配置
 # max-pods node 节点启动最多pod 数量
 MAX_PODS=55
-#每1核cpu最多运行pod数 默认0 关闭 
+#每1核cpu最多运行pod数 默认0 关闭
 PODS_PER_CORE=0
 # hairpin-mode 标志必须设置为 hairpin-veth 或者 promiscuous-bridge pod 试图访问它们自己的 Service VIP，就可以让 Service 的端点重新负载到他们自己身上
 HAIRPIN_MODE=hairpin-veth
@@ -321,301 +323,310 @@ SYNC_FREQUENCY=30s
 # 如果在该参数值所设置的期限之前没有拉取镜像的进展，镜像拉取操作将被取消。默认值为 1m0s
 IMAGE_PULL_PROGRESS_DEADLINE=30s
 # 获取版本号纯数字方便判断版本
-KUBERNETES_VER=`echo $KUBERNETES_VERSION | awk '{print substr($0,2)}'`
+KUBERNETES_VER=$(echo $KUBERNETES_VERSION | awk '{print substr($0,2)}')
 # runtime 配置
 if [ ${RUNTIME} == "DOCKER" ]; then
-# docker 配置
-#是否开启docker0 网卡 参数: doakcer0 none k8s集群建议不用开启，单独部署请设置值为docker0
-NET_BRIDGE="none"
-# docker 最大下载线程数
-MAX_CONCURRENT_DOWNLOADS=20
-# docker 数据存放目录
-DATA_ROOT=$TOTAL_PATH/docker/data
-# 容器运行目录
-EXEC_ROOT=$TOTAL_PATH/docker/root
-# 容器日志格式
-LOG_DRIVER=json-file
-# 输出日志大小
-LOG_OPTS_MAX_SIZE=100M
-# 保留日志文件
-LOG_OPTS_MAX_FILE=10
-# kubelet 启动配置
-AFTER_REQUIRES=docker.service
-# 其它runtime 使用
-EXEC_START_PRE=""
-# kubelet runtime 配置
-CONTAINER_RUNTIME=docker
-CONTAINER_RUNTIME_ENDPOINT=unix:///var/run/dockershim.sock
-CONTAINERD_ENDPOINT=unix:///run/containerd/containerd.sock
-# 拉取镜像使用命令
-PULL_IMAGES=${DOCKER_BIN_PATH}/docker
+  # docker 配置
+  #是否开启docker0 网卡 参数: doakcer0 none k8s集群建议不用开启，单独部署请设置值为docker0
+  NET_BRIDGE="none"
+  # docker 最大下载线程数
+  MAX_CONCURRENT_DOWNLOADS=20
+  # docker 数据存放目录
+  DATA_ROOT=$TOTAL_PATH/docker/data
+  # 容器运行目录
+  EXEC_ROOT=$TOTAL_PATH/docker/root
+  # 容器日志格式
+  LOG_DRIVER=json-file
+  # 输出日志大小
+  LOG_OPTS_MAX_SIZE=100M
+  # 保留日志文件
+  LOG_OPTS_MAX_FILE=10
+  # kubelet 启动配置
+  AFTER_REQUIRES=cri-docker.service
+  # 其它runtime 使用
+  EXEC_START_PRE=""
+  # docker.sock 路径
+  RUN_DOCKER_SOCK=/var/run/cri-docker
+  # kubelet runtime 配置
+  CONTAINER_RUNTIME=remote
+  CONTAINER_RUNTIME_ENDPOINT=unix://${RUN_DOCKER_SOCK}/cri-docker.sock
+  CONTAINERD_ENDPOINT=unix://${RUN_DOCKER_SOCK}/cri-docker.sock
+  # 拉取镜像使用命令
+  PULL_IMAGES=${DOCKER_BIN_PATH}/docker
 elif [ ${RUNTIME} == "CONTAINERD" ]; then
-# containerd 配置
-# containerd 运行目录 二进制目录
-CONTAINERD_BIN_PATH=$CONTAINERD_PATH/bin/containerd
-# sandbox_image 地址
-SANDBOX_IMAGE=${POD_INFRA_CONTAINER_IMAGE}
-# 镜像下载线程 20
-MAX_CONCURRENT_DOWNLOADS=20
-# snapshotter
-SNAPSHOTTER=overlayfs
-# containerd.sock 路径
-RUN_CONTAINERD_SOCK=/run/containerd
-# kubelet 启动出错解决
-EXEC_START_PRE=`echo -e "ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/hugetlb/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/blkio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpuset/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/devices/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/net_cls,net_prio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/perf_event/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpu,cpuacct/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/freezer/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/memory/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/pids/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice"`
-# kubelet 启动配置
-AFTER_REQUIRES=containerd.service
-# kubelet runtime 配置
-CONTAINER_RUNTIME=remote
-CONTAINER_RUNTIME_ENDPOINT=unix://${RUN_CONTAINERD_SOCK}/containerd.sock
-CONTAINERD_ENDPOINT=unix:///${RUN_CONTAINERD_SOCK}/containerd.sock
-# 拉取镜像使用命令
-PULL_IMAGES=crictl
+  # containerd 配置
+  # containerd 运行目录 二进制目录
+  CONTAINERD_BIN_PATH=$CONTAINERD_PATH/bin/containerd
+  # sandbox_image 地址
+  SANDBOX_IMAGE=${POD_INFRA_CONTAINER_IMAGE}
+  # 镜像下载线程 20
+  MAX_CONCURRENT_DOWNLOADS=20
+  # snapshotter
+  SNAPSHOTTER=overlayfs
+  # containerd.sock 路径
+  RUN_CONTAINERD_SOCK=/run/containerd
+  # kubelet 启动出错解决
+  EXEC_START_PRE=$(echo -e "ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/hugetlb/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/blkio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpuset/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/devices/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/net_cls,net_prio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/perf_event/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpu,cpuacct/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/freezer/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/memory/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/pids/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice")
+  # kubelet 启动配置
+  AFTER_REQUIRES=containerd.service
+  # kubelet runtime 配置
+  CONTAINER_RUNTIME=remote
+  CONTAINER_RUNTIME_ENDPOINT=unix://${RUN_CONTAINERD_SOCK}/containerd.sock
+  CONTAINERD_ENDPOINT=unix:///${RUN_CONTAINERD_SOCK}/containerd.sock
+  # 拉取镜像使用命令
+  PULL_IMAGES=crictl
 elif [ ${RUNTIME} == "CRIO" ]; then
-# cri-o 配置
-# 镜像存储路径
-CRIO_ROOT=$TOTAL_PATH/crio/lib/containers/storage
-# 镜像工作路径
-RUNROOT=$TOTAL_PATH/crio/run/containers/storage
-#KEYS 存储路径
-DECRYPTION_KEYS_PATH=$TOTAL_PATH/crio/keys/
-# conmon 存放路径类似containerd-shim 
-CONMON_PATH=$TOTAL_PATH/crio/bin/conmon
-# WorkingDirectory PATH
-WORKINGDIRECTORY=$TOTAL_PATH/crio
-# cri-o 环境变量
-CONMON_ENV=$TOTAL_PATH/crio/bin
-# hooks_dir 路径 必须存储 
-HOOKS_DIR=$TOTAL_PATH/crio/containers/oci/hooks.d
-# Maximum number of processes allowed in a container
-PIDS_LIMIT=102400
-# Path to directory in which container exit files are written to by conmon.
-CONTAINER_EXITS_DIR=$TOTAL_PATH/crio/run/crio/exits
-# Only used when manage_ns_lifecycle is true.
-NAMESPACES_DIR=$TOTAL_PATH/crio/run
-# pinns_path is the path to find the pinns binary, which is needed to manage namespace lifecycle
-PINNS_PATH=$TOTAL_PATH/crio/bin/pinns
-# runc 路径
-RUNTIME_PATH=$TOTAL_PATH/crio/bin/runc
-# runtime 运行路径
-RUNTIME_ROOT=$TOTAL_PATH/crio/run/runc
-# pause_image 地址
-PAUSE_IMAGE=${POD_INFRA_CONTAINER_IMAGE}
-# crio.sock 路径
-RUN_CRIO_SOCK=/var/run/crio
-# kubelet 启动配置
-AFTER_REQUIRES=crio.service
-# kubelet 启动出错解决
-EXEC_START_PRE=`echo -e "ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/hugetlb/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/blkio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpuset/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/devices/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/net_cls,net_prio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/perf_event/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpu,cpuacct/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/freezer/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/memory/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/pids/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice"`
-# kubelet runtime 配置
-CONTAINER_RUNTIME=remote
-CONTAINER_RUNTIME_ENDPOINT=unix://${RUN_CRIO_SOCK}/crio.sock
-CONTAINERD_ENDPOINT=unix://${RUN_CRIO_SOCK}/crio.sock
-# 拉取镜像使用命令
-PULL_IMAGES=crictl
+  # cri-o 配置
+  # 镜像存储路径
+  CRIO_ROOT=$TOTAL_PATH/crio/lib/containers/storage
+  # 镜像工作路径
+  RUNROOT=$TOTAL_PATH/crio/run/containers/storage
+  #KEYS 存储路径
+  DECRYPTION_KEYS_PATH=$TOTAL_PATH/crio/keys/
+  # conmon 存放路径类似containerd-shim
+  CONMON_PATH=$TOTAL_PATH/crio/bin/conmon
+  # WorkingDirectory PATH
+  WORKINGDIRECTORY=$TOTAL_PATH/crio
+  # cri-o 环境变量
+  CONMON_ENV=$TOTAL_PATH/crio/bin
+  # hooks_dir 路径 必须存储
+  HOOKS_DIR=$TOTAL_PATH/crio/containers/oci/hooks.d
+  # Maximum number of processes allowed in a container
+  PIDS_LIMIT=102400
+  # Path to directory in which container exit files are written to by conmon.
+  CONTAINER_EXITS_DIR=$TOTAL_PATH/crio/run/crio/exits
+  # Only used when manage_ns_lifecycle is true.
+  NAMESPACES_DIR=$TOTAL_PATH/crio/run
+  # pinns_path is the path to find the pinns binary, which is needed to manage namespace lifecycle
+  PINNS_PATH=$TOTAL_PATH/crio/bin/pinns
+  # runc 路径
+  RUNTIME_PATH=$TOTAL_PATH/crio/bin/runc
+  # runtime 运行路径
+  RUNTIME_ROOT=$TOTAL_PATH/crio/run/runc
+  # pause_image 地址
+  PAUSE_IMAGE=${POD_INFRA_CONTAINER_IMAGE}
+  # crio.sock 路径
+  RUN_CRIO_SOCK=/var/run/crio
+  # kubelet 启动配置
+  AFTER_REQUIRES=crio.service
+  # kubelet 启动出错解决
+  EXEC_START_PRE=$(echo -e "ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/hugetlb/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/blkio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpuset/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/devices/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/net_cls,net_prio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/perf_event/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpu,cpuacct/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/freezer/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/memory/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/pids/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice")
+  # kubelet runtime 配置
+  CONTAINER_RUNTIME=remote
+  CONTAINER_RUNTIME_ENDPOINT=unix://${RUN_CRIO_SOCK}/crio.sock
+  CONTAINERD_ENDPOINT=unix://${RUN_CRIO_SOCK}/crio.sock
+  # 拉取镜像使用命令
+  PULL_IMAGES=crictl
 fi
 # 后端 kube-apiserver ip列表
-CP_HOSTS=`echo $K8S_APISERVER_VIP| sed  -e "s/\"//g"`
+CP_HOSTS=$(echo $K8S_APISERVER_VIP | sed -e "s/\"//g")
 #######
-RED="31m"      # Error message
-GREEN="32m"    # Success message
-YELLOW="33m"   # Warning message
-BLUE="36m"     # Info message
-colorEcho(){
-    echo -e "\033[${1}${@:2}\033[0m" 1>& 2
+RED="31m"    # Error message
+GREEN="32m"  # Success message
+YELLOW="33m" # Warning message
+BLUE="36m"   # Info message
+colorEcho() {
+  echo -e "\033[${1}${@:2}\033[0m" 1>&2
 }
 #下载文件包
 
-downloadK8S(){
-   Proxy
-   colorEcho ${GREEN} "download for K8S file."
-   if [[ ! -d "${DOWNLOAD_PATH}" ]]; then
-       mkdir -p ${DOWNLOAD_PATH}
-   else
-       colorEcho ${GREEN} '文件夹已经存在'
-   fi
-   # 下载etcd
-       wget -c  --tries=40  https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz \
-                     -O $DOWNLOAD_PATH/etcd-${ETCD_VERSION}-linux-amd64.tar.gz
-      if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "download  FATAL etcd."
-        exit $?
-      fi      
-    # 下载kubernetes 
-       wget -c  --tries=40  https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/kubernetes-server-linux-amd64.tar.gz \
-                     -O $DOWNLOAD_PATH/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz
-      if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "download  FATAL kubernetes."
-        exit $?
-      fi      
-    # 下载cni 
-       wget -c  --tries=40  https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz  \
-                     -O $DOWNLOAD_PATH/cni-plugins-linux-amd64-${CNI_VERSION}.tgz
-      if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "download  FATAL cni."
-        exit $?
-      fi 
-    if [ ${IPTABLES_INSTALL} == "ON" ]; then      
-    # 下载iptables 
-       curl -C -  https://www.netfilter.org/projects/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2 \
-                     -o $DOWNLOAD_PATH/iptables-${IPTABLES_VERSION}.tar.bz2
-      if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "download  FATAL iptables."
-        exit $?
-      fi 
-      else
-      colorEcho ${BLUE} '不升级iptables'
-    fi      
-   if [[ ${RUNTIME} == "DOCKER" ]]; then
+downloadK8S() {
+  Proxy
+  colorEcho ${GREEN} "download for K8S file."
+  if [[ ! -d "${DOWNLOAD_PATH}" ]]; then
+    mkdir -p ${DOWNLOAD_PATH}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  # 下载etcd
+  wget -c --tries=40 https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz \
+    -O $DOWNLOAD_PATH/etcd-${ETCD_VERSION}-linux-amd64.tar.gz
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "download  FATAL etcd."
+    exit $?
+  fi
+  # 下载kubernetes
+  wget -c --tries=40 https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/kubernetes-server-linux-amd64.tar.gz \
+    -O $DOWNLOAD_PATH/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "download  FATAL kubernetes."
+    exit $?
+  fi
+  # 下载cni
+  wget -c --tries=40 https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz \
+    -O $DOWNLOAD_PATH/cni-plugins-linux-amd64-${CNI_VERSION}.tgz
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "download  FATAL cni."
+    exit $?
+  fi
+  if [ ${IPTABLES_INSTALL} == "ON" ]; then
+    # 下载iptables
+    curl -C - https://www.netfilter.org/projects/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2 \
+      -o $DOWNLOAD_PATH/iptables-${IPTABLES_VERSION}.tar.bz2
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "download  FATAL iptables."
+      exit $?
+    fi
+  else
+    colorEcho ${BLUE} '不升级iptables'
+  fi
+  if [[ ${RUNTIME} == "DOCKER" ]]; then
     # 下载docker
-          wget -c  --tries=40  https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz \
-                        -O $DOWNLOAD_PATH/docker-${DOCKER_VERSION}.tgz
-         if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "download  FATAL docker."
-           exit $?
-         fi           
-   elif [[ ${RUNTIME} == "CONTAINERD" ]]; then
+    wget -c --tries=40 https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz \
+      -O $DOWNLOAD_PATH/docker-${DOCKER_VERSION}.tgz
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "download  FATAL docker."
+      exit $?
+    fi
+    # 下载 docker-cri
+    wget -c --tries=40 https://github.com/Mirantis/cri-dockerd/releases/download/${CRI_DOCKER_VERSION}/cri-dockerd-${CRI_DOCKER_VERSION}-linux-amd64.tar.gz \
+      -O $DOWNLOAD_PATH/cri-dockerd-${CRI_DOCKER_VERSION}-linux-amd64.tar.gz
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "download  FATAL cri-dockerd."
+      exit $?
+    fi
+  elif [[ ${RUNTIME} == "CONTAINERD" ]]; then
     # 下载crictl
-          wget -c  --tries=40 https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz \
-                    -O $DOWNLOAD_PATH/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz
-         if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "download  FATAL crictl."
-           exit $?
-         fi       
+    wget -c --tries=40 https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz \
+      -O $DOWNLOAD_PATH/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "download  FATAL crictl."
+      exit $?
+    fi
     # 下载runc
-          wget -c  --tries=40 https://github.com/opencontainers/runc/releases/download/${RUNC_VERSION}/runc.amd64 \
-                    -O $DOWNLOAD_PATH/runc
-         if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "download  FATAL runc."
-           exit $?
-         fi      
+    wget -c --tries=40 https://github.com/opencontainers/runc/releases/download/${RUNC_VERSION}/runc.amd64 \
+      -O $DOWNLOAD_PATH/runc-${RUNC_VERSION}
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "download  FATAL runc."
+      exit $?
+    fi
     # 下载containerd
-          wget -c  --tries=40 https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz \
-                    -O $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz
-         if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "download  FATAL containerd."
-           exit $?
-         fi      
-    elif [[ ${RUNTIME} == "CRIO" ]]; then
+    wget -c --tries=40 https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz \
+      -O $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "download  FATAL containerd."
+      exit $?
+    fi
+  elif [[ ${RUNTIME} == "CRIO" ]]; then
     # 下载crio
-          wget -c  --tries=40 ${DOWNLOAD_CRIO_VERSION} \
-                    -O $DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz
-         if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "download  FATAL crio."
-           exit $?
-         fi
+    wget -c --tries=40 ${DOWNLOAD_CRIO_VERSION} \
+      -O $DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "download  FATAL crio."
+      exit $?
+    fi
   fi
   UNProxy
   return 0
 }
 # return 1: not apt, yum
-getPMT(){
-    if [[ -n `command -v apt` ]];then
-        CMD_INSTALL="apt -y -qq install"
-        CMD_UPDATE="apt -qq update"
-        CMD_UPGRADE="apt -y -qq upgrade"
-    elif [[ -n `command -v yum` ]]; then
-        rpm -q epel-release
-          if [[ $? -gt 0 ]]; then
-              yum -y -q install epel-release
-          fi
-        CMD_INSTALL="yum -y -q install"
-        CMD_UPDATE="yum -q makecache"
-        CMD_UPGRADE="yum -y -q update"
-    else
-        return 1
+getPMT() {
+  if [[ -n $(command -v apt) ]]; then
+    CMD_INSTALL="apt -y -qq install"
+    CMD_UPDATE="apt -qq update"
+    CMD_UPGRADE="apt -y -qq upgrade"
+  elif [[ -n $(command -v yum) ]]; then
+    rpm -q epel-release
+    if [[ $? -gt 0 ]]; then
+      yum -y -q install epel-release
     fi
-    return 0
+    CMD_INSTALL="yum -y -q install"
+    CMD_UPDATE="yum -q makecache"
+    CMD_UPGRADE="yum -y -q update"
+  else
+    return 1
+  fi
+  return 0
 }
 
 function version_lt() {
- test "$(printf '%s\n' "$@" | sort -V | head -n 1)" = "$1"; 
- }
- 
+  test "$(printf '%s\n' "$@" | sort -V | head -n 1)" = "$1"
+}
+
 function version_gt() {
- test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; 
- }
- 
-ansibleInstall(){
-    getPMT
-    if [[ -n `command -v ansible` ]]; then
-       CMD_ANSIBLE=`command -v ansible`
-       ANSIBLE_VERSION=`$CMD_ANSIBLE --version| awk 'NR==1{print $2}'`
-       colorEcho ${GREEN} ${ANSIBLE_VERSION}
-        if version_lt ${ANSIBLE_VERSION} 2.8.0; then        
-         $CMD_UPDATE
-         $CMD_UPGRADE ansible
-       else
-         colorEcho ${GREEN} "ansibel ok"
-      fi
-     else
+  test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
+}
+
+ansibleInstall() {
+  getPMT
+  if [[ -n $(command -v ansible) ]]; then
+    CMD_ANSIBLE=$(command -v ansible)
+    ANSIBLE_VERSION=$($CMD_ANSIBLE --version | awk 'NR==1{print $2}')
+    colorEcho ${GREEN} ${ANSIBLE_VERSION}
+    if version_lt ${ANSIBLE_VERSION} 2.8.0; then
       $CMD_UPDATE
-      $CMD_INSTALL ansible sshpass     
- fi
- return 0
+      $CMD_UPGRADE ansible
+    else
+      colorEcho ${GREEN} "ansibel ok"
+    fi
+  else
+    $CMD_UPDATE
+    $CMD_INSTALL ansible sshpass
+  fi
+  return 0
 }
-kubectlInstall(){
-        Proxy
-        colorEcho ${GREEN} "download for K8S file."
-        if [[ ! -d "${DOWNLOAD_PATH}" ]]; then
-          mkdir -p ${DOWNLOAD_PATH}
-         else
-            colorEcho ${GREEN} '文件夹已经存在'
-        fi
-          # 下载kubernetes client
-        if [[ ! -n `command -v kubectl` ]]; then       
-             wget -c  --tries=40  https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/kubernetes-client-linux-amd64.tar.gz \
-                           -O $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}.tar.gz
-            if [[ $? -ne 0 ]]; then
-               colorEcho ${RED} "download  FATAL kubernetes-client."
-               exit $?
-            fi
-           mkdir -p $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}
-           tar -xf $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}
-           cp -pdr $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}/kubernetes/client/bin/kubectl /usr/bin/kubectl     
-       fi  
-        UNProxy
-        return 0
+kubectlInstall() {
+  Proxy
+  colorEcho ${GREEN} "download for K8S file."
+  if [[ ! -d "${DOWNLOAD_PATH}" ]]; then
+    mkdir -p ${DOWNLOAD_PATH}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  # 下载kubernetes client
+  if [[ ! -n $(command -v kubectl) ]]; then
+    wget -c --tries=40 https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/kubernetes-client-linux-amd64.tar.gz \
+      -O $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}.tar.gz
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "download  FATAL kubernetes-client."
+      exit $?
+    fi
+    mkdir -p $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}
+    tar -xf $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}
+    cp -pdr $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}/kubernetes/client/bin/kubectl /usr/bin/kubectl
+  fi
+  UNProxy
+  return 0
 }
-cfsslInstall(){
-         Proxy
-         if [[ ! -n `command -v cfssl` ]]; then
-            wget -c  --tries=40 https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssl_${CFSSL_VERSION}_linux_amd64 \
-                               -O $DOWNLOAD_PATH/cfssl
-              if [[ $? -ne 0 ]]; then
-                 colorEcho ${RED} "download  FATAL cfssl."
-                 exit $?
-              fi
-            cp -pdr $DOWNLOAD_PATH/cfssl /usr/bin/cfssl
-            chmod +x /usr/bin/cfssl
-         fi
-         if [[ ! -n `command -v cfssljson` ]]; then
-             wget -c  --tries=40 https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssljson_${CFSSL_VERSION}_linux_amd64 \
-                               -O $DOWNLOAD_PATH/cfssljson
-                  if [[ $? -ne 0 ]]; then
-                 colorEcho ${RED} "download  FATAL cfssljson."
-                 exit $?
-              fi
-             cp -pdr $DOWNLOAD_PATH/cfssljson /usr/bin/cfssljson
-            chmod +x /usr/bin/cfssljson
-         fi 
-         UNProxy
-         return 0
+cfsslInstall() {
+  Proxy
+  if [[ ! -n $(command -v cfssl) ]]; then
+    wget -c --tries=40 https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssl_${CFSSL_VERSION}_linux_amd64 \
+      -O $DOWNLOAD_PATH/cfssl
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "download  FATAL cfssl."
+      exit $?
+    fi
+    cp -pdr $DOWNLOAD_PATH/cfssl /usr/bin/cfssl
+    chmod +x /usr/bin/cfssl
+  fi
+  if [[ ! -n $(command -v cfssljson) ]]; then
+    wget -c --tries=40 https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssljson_${CFSSL_VERSION}_linux_amd64 \
+      -O $DOWNLOAD_PATH/cfssljson
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "download  FATAL cfssljson."
+      exit $?
+    fi
+    cp -pdr $DOWNLOAD_PATH/cfssljson /usr/bin/cfssljson
+    chmod +x /usr/bin/cfssljson
+  fi
+  UNProxy
+  return 0
 }
-etcdCert(){
-       colorEcho ${GREEN} "create for etcd cert."
-       if [[ ! -d "${HOST_PATH}/cfssl/etcd" ]]; then
-           mkdir -p ${HOST_PATH}/cfssl/etcd
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi 
-       if [[ ! -d "${HOST_PATH}/cfssl/pki/etcd" ]]; then
-           mkdir -p ${HOST_PATH}/cfssl/pki/etcd
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi 
-# CA 配置文件用于配置根证书的使用场景 (profile) 和具体参数 (usage，过期时间、服务端认证、客户端认证、加密等)，后续在签名其它证书时需要指定特定场景。
-cat > ${HOST_PATH}/cfssl/ca-config.json << EOF
+etcdCert() {
+  colorEcho ${GREEN} "create for etcd cert."
+  if [[ ! -d "${HOST_PATH}/cfssl/etcd" ]]; then
+    mkdir -p ${HOST_PATH}/cfssl/etcd
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ ! -d "${HOST_PATH}/cfssl/pki/etcd" ]]; then
+    mkdir -p ${HOST_PATH}/cfssl/pki/etcd
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  # CA 配置文件用于配置根证书的使用场景 (profile) 和具体参数 (usage，过期时间、服务端认证、客户端认证、加密等)，后续在签名其它证书时需要指定特定场景。
+  cat >${HOST_PATH}/cfssl/ca-config.json <<EOF
 {
   "signing": {
     "default": {
@@ -635,8 +646,8 @@ cat > ${HOST_PATH}/cfssl/ca-config.json << EOF
   }
 }
 EOF
-# 创建 ETCD CA 配置文件
-cat > ${HOST_PATH}/cfssl/etcd/etcd-ca-csr.json << EOF
+  # 创建 ETCD CA 配置文件
+  cat >${HOST_PATH}/cfssl/etcd/etcd-ca-csr.json <<EOF
 {
     "CN": "etcd",
     "key": {
@@ -657,8 +668,8 @@ cat > ${HOST_PATH}/cfssl/etcd/etcd-ca-csr.json << EOF
     }
 }
 EOF
-# 创建 ETCD Server 配置文件
-cat > ${HOST_PATH}/cfssl/etcd/etcd-server.json << EOF
+  # 创建 ETCD Server 配置文件
+  cat >${HOST_PATH}/cfssl/etcd/etcd-server.json <<EOF
 {
   "CN": "etcd",
   "hosts": [
@@ -681,8 +692,8 @@ cat > ${HOST_PATH}/cfssl/etcd/etcd-server.json << EOF
   ]
 }
 EOF
-# 创建 ETCD Member 1 配置文件
-cat > ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_1_HOSTNAMES}.json << EOF
+  # 创建 ETCD Member 1 配置文件
+  cat >${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_1_HOSTNAMES}.json <<EOF
 {
   "CN": "etcd",
   "hosts": [
@@ -705,8 +716,8 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_1_HOSTNAMES}.json << EOF
   ]
 }
 EOF
-# 创建 ETCD Member 2 配置文件
-cat > ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_2_HOSTNAMES}.json << EOF
+  # 创建 ETCD Member 2 配置文件
+  cat >${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_2_HOSTNAMES}.json <<EOF
 {
   "CN": "etcd",
   "hosts": [
@@ -729,8 +740,8 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_2_HOSTNAMES}.json << EOF
   ]
 }
 EOF
-# 创建 ETCD Member 3 配置文件
-cat > ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_3_HOSTNAMES}.json << EOF
+  # 创建 ETCD Member 3 配置文件
+  cat >${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_3_HOSTNAMES}.json <<EOF
 {
   "CN": "etcd",
   "hosts": [
@@ -753,10 +764,10 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_3_HOSTNAMES}.json << EOF
   ]
 }
 EOF
-# 创建etcd k8s EVENTS 集群证书配置
-if [ ${K8S_EVENTS} == "ON" ]; then
-# 创建 ETCD EVENTS Server 配置文件
-cat > ${HOST_PATH}/cfssl/etcd/etcd-events.json << EOF
+  # 创建etcd k8s EVENTS 集群证书配置
+  if [ ${K8S_EVENTS} == "ON" ]; then
+    # 创建 ETCD EVENTS Server 配置文件
+    cat >${HOST_PATH}/cfssl/etcd/etcd-events.json <<EOF
 {
   "CN": "etcd",
   "hosts": [
@@ -779,8 +790,8 @@ cat > ${HOST_PATH}/cfssl/etcd/etcd-events.json << EOF
   ]
 }
 EOF
-# 创建 ETCD EVENTS Member 1 配置文件
-cat > ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_1_HOSTNAMES}.json << EOF
+    # 创建 ETCD EVENTS Member 1 配置文件
+    cat >${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_1_HOSTNAMES}.json <<EOF
 {
   "CN": "etcd",
   "hosts": [
@@ -803,8 +814,8 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_1_HOSTNAMES}.json << EOF
   ]
 }
 EOF
-# 创建 ETCD EVENTS Member 2 配置文件
-cat > ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_2_HOSTNAMES}.json << EOF
+    # 创建 ETCD EVENTS Member 2 配置文件
+    cat >${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_2_HOSTNAMES}.json <<EOF
 {
   "CN": "etcd",
   "hosts": [
@@ -827,8 +838,8 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_2_HOSTNAMES}.json << EOF
   ]
 }
 EOF
-# 创建 ETCD EVENTS Member 3 配置文件
-cat > ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_3_HOSTNAMES}.json << EOF
+    # 创建 ETCD EVENTS Member 3 配置文件
+    cat >${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_3_HOSTNAMES}.json <<EOF
 {
   "CN": "etcd",
   "hosts": [
@@ -851,9 +862,9 @@ cat > ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_3_HOSTNAMES}.json << EOF
   ]
 }
 EOF
-fi
-## 创建 ETCD Client 配置文件
-cat > ${HOST_PATH}/cfssl/etcd/etcd-client.json << EOF
+  fi
+  ## 创建 ETCD Client 配置文件
+  cat >${HOST_PATH}/cfssl/etcd/etcd-client.json <<EOF
 {
   "CN": "client",
   "hosts": [""], 
@@ -873,160 +884,160 @@ cat > ${HOST_PATH}/cfssl/etcd/etcd-client.json << EOF
 }
 EOF
 
-if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem" ]]; then
-# etcd ca 证书签发
-cfssl gencert -initca ${HOST_PATH}/cfssl/etcd/etcd-ca-csr.json | \
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem" ]]; then
+    # etcd ca 证书签发
+    cfssl gencert -initca ${HOST_PATH}/cfssl/etcd/etcd-ca-csr.json |
       cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-ca
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL etcd-ca."
-     exit $?
-fi
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-server.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-server-key.pem" ]]; then  
-## 生成 ETCD Server 证书和私钥
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/etcd/etcd-server.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-server
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL etcd-server."
-     exit $?
-fi
- fi
-# 生成 ETCD Member 1 证书和私钥
-if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_1_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_1_HOSTNAMES}-key.pem" ]]; then 
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_1_HOSTNAMES}.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_1_HOSTNAMES}
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL etcd-member-${ETCD_MEMBER_1_HOSTNAMES}."
-     exit $?
-fi
-fi
-# 生成 ETCD Member 2 证书和私钥
-if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_2_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_2_HOSTNAMES}-key.pem" ]]; then 
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_2_HOSTNAMES}.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_2_HOSTNAMES}
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL etcd-member-${ETCD_MEMBER_2_HOSTNAMES}."
-     exit $?
-fi
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_3_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_3_HOSTNAMES}-key.pem" ]]; then 
-# 生成 ETCD Member 3 证书和私钥
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_3_HOSTNAMES}.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_3_HOSTNAMES}
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL etcd-member-${ETCD_MEMBER_3_HOSTNAMES}."
-     exit $?
-fi
-fi
-if [ ${K8S_EVENTS} == "ON" ]; then
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL etcd-ca."
+      exit $?
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-server.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-server-key.pem" ]]; then
+    ## 生成 ETCD Server 证书和私钥
+    cfssl gencert \
+      -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
+      -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
+      -config=${HOST_PATH}/cfssl/ca-config.json \
+      -profile=${CERT_PROFILE} \
+      ${HOST_PATH}/cfssl/etcd/etcd-server.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-server
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL etcd-server."
+      exit $?
+    fi
+  fi
+  # 生成 ETCD Member 1 证书和私钥
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_1_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_1_HOSTNAMES}-key.pem" ]]; then
+    cfssl gencert \
+      -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
+      -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
+      -config=${HOST_PATH}/cfssl/ca-config.json \
+      -profile=${CERT_PROFILE} \
+      ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_1_HOSTNAMES}.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_1_HOSTNAMES}
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL etcd-member-${ETCD_MEMBER_1_HOSTNAMES}."
+      exit $?
+    fi
+  fi
+  # 生成 ETCD Member 2 证书和私钥
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_2_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_2_HOSTNAMES}-key.pem" ]]; then
+    cfssl gencert \
+      -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
+      -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
+      -config=${HOST_PATH}/cfssl/ca-config.json \
+      -profile=${CERT_PROFILE} \
+      ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_2_HOSTNAMES}.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_2_HOSTNAMES}
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL etcd-member-${ETCD_MEMBER_2_HOSTNAMES}."
+      exit $?
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_3_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_3_HOSTNAMES}-key.pem" ]]; then
+    # 生成 ETCD Member 3 证书和私钥
+    cfssl gencert \
+      -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
+      -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
+      -config=${HOST_PATH}/cfssl/ca-config.json \
+      -profile=${CERT_PROFILE} \
+      ${HOST_PATH}/cfssl/etcd/${ETCD_MEMBER_3_HOSTNAMES}.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-member-${ETCD_MEMBER_3_HOSTNAMES}
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL etcd-member-${ETCD_MEMBER_3_HOSTNAMES}."
+      exit $?
+    fi
+  fi
+  if [ ${K8S_EVENTS} == "ON" ]; then
 
-if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-key.pem" ]]; then 
-## 生成 ETCD EVENTS Server 证书和私钥
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/etcd/etcd-events.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-events
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL etcd-events."
-     exit $?
-fi
-fi
-# 生成 ETCD EVENTS Member 1 证书和私钥
-if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_1_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_1_HOSTNAMES}-key.pem" ]]; then 
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_1_HOSTNAMES}.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_1_HOSTNAMES}
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL etcd-events-${ETCD_EVENTS_MEMBER_1_HOSTNAMES}."
-     exit $?
-fi
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_2_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_2_HOSTNAMES}-key.pem" ]]; then 
-# 生成 ETCD EVENTS  Member 2 证书和私钥
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_2_HOSTNAMES}.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_2_HOSTNAMES}
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL etcd-events-${ETCD_EVENTS_MEMBER_2_HOSTNAMES}."
-     exit $?
-fi
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_3_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_3_HOSTNAMES}-key.pem" ]]; then 
-# 生成 ETCD EVENTS Member 3 证书和私钥
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_3_HOSTNAMES}.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_3_HOSTNAMES}
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL etcd-events-${ETCD_EVENTS_MEMBER_3_HOSTNAMES}."
-     exit $?
-fi
- fi
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-client.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-client-key.pem" ]]; then 
-# 生成 ETCD Client 证书和私钥
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/etcd/etcd-client.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-client
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL etcd-events-${ETCD_EVENTS_MEMBER_1_HOSTNAMES}."
-     exit $?
-fi
-fi
-return 0
+    if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-key.pem" ]]; then
+      ## 生成 ETCD EVENTS Server 证书和私钥
+      cfssl gencert \
+        -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
+        -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
+        -config=${HOST_PATH}/cfssl/ca-config.json \
+        -profile=${CERT_PROFILE} \
+        ${HOST_PATH}/cfssl/etcd/etcd-events.json |
+        cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-events
+      if [[ $? -ne 0 ]]; then
+        colorEcho ${RED} "cfssl  FATAL etcd-events."
+        exit $?
+      fi
+    fi
+    # 生成 ETCD EVENTS Member 1 证书和私钥
+    if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_1_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_1_HOSTNAMES}-key.pem" ]]; then
+      cfssl gencert \
+        -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
+        -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
+        -config=${HOST_PATH}/cfssl/ca-config.json \
+        -profile=${CERT_PROFILE} \
+        ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_1_HOSTNAMES}.json |
+        cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_1_HOSTNAMES}
+      if [[ $? -ne 0 ]]; then
+        colorEcho ${RED} "cfssl  FATAL etcd-events-${ETCD_EVENTS_MEMBER_1_HOSTNAMES}."
+        exit $?
+      fi
+    fi
+    if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_2_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_2_HOSTNAMES}-key.pem" ]]; then
+      # 生成 ETCD EVENTS  Member 2 证书和私钥
+      cfssl gencert \
+        -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
+        -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
+        -config=${HOST_PATH}/cfssl/ca-config.json \
+        -profile=${CERT_PROFILE} \
+        ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_2_HOSTNAMES}.json |
+        cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_2_HOSTNAMES}
+      if [[ $? -ne 0 ]]; then
+        colorEcho ${RED} "cfssl  FATAL etcd-events-${ETCD_EVENTS_MEMBER_2_HOSTNAMES}."
+        exit $?
+      fi
+    fi
+    if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_3_HOSTNAMES}.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_3_HOSTNAMES}-key.pem" ]]; then
+      # 生成 ETCD EVENTS Member 3 证书和私钥
+      cfssl gencert \
+        -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
+        -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
+        -config=${HOST_PATH}/cfssl/ca-config.json \
+        -profile=${CERT_PROFILE} \
+        ${HOST_PATH}/cfssl/etcd/${ETCD_EVENTS_MEMBER_3_HOSTNAMES}.json |
+        cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-events-${ETCD_EVENTS_MEMBER_3_HOSTNAMES}
+      if [[ $? -ne 0 ]]; then
+        colorEcho ${RED} "cfssl  FATAL etcd-events-${ETCD_EVENTS_MEMBER_3_HOSTNAMES}."
+        exit $?
+      fi
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-client.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/etcd/etcd-client-key.pem" ]]; then
+    # 生成 ETCD Client 证书和私钥
+    cfssl gencert \
+      -ca=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem \
+      -ca-key=${HOST_PATH}/cfssl/pki/etcd/etcd-ca-key.pem \
+      -config=${HOST_PATH}/cfssl/ca-config.json \
+      -profile=${CERT_PROFILE} \
+      ${HOST_PATH}/cfssl/etcd/etcd-client.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/etcd/etcd-client
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL etcd-events-${ETCD_EVENTS_MEMBER_1_HOSTNAMES}."
+      exit $?
+    fi
+  fi
+  return 0
 }
-k8sCert(){
-       colorEcho ${GREEN} "create for k8s cert."
-       if [[ ! -d "${HOST_PATH}/cfssl/k8s" ]]; then
-           mkdir -p ${HOST_PATH}/cfssl/k8s
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi 
-       if [[ ! -d "${HOST_PATH}/cfssl/pki/k8s" ]]; then
-           mkdir -p ${HOST_PATH}/cfssl/pki/k8s
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi 
-# CA 配置文件用于配置根证书的使用场景 (profile) 和具体参数 (usage，过期时间、服务端认证、客户端认证、加密等)，后续在签名其它证书时需要指定特定场景。
-cat > ${HOST_PATH}/cfssl/ca-config.json << EOF
+k8sCert() {
+  colorEcho ${GREEN} "create for k8s cert."
+  if [[ ! -d "${HOST_PATH}/cfssl/k8s" ]]; then
+    mkdir -p ${HOST_PATH}/cfssl/k8s
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ ! -d "${HOST_PATH}/cfssl/pki/k8s" ]]; then
+    mkdir -p ${HOST_PATH}/cfssl/pki/k8s
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  # CA 配置文件用于配置根证书的使用场景 (profile) 和具体参数 (usage，过期时间、服务端认证、客户端认证、加密等)，后续在签名其它证书时需要指定特定场景。
+  cat >${HOST_PATH}/cfssl/ca-config.json <<EOF
 {
   "signing": {
     "default": {
@@ -1046,8 +1057,8 @@ cat > ${HOST_PATH}/cfssl/ca-config.json << EOF
   }
 }
 EOF
-# 创建 Kubernetes CA 配置文件
-cat > ${HOST_PATH}/cfssl/k8s/k8s-ca-csr.json << EOF
+  # 创建 Kubernetes CA 配置文件
+  cat >${HOST_PATH}/cfssl/k8s/k8s-ca-csr.json <<EOF
 {
   "CN": "$CLUSTER_NAME",
   "key": {
@@ -1068,8 +1079,8 @@ cat > ${HOST_PATH}/cfssl/k8s/k8s-ca-csr.json << EOF
   }
 }
 EOF
-# # 创建 Kubernetes API Server 配置文件
-cat > ${HOST_PATH}/cfssl/k8s/k8s-apiserver.json << EOF
+  # # 创建 Kubernetes API Server 配置文件
+  cat >${HOST_PATH}/cfssl/k8s/k8s-apiserver.json <<EOF
 {
   "CN": "$CLUSTER_NAME",
   "hosts": [
@@ -1096,8 +1107,8 @@ cat > ${HOST_PATH}/cfssl/k8s/k8s-apiserver.json << EOF
   ]
 }
 EOF
-# 创建 Kubernetes webhook 证书配置文件
-cat > ${HOST_PATH}/cfssl/k8s/aggregator.json << EOF
+  # 创建 Kubernetes webhook 证书配置文件
+  cat >${HOST_PATH}/cfssl/k8s/aggregator.json <<EOF
 {
   "CN": "aggregator",
   "hosts": [""], 
@@ -1116,8 +1127,8 @@ cat > ${HOST_PATH}/cfssl/k8s/aggregator.json << EOF
   ]
 }
 EOF
-# 创建 Kubernetes Controller Manager 配置文件
-cat > ${HOST_PATH}/cfssl/k8s/k8s-controller-manager.json << EOF
+  # 创建 Kubernetes Controller Manager 配置文件
+  cat >${HOST_PATH}/cfssl/k8s/k8s-controller-manager.json <<EOF
 {
   "CN": "system:kube-controller-manager",
   "hosts": [""], 
@@ -1136,8 +1147,8 @@ cat > ${HOST_PATH}/cfssl/k8s/k8s-controller-manager.json << EOF
   ]
 }
 EOF
-# 创建 Kubernetes Scheduler 配置文件
-cat > ${HOST_PATH}/cfssl/k8s/k8s-scheduler.json << EOF
+  # 创建 Kubernetes Scheduler 配置文件
+  cat >${HOST_PATH}/cfssl/k8s/k8s-scheduler.json <<EOF
 {
   "CN": "system:kube-scheduler",
   "hosts": [""], 
@@ -1156,8 +1167,8 @@ cat > ${HOST_PATH}/cfssl/k8s/k8s-scheduler.json << EOF
   ]
 }
 EOF
-# 创建admin管理员 配置文件
-cat > ${HOST_PATH}/cfssl/k8s/k8s-apiserver-admin.json << EOF
+  # 创建admin管理员 配置文件
+  cat >${HOST_PATH}/cfssl/k8s/k8s-apiserver-admin.json <<EOF
 {
   "CN": "admin",
   "hosts": [""], 
@@ -1176,8 +1187,8 @@ cat > ${HOST_PATH}/cfssl/k8s/k8s-apiserver-admin.json << EOF
   ]
 }
 EOF
-# 创建kube-proxy 证书配置
-cat > ${HOST_PATH}/cfssl/k8s/kube-proxy.json << EOF
+  # 创建kube-proxy 证书配置
+  cat >${HOST_PATH}/cfssl/k8s/kube-proxy.json <<EOF
 {
   "CN": "system:kube-proxy",
   "hosts": [""], 
@@ -1196,288 +1207,288 @@ cat > ${HOST_PATH}/cfssl/k8s/kube-proxy.json << EOF
   ]
 }
 EOF
-# 生成 Kubernetes CA 证书和私钥
-if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem" ]]; then
-cfssl gencert -initca ${HOST_PATH}/cfssl/k8s/k8s-ca-csr.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-ca	
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL k8s-ca."
-     exit $?
-fi
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-server.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-server-key.pem" ]]; then
-# 生成 Kubernetes API Server 证书和私钥
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/k8s/k8s-apiserver.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-server
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL k8s-server."
-     exit $?
-fi
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/aggregator.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/aggregator-key.pem" ]]; then
-# 生成 Kubernetes webhook 证书和私钥
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/k8s/aggregator.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/aggregator
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL aggregator."
-     exit $?
-fi
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-controller-manager.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-controller-manager-key.pem" ]]; then
-# 生成 Kubernetes Controller Manager 证书和私钥
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/k8s/k8s-controller-manager.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-controller-manager
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL k8s-controller-manager."
-     exit $?
-fi
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-scheduler.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-scheduler-key.pem" ]]; then
-# 生成 Kubernetes Scheduler 证书和私钥
-cfssl gencert \
-    -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
-    -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
-    -config=${HOST_PATH}/cfssl/ca-config.json \
-    -profile=${CERT_PROFILE} \
-    ${HOST_PATH}/cfssl/k8s/k8s-scheduler.json | \
-    cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-scheduler
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL k8s-scheduler."
-     exit $?
-fi
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin-key.pem" ]]; then
-# 生成 Kubernetes admin管理员证书	
-cfssl gencert -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
+  # 生成 Kubernetes CA 证书和私钥
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem" ]]; then
+    cfssl gencert -initca ${HOST_PATH}/cfssl/k8s/k8s-ca-csr.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-ca
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL k8s-ca."
+      exit $?
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-server.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-server-key.pem" ]]; then
+    # 生成 Kubernetes API Server 证书和私钥
+    cfssl gencert \
+      -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
       -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
       -config=${HOST_PATH}/cfssl/ca-config.json \
       -profile=${CERT_PROFILE} \
-      ${HOST_PATH}/cfssl/k8s/k8s-apiserver-admin.json | \
-     cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL k8s-apiserver-admin."
-     exit $?
-fi 
-fi
-if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/kube-proxy.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/kube-proxy-key.pem" ]]; then    
-# 生成 kube-proxy 证书和私钥
-cfssl gencert \
-        -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
-        -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
-        -config=${HOST_PATH}/cfssl/ca-config.json \
-        -profile=${CERT_PROFILE} \
-         ${HOST_PATH}/cfssl/k8s/kube-proxy.json | \
-         cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/kube-proxy
-if [[ $? -ne 0 ]]; then
-    colorEcho ${RED} "cfssl  FATAL kube-proxy."
-     exit $?
-fi
-fi
-   return 0
+      ${HOST_PATH}/cfssl/k8s/k8s-apiserver.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-server
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL k8s-server."
+      exit $?
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/aggregator.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/aggregator-key.pem" ]]; then
+    # 生成 Kubernetes webhook 证书和私钥
+    cfssl gencert \
+      -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
+      -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
+      -config=${HOST_PATH}/cfssl/ca-config.json \
+      -profile=${CERT_PROFILE} \
+      ${HOST_PATH}/cfssl/k8s/aggregator.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/aggregator
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL aggregator."
+      exit $?
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-controller-manager.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-controller-manager-key.pem" ]]; then
+    # 生成 Kubernetes Controller Manager 证书和私钥
+    cfssl gencert \
+      -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
+      -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
+      -config=${HOST_PATH}/cfssl/ca-config.json \
+      -profile=${CERT_PROFILE} \
+      ${HOST_PATH}/cfssl/k8s/k8s-controller-manager.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-controller-manager
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL k8s-controller-manager."
+      exit $?
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-scheduler.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-scheduler-key.pem" ]]; then
+    # 生成 Kubernetes Scheduler 证书和私钥
+    cfssl gencert \
+      -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
+      -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
+      -config=${HOST_PATH}/cfssl/ca-config.json \
+      -profile=${CERT_PROFILE} \
+      ${HOST_PATH}/cfssl/k8s/k8s-scheduler.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-scheduler
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL k8s-scheduler."
+      exit $?
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin-key.pem" ]]; then
+    # 生成 Kubernetes admin管理员证书
+    cfssl gencert -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
+      -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
+      -config=${HOST_PATH}/cfssl/ca-config.json \
+      -profile=${CERT_PROFILE} \
+      ${HOST_PATH}/cfssl/k8s/k8s-apiserver-admin.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL k8s-apiserver-admin."
+      exit $?
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/kube-proxy.pem" ]] || [[ ! -e "${HOST_PATH}/cfssl/pki/k8s/kube-proxy-key.pem" ]]; then
+    # 生成 kube-proxy 证书和私钥
+    cfssl gencert \
+      -ca=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
+      -ca-key=${HOST_PATH}/cfssl/pki/k8s/k8s-ca-key.pem \
+      -config=${HOST_PATH}/cfssl/ca-config.json \
+      -profile=${CERT_PROFILE} \
+      ${HOST_PATH}/cfssl/k8s/kube-proxy.json |
+      cfssljson -bare ${HOST_PATH}/cfssl/pki/k8s/kube-proxy
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-proxy."
+      exit $?
+    fi
+  fi
+  return 0
 }
-k8sKubeConfig(){
-       colorEcho ${GREEN} "create for k8s KubeConfig."
-       if [[ ! -d "${HOST_PATH}/kubeconfig" ]]; then
-           mkdir -p  ${HOST_PATH}/kubeconfig
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi 
-       if [[ ! -n `command -v kubectl` ]]; then
-           colorEcho ${GREEN} "download kubectl FATAL kubectl "
-           exit $?  
-       fi 
-     if [[ ! -e "${HOST_PATH}/kubeconfig/admin.kubeconfig" ]]; then
-      # 创建admin管理员登录kubeconfig
-      # 设置集群参数
-      kubectl config set-cluster ${CLUSTER_NAME} \
+k8sKubeConfig() {
+  colorEcho ${GREEN} "create for k8s KubeConfig."
+  if [[ ! -d "${HOST_PATH}/kubeconfig" ]]; then
+    mkdir -p ${HOST_PATH}/kubeconfig
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ ! -n $(command -v kubectl) ]]; then
+    colorEcho ${GREEN} "download kubectl FATAL kubectl "
+    exit $?
+  fi
+  if [[ ! -e "${HOST_PATH}/kubeconfig/admin.kubeconfig" ]]; then
+    # 创建admin管理员登录kubeconfig
+    # 设置集群参数
+    kubectl config set-cluster ${CLUSTER_NAME} \
       --certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
-      --embed-certs=true  \
+      --embed-certs=true \
       --server=${KUBE_APISERVER} \
       --kubeconfig=${HOST_PATH}/kubeconfig/admin.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL admin.kubeconfig."
-         exit $?
-      fi
-      # 设置客户端认证参数
-      kubectl config set-credentials admin \
-       --client-certificate=${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin.pem \
-       --client-key=${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin-key.pem \
-       --embed-certs=true \
-       --kubeconfig=${HOST_PATH}/kubeconfig/admin.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL admin.kubeconfig."
-         exit $?
-      fi
-      # 设置上下文参数 
-      kubectl config set-context ${CLUSTER_NAME} \
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL admin.kubeconfig."
+      exit $?
+    fi
+    # 设置客户端认证参数
+    kubectl config set-credentials admin \
+      --client-certificate=${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin.pem \
+      --client-key=${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin-key.pem \
+      --embed-certs=true \
+      --kubeconfig=${HOST_PATH}/kubeconfig/admin.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL admin.kubeconfig."
+      exit $?
+    fi
+    # 设置上下文参数
+    kubectl config set-context ${CLUSTER_NAME} \
       --cluster=${CLUSTER_NAME} \
       --user=admin \
       --namespace=kube-system \
       --kubeconfig=${HOST_PATH}/kubeconfig/admin.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL admin.kubeconfig."
-         exit $?
-      fi
-      # 设置默认上下文
-      kubectl config use-context ${CLUSTER_NAME} --kubeconfig=${HOST_PATH}/kubeconfig/admin.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL admin.kubeconfig."
-         exit $?
-       fi
-      fi
-      if [[ ! -e "${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig" ]]; then
-      # 创建kube-scheduler kubeconfig 配置文件
-      # 设置集群参数
-      kubectl config set-cluster ${CLUSTER_NAME} \
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL admin.kubeconfig."
+      exit $?
+    fi
+    # 设置默认上下文
+    kubectl config use-context ${CLUSTER_NAME} --kubeconfig=${HOST_PATH}/kubeconfig/admin.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL admin.kubeconfig."
+      exit $?
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig" ]]; then
+    # 创建kube-scheduler kubeconfig 配置文件
+    # 设置集群参数
+    kubectl config set-cluster ${CLUSTER_NAME} \
       --certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
       --embed-certs=true \
       --server=${KUBE_API_KUBELET} \
       --kubeconfig=${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-scheduler.kubeconfig."
-         exit $?
-      fi
-      # 设置客户端认证参数
-      kubectl config set-credentials system:kube-scheduler \
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-scheduler.kubeconfig."
+      exit $?
+    fi
+    # 设置客户端认证参数
+    kubectl config set-credentials system:kube-scheduler \
       --client-certificate=${HOST_PATH}/cfssl/pki/k8s/k8s-scheduler.pem \
       --embed-certs=true \
       --client-key=${HOST_PATH}/cfssl/pki/k8s/k8s-scheduler-key.pem \
       --kubeconfig=${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-scheduler.kubeconfig."
-         exit $?
-      fi
-       # 设置上下文参数
-      kubectl config set-context ${CLUSTER_NAME} \
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-scheduler.kubeconfig."
+      exit $?
+    fi
+    # 设置上下文参数
+    kubectl config set-context ${CLUSTER_NAME} \
       --cluster=${CLUSTER_NAME} \
       --user=system:kube-scheduler \
       --kubeconfig=${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-scheduler.kubeconfig."
-         exit $?
-      fi
-      # 设置默认上下文
-      kubectl config use-context ${CLUSTER_NAME} --kubeconfig=${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-scheduler.kubeconfig."
-         exit $?
-        fi
-      fi
-      if [[ ! -e "${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig" ]]; then
-      # 创建kube-controller-manager kubeconfig 配置文件
-      # 设置集群参数
-      kubectl config set-cluster ${CLUSTER_NAME} \
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-scheduler.kubeconfig."
+      exit $?
+    fi
+    # 设置默认上下文
+    kubectl config use-context ${CLUSTER_NAME} --kubeconfig=${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-scheduler.kubeconfig."
+      exit $?
+    fi
+  fi
+  if [[ ! -e "${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig" ]]; then
+    # 创建kube-controller-manager kubeconfig 配置文件
+    # 设置集群参数
+    kubectl config set-cluster ${CLUSTER_NAME} \
       --certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
       --embed-certs=true \
       --server=${KUBE_API_KUBELET} \
       --kubeconfig=${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-controller-manager.kubeconfig."
-         exit $?
-      fi
-      # 设置客户端认证参数
-      kubectl config set-credentials system:kube-controller-manager \
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-controller-manager.kubeconfig."
+      exit $?
+    fi
+    # 设置客户端认证参数
+    kubectl config set-credentials system:kube-controller-manager \
       --client-certificate=${HOST_PATH}/cfssl/pki/k8s/k8s-controller-manager.pem \
       --embed-certs=true \
       --client-key=${HOST_PATH}/cfssl/pki/k8s/k8s-controller-manager-key.pem \
       --kubeconfig=${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-controller-manager.kubeconfig."
-         exit $?
-      fi
-      # 设置上下文参数
-      kubectl config set-context ${CLUSTER_NAME} \
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-controller-manager.kubeconfig."
+      exit $?
+    fi
+    # 设置上下文参数
+    kubectl config set-context ${CLUSTER_NAME} \
       --cluster=${CLUSTER_NAME} \
       --user=system:kube-controller-manager \
       --kubeconfig=${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-controller-manager.kubeconfig."
-         exit $?
-      fi
-      # 设置默认上下文
-      kubectl config use-context ${CLUSTER_NAME} --kubeconfig=${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-controller-manager.kubeconfig."
-         exit $?
-      fi
-      fi
-      # 创建kube-proxy kubeconfig 配置文件
-      # 设置集群参数
-      if [[ ! -e "${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig" ]]; then
-      kubectl config set-cluster ${CLUSTER_NAME} \
-        --certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
-        --embed-certs=true \
-        --server=${KUBE_API_KUBELET} \
-        --kubeconfig=${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-proxy.kubeconfig."
-         exit $?
-      fi
-      # 设置客户端认证参数
-          kubectl config set-credentials system:kube-proxy \
-        --client-certificate=${HOST_PATH}/cfssl/pki/k8s/kube-proxy.pem \
-        --client-key=${HOST_PATH}/cfssl/pki/k8s/kube-proxy-key.pem \
-        --embed-certs=true \
-        --kubeconfig=${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-proxy.kubeconfig."
-         exit $?
-      fi
-      # 设置上下文参数
-          kubectl config set-context default \
-        --cluster=${CLUSTER_NAME} \
-        --user=system:kube-proxy \
-        --kubeconfig=${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig 
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-proxy.kubeconfig."
-         exit $?
-      fi
-      # 设置默认上下文
-      kubectl config use-context default --kubeconfig=${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL kube-proxy.kubeconfig."
-         exit $?
-      fi
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-controller-manager.kubeconfig."
+      exit $?
     fi
-   return 0
+    # 设置默认上下文
+    kubectl config use-context ${CLUSTER_NAME} --kubeconfig=${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-controller-manager.kubeconfig."
+      exit $?
+    fi
+  fi
+  # 创建kube-proxy kubeconfig 配置文件
+  # 设置集群参数
+  if [[ ! -e "${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig" ]]; then
+    kubectl config set-cluster ${CLUSTER_NAME} \
+      --certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
+      --embed-certs=true \
+      --server=${KUBE_API_KUBELET} \
+      --kubeconfig=${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-proxy.kubeconfig."
+      exit $?
+    fi
+    # 设置客户端认证参数
+    kubectl config set-credentials system:kube-proxy \
+      --client-certificate=${HOST_PATH}/cfssl/pki/k8s/kube-proxy.pem \
+      --client-key=${HOST_PATH}/cfssl/pki/k8s/kube-proxy-key.pem \
+      --embed-certs=true \
+      --kubeconfig=${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-proxy.kubeconfig."
+      exit $?
+    fi
+    # 设置上下文参数
+    kubectl config set-context default \
+      --cluster=${CLUSTER_NAME} \
+      --user=system:kube-proxy \
+      --kubeconfig=${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-proxy.kubeconfig."
+      exit $?
+    fi
+    # 设置默认上下文
+    kubectl config use-context default --kubeconfig=${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL kube-proxy.kubeconfig."
+      exit $?
+    fi
+  fi
+  return 0
 }
-etcdConfig(){
-       colorEcho ${GREEN} "create for etcd Config."
-       # 创建 etcd playbook 目录
-       if [[ ! -d "${HOST_PATH}/roles/etcd/" ]]; then
-          mkdir -p ${HOST_PATH}/roles/etcd/{files,tasks,templates}
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi
-     if [[ -e "${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz" ]]; then
-        if [[ ! -e "${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64/etcd" ]] || [[ ! -e "${HOST_PATH}/roles/etcd/files/bin/etcd" ]]; then
-       # cp 二进制文件及ssl 文件到 ansible 目录
-        tar -xf ${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz -C ${DOWNLOAD_PATH}
-        mkdir -p ${HOST_PATH}/roles/etcd/files/{ssl,bin}
-        \cp -pdr ${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64/{etcd,etcdctl} ${HOST_PATH}/roles/etcd/files/bin
-         \cp -pdr ${HOST_PATH}/cfssl/pki/etcd/*.pem ${HOST_PATH}/roles/etcd/files/ssl
-        fi
-    else
-      colorEcho ${RED} "etcd no download."
-      exit 1
-    fi    
-#创建etcd playbook
-cat > ${HOST_PATH}/roles/etcd/tasks/main.yml << EOF
+etcdConfig() {
+  colorEcho ${GREEN} "create for etcd Config."
+  # 创建 etcd playbook 目录
+  if [[ ! -d "${HOST_PATH}/roles/etcd/" ]]; then
+    mkdir -p ${HOST_PATH}/roles/etcd/{files,tasks,templates}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ -e "${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz" ]]; then
+    if [[ ! -e "${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64/etcd" ]] || [[ ! -e "${HOST_PATH}/roles/etcd/files/bin/etcd" ]]; then
+      # cp 二进制文件及ssl 文件到 ansible 目录
+      tar -xf ${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz -C ${DOWNLOAD_PATH}
+      mkdir -p ${HOST_PATH}/roles/etcd/files/{ssl,bin}
+      \cp -pdr ${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64/{etcd,etcdctl} ${HOST_PATH}/roles/etcd/files/bin
+      \cp -pdr ${HOST_PATH}/cfssl/pki/etcd/*.pem ${HOST_PATH}/roles/etcd/files/ssl
+    fi
+  else
+    colorEcho ${RED} "etcd no download."
+    exit 1
+  fi
+  #创建etcd playbook
+  cat >${HOST_PATH}/roles/etcd/tasks/main.yml <<EOF
 - name: create groupadd etcd
   group: name=etcd
 - name: create name etcd
@@ -1548,8 +1559,8 @@ cat > ${HOST_PATH}/roles/etcd/tasks/main.yml << EOF
     name: etcd
     state: restarted
 EOF
-# 创建etcd 启动配置文件
-cat > ${HOST_PATH}/roles/etcd/templates/etcd << EOF
+  # 创建etcd 启动配置文件
+  cat >${HOST_PATH}/roles/etcd/templates/etcd <<EOF
 ETCD_OPTS="--name={{ ansible_hostname }} \\
            --data-dir=${ETCD_DATA_DIR} \\
            --wal-dir=${ETCD_WAL_DIR} \\
@@ -1576,8 +1587,8 @@ ETCD_OPTS="--name={{ ansible_hostname }} \\
            --enable-v2=true \\
            --peer-trusted-ca-file=${ETCD_PATH}/ssl/{{ ca }}.pem"
 EOF
-# 创建etcd 启动文件
-cat > ${HOST_PATH}/roles/etcd/templates/etcd.service << EOF
+  # 创建etcd 启动文件
+  cat >${HOST_PATH}/roles/etcd/templates/etcd.service <<EOF
 [Unit]
 Description=Etcd Server
 After=network.target
@@ -1601,7 +1612,7 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 EOF
-cat > ${HOST_PATH}/etcd.yml << EOF
+  cat >${HOST_PATH}/etcd.yml <<EOF
 - hosts: all
   user: root
   vars:
@@ -1613,8 +1624,8 @@ cat > ${HOST_PATH}/etcd.yml << EOF
   roles:
     - etcd
 EOF
-if [ ${K8S_EVENTS} == "ON" ]; then
-cat > ${HOST_PATH}/events-etcd.yml << EOF
+  if [ ${K8S_EVENTS} == "ON" ]; then
+    cat >${HOST_PATH}/events-etcd.yml <<EOF
 - hosts: all
   user: root
   vars:
@@ -1626,56 +1637,35 @@ cat > ${HOST_PATH}/events-etcd.yml << EOF
   roles:
     - etcd
 EOF
-fi
-   return 0   
+  fi
+  return 0
 }
-KubeApiserverConfig(){
-       colorEcho ${GREEN} "create for kube-apiserver Config."
-       # 创建 kube-apiserver playbook 目录
-       if [[ ! -d "${HOST_PATH}/roles/kube-apiserver/" ]]; then
-          mkdir -p ${HOST_PATH}/roles/kube-apiserver/{files,tasks,templates}
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi
-     if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-        if [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-apiserver" ]] || [[ ! -e "${HOST_PATH}/roles/kube-apiserver/files/bin/kube-apiserver" ]]; then
-    # cp 二进制文件及ssl 文件到 ansible 目录
-        mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
-        tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
-        mkdir -p ${HOST_PATH}/roles/kube-apiserver/files/{ssl,bin,config}
-        mkdir -p ${HOST_PATH}/roles/kube-apiserver/files/ssl/{etcd,k8s}
-        \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-apiserver ${HOST_PATH}/roles/kube-apiserver/files/bin/
-        \cp -pdr ${HOST_PATH}/cfssl/pki/etcd/{etcd-client*.pem,etcd-ca.pem} ${HOST_PATH}/roles/kube-apiserver/files/ssl/etcd
-        \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-server*.pem,k8s-ca*.pem,aggregator*.pem} ${HOST_PATH}/roles/kube-apiserver/files/ssl/k8s  
-       fi
-    else
-      colorEcho ${RED} "kubernetes no download."
-      exit 1
-    fi  
-   if [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "false" ]] && [[ `expr ${KUBERNETES_VER} \< 1.19.0` -eq 1 ]]; then
-      FEATURE_GATES=`echo -e "--feature-gates=DynamicAuditing=true \\\\\\\\\n        --event-ttl=1h"`
-      AUDIT_DYNAMIC_CONFIGURATION=`echo -e "--audit-dynamic-configuration \\\\\\\\\n        --audit-log-maxage=30"`
-      elif [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.19.0` -eq 1 ]]; then
-      FEATURE_GATES=`echo -e "--feature-gates=DynamicAuditing=true,${FEATURE_GATES_OPT} \\\\\\\\\n        --event-ttl=1h"`
-      AUDIT_DYNAMIC_CONFIGURATION=`echo -e "--audit-dynamic-configuration \\\\\\\\\n        --audit-log-maxage=30"`
-      elif [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \< 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.19.0` -eq 1 ]]; then
-      FEATURE_GATES=`echo -e "--feature-gates=DynamicAuditing=true \\\\\\\\\n        --event-ttl=1h"`
-      AUDIT_DYNAMIC_CONFIGURATION=`echo -e "--audit-dynamic-configuration \\\\\\\\\n        --audit-log-maxage=30"`
-      elif [[ "$DYNAMICAUDITING" == "false" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      AUDIT_DYNAMIC_CONFIGURATION="--audit-log-maxage=30"
-      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n        --event-ttl=1h"`
-      elif  [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "false" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      AUDIT_DYNAMIC_CONFIGURATION="--audit-log-maxage=30"
-      elif  [[ "$DYNAMICAUDITING" == "true" ]] && [[ "$SERVICETOPOLOGY" == "true" ]] && [[ `expr ${KUBERNETES_VER} \>= 1.19.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      AUDIT_DYNAMIC_CONFIGURATION="--audit-log-maxage=30"
-      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n        --event-ttl=1h"`
-      else
-      FEATURE_GATES="--event-ttl=1h"
-      AUDIT_DYNAMIC_CONFIGURATION="--audit-log-maxage=30"
-   fi
-    if [[ "$DYNAMICAUDITING" == "true" ]]; then
-# 创建审计策略文件
-cat > ${HOST_PATH}/roles/kube-apiserver/files/config/audit-policy.yaml << EOF
+KubeApiserverConfig() {
+  colorEcho ${GREEN} "create for kube-apiserver Config."
+  # 创建 kube-apiserver playbook 目录
+  if [[ ! -d "${HOST_PATH}/roles/kube-apiserver/" ]]; then
+    mkdir -p ${HOST_PATH}/roles/kube-apiserver/{files,tasks,templates}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
+    if [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-apiserver" ]] || [[ ! -e "${HOST_PATH}/roles/kube-apiserver/files/bin/kube-apiserver" ]]; then
+      # cp 二进制文件及ssl 文件到 ansible 目录
+      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
+      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
+      mkdir -p ${HOST_PATH}/roles/kube-apiserver/files/{ssl,bin,config}
+      mkdir -p ${HOST_PATH}/roles/kube-apiserver/files/ssl/{etcd,k8s}
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-apiserver ${HOST_PATH}/roles/kube-apiserver/files/bin/
+      \cp -pdr ${HOST_PATH}/cfssl/pki/etcd/{etcd-client*.pem,etcd-ca.pem} ${HOST_PATH}/roles/kube-apiserver/files/ssl/etcd
+      \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-server*.pem,k8s-ca*.pem,aggregator*.pem} ${HOST_PATH}/roles/kube-apiserver/files/ssl/k8s
+    fi
+  else
+    colorEcho ${RED} "kubernetes no download."
+    exit 1
+  fi
+  if [[ "$DYNAMICAUDITING" == "true" ]]; then
+    # 创建审计策略文件
+    cat >${HOST_PATH}/roles/kube-apiserver/files/config/audit-policy.yaml <<EOF
 apiVersion: audit.k8s.io/v1beta1
 kind: Policy
 rules:
@@ -1864,34 +1854,16 @@ rules:
     omitStages:
       - RequestReceived
 EOF
-AUDIT_POLICY_FILE=`echo -e "--audit-policy-file=${K8S_PATH}/config/audit-policy.yaml \\\\\\\\\n        --audit-log-truncate-enabled"`    
-      else
-AUDIT_POLICY_FILE="--audit-log-truncate-enabled"
-      fi
-if [[ `expr ${KUBERNETES_VER} \>= 1.20.0` -eq 1 ]]; then
-ENABLE_ADMISSION_PLUGINS_OPT=${ENABLE_ADMISSION_PLUGINS}
-SERVICE_ACCOUNT_ISSUER_OPT=`echo -e "--service-account-issuer=${SERVICE_ACCOUNT_ISSUER} \\\\\\\\\n        --service-account-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem \\\\\\\\\n        --requestheader-allowed-names=aggregator"`
-else
-ENABLE_ADMISSION_PLUGINS_OPT=${ENABLE_ADMISSION_PLUGINS},PodPreset
-SERVICE_ACCOUNT_ISSUER_OPT="--requestheader-allowed-names=aggregator"
-fi 
-if [[ `expr ${KUBERNETES_VER} \>= 1.21.0` -eq 1 ]]; then
-DISABLE_ADMISSION_PLUGINS_OPT=${DISABLE_ADMISSION_PLUGINS}
-else
-DISABLE_ADMISSION_PLUGINS_OPT=DenyEscalatingExec,${DISABLE_ADMISSION_PLUGINS}
-fi  
-if [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-KUBELET_HTTPS=`echo -e "--kubelet-https \\\\\\\\\n        --profiling"`
-else
-KUBELET_HTTPS="--profiling"
-fi
-# 创建 kube-apiserver 启动配置文件
-cat > ${HOST_PATH}/roles/kube-apiserver/templates/kube-apiserver << EOF
+    AUDIT_POLICY_FILE=$(echo -e "--audit-policy-file=${K8S_PATH}/config/audit-policy.yaml \\\\\n        --audit-log-truncate-enabled")
+  else
+    AUDIT_POLICY_FILE="--audit-log-truncate-enabled"
+  fi
+  # 创建 kube-apiserver 启动配置文件
+  cat >${HOST_PATH}/roles/kube-apiserver/templates/kube-apiserver <<EOF
 KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --bind-address={{ $KUBELET_IPV4 }} \\
         --advertise-address={{ $KUBELET_IPV4 }} \\
         --secure-port=${SECURE_PORT} \\
-        --insecure-port=0 \\
         --service-cluster-ip-range=${SERVICE_CIDR} \\
         --service-node-port-range=${NODE_PORT_RANGE} \\
         --etcd-cafile=${K8S_PATH}/ssl/etcd/etcd-ca.pem \\
@@ -1908,32 +1880,33 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --requestheader-client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
         --proxy-client-cert-file=${K8S_PATH}/ssl/k8s/aggregator.pem \\
         --proxy-client-key-file=${K8S_PATH}/ssl/k8s/aggregator-key.pem \\
-        ${SERVICE_ACCOUNT_ISSUER_OPT} \\
+        --service-account-issuer=${SERVICE_ACCOUNT_ISSUER} \\
+        --service-account-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem \\
+        --requestheader-allowed-names=aggregator \\
         --requestheader-group-headers=X-Remote-Group \\
         --requestheader-extra-headers-prefix=X-Remote-Extra- \\
         --requestheader-username-headers=X-Remote-User \\
         --enable-aggregator-routing=true \\
         --anonymous-auth=false \\
-        --experimental-encryption-provider-config=${K8S_PATH}/config/encryption-config.yaml \\
+        --encryption-provider-config=${K8S_PATH}/config/encryption-config.yaml \\
         --enable-admission-plugins=${ENABLE_ADMISSION_PLUGINS_OPT} \\
         --disable-admission-plugins=${DISABLE_ADMISSION_PLUGINS_OPT} \\
         --cors-allowed-origins=.* \\
-        --enable-swagger-ui \\
         --runtime-config=${RUNTIME_CONFIG} \\
         --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname \\
         --authorization-mode=Node,RBAC \\
         --allow-privileged=true \\
         --apiserver-count=${APISERVER_COUNT} \\
-        ${AUDIT_DYNAMIC_CONFIGURATION} \\
+        --audit-log-maxage=30 \\
         --audit-log-maxbackup=3 \\
         --audit-log-maxsize=100 \\
         --default-not-ready-toleration-seconds=${DEFAULT_NOT_READY_TOLERATION_SECONDS} \\
         --default-unreachable-toleration-seconds=${DEFAULT_UNREACHABLE_TOLERATION_SECONDS} \\
         ${AUDIT_POLICY_FILE} \\
         --audit-log-path=${K8S_PATH}/log/api-server-audit.log \\
-        ${KUBELET_HTTPS} \\
+        --profiling \\
         --http2-max-streams-per-connection=10000 \\
-        ${FEATURE_GATES} \\
+        --event-ttl=1h \\
         --enable-bootstrap-token-auth=true \\
         --alsologtostderr=${ALSOLOGTOSTDERR} \\
         --log-dir=${K8S_PATH}/log \\
@@ -1941,11 +1914,10 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --tls-cipher-suites=${TLS_CIPHER} \\
         --endpoint-reconciler-type=lease \\
         --max-mutating-requests-inflight=${MAX_MUTATING_REQUESTS_INFLIGHT} \\
-        --max-requests-inflight=${MAX_REQUESTS_INFLIGHT} \\
-        --target-ram-mb=${TARGET_RAM_MB}"
+        --max-requests-inflight=${MAX_REQUESTS_INFLIGHT}"
 EOF
-# 创建 kube-apiserver 启动文件
-cat > ${HOST_PATH}/roles/kube-apiserver/templates/kube-apiserver.service << EOF
+  # 创建 kube-apiserver 启动文件
+  cat >${HOST_PATH}/roles/kube-apiserver/templates/kube-apiserver.service <<EOF
 [Unit]
 Description=Kubernetes API Server
 Documentation=https://github.com/kubernetes/kubernetes
@@ -1965,9 +1937,9 @@ User=k8s
 [Install]
 WantedBy=multi-user.target
 EOF
-if [[ ! -e ${HOST_PATH}/roles/kube-apiserver/files/config/encryption-config.yaml ]]; then
-# 生成encryption-config.yaml
-cat > ${HOST_PATH}/roles/kube-apiserver/files/config/encryption-config.yaml << EOF
+  if [[ ! -e ${HOST_PATH}/roles/kube-apiserver/files/config/encryption-config.yaml ]]; then
+    # 生成encryption-config.yaml
+    cat >${HOST_PATH}/roles/kube-apiserver/files/config/encryption-config.yaml <<EOF
 kind: EncryptionConfig
 apiVersion: v1
 resources:
@@ -1980,9 +1952,9 @@ resources:
               secret: ${ENCRYPTION_KEY}
       - identity: {}
 EOF
-fi
-# 创建kube-apiserver playbook
-cat > ${HOST_PATH}/roles/kube-apiserver/tasks/main.yml << EOF
+  fi
+  # 创建kube-apiserver playbook
+  cat >${HOST_PATH}/roles/kube-apiserver/tasks/main.yml <<EOF
 - name: create groupadd k8s
   group: name=k8s
 - name: create name k8s
@@ -2038,23 +2010,23 @@ cat > ${HOST_PATH}/roles/kube-apiserver/tasks/main.yml << EOF
     name: kube-apiserver
     state: restarted
 EOF
-cat > ${HOST_PATH}/kube-apiserver.yml << EOF
+  cat >${HOST_PATH}/kube-apiserver.yml <<EOF
 - hosts: all
   user: root
   roles:
     - kube-apiserver
 EOF
-   return 0 
+  return 0
 }
-kubeHaProxy(){
-       colorEcho ${GREEN} "create for kube-Ha-Proxy Config."
-       # 创建 kube-apiserver playbook 目录
-       if [[ ! -d "${HOST_PATH}/roles/kube-ha-proxy/" ]]; then
-          mkdir -p ${HOST_PATH}/roles/kube-ha-proxy/{files,tasks}
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi
-cat > ${HOST_PATH}/roles/kube-ha-proxy/files/kube-ha-proxy.yaml << EOF
+kubeHaProxy() {
+  colorEcho ${GREEN} "create for kube-Ha-Proxy Config."
+  # 创建 kube-apiserver playbook 目录
+  if [[ ! -d "${HOST_PATH}/roles/kube-ha-proxy/" ]]; then
+    mkdir -p ${HOST_PATH}/roles/kube-ha-proxy/{files,tasks}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  cat >${HOST_PATH}/roles/kube-ha-proxy/files/kube-ha-proxy.yaml <<EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -2087,8 +2059,8 @@ spec:
   priorityClassName: system-cluster-critical
 status: {}
 EOF
-# 创建kube-proxy ansible
-cat > ${HOST_PATH}/roles/kube-ha-proxy/tasks/main.yml << EOF
+  # 创建kube-proxy ansible
+  cat >${HOST_PATH}/roles/kube-ha-proxy/tasks/main.yml <<EOF
 - name: Create ${POD_MANIFEST_PATH}
   file:
     path: "${POD_MANIFEST_PATH}"
@@ -2104,37 +2076,37 @@ cat > ${HOST_PATH}/roles/kube-ha-proxy/tasks/main.yml << EOF
   raw: ${PULL_IMAGES} pull ${HA_PROXY_IMAGE} && ${PULL_IMAGES} pull ${POD_INFRA_CONTAINER_IMAGE}
   ignore_errors: True
 EOF
-cat > ${HOST_PATH}/kube-ha-proxy.yml << EOF
+  cat >${HOST_PATH}/kube-ha-proxy.yml <<EOF
 - hosts: all
   user: root
   roles:
     - kube-ha-proxy
 EOF
-return 0
+  return 0
 }
-packageSysctl(){
-       colorEcho ${GREEN} "create for Package-Sysctl Config."
-       # 创建 kube-apiserver playbook 目录
-       if [[ ! -d "${HOST_PATH}/roles/package-sysctl/" ]]; then
-          mkdir -p ${HOST_PATH}/roles/package-sysctl/{templates,tasks}
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi
-cat > ${HOST_PATH}/roles/package-sysctl/templates/k8s-debian-modules.conf << EOF
+packageSysctl() {
+  colorEcho ${GREEN} "create for Package-Sysctl Config."
+  # 创建 kube-apiserver playbook 目录
+  if [[ ! -d "${HOST_PATH}/roles/package-sysctl/" ]]; then
+    mkdir -p ${HOST_PATH}/roles/package-sysctl/{templates,tasks}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  cat >${HOST_PATH}/roles/package-sysctl/templates/k8s-debian-modules.conf <<EOF
 br_netfilter
 nf_conntrack
 EOF
-cat > ${HOST_PATH}/roles/package-sysctl/templates/k8s-redhat-modules.conf << EOF
+  cat >${HOST_PATH}/roles/package-sysctl/templates/k8s-redhat-modules.conf <<EOF
 br_netfilter
 nf_conntrack_ipv4
 EOF
-cat > ${HOST_PATH}/roles/package-sysctl/templates/k8s-ipvs-modules.conf << EOF
+  cat >${HOST_PATH}/roles/package-sysctl/templates/k8s-ipvs-modules.conf <<EOF
 ip_vs
 ip_vs_rr
 ip_vs_wrr
 ip_vs_sh
 EOF
-cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
+  cat >${HOST_PATH}/roles/package-sysctl/tasks/main.yml <<EOF
 - name: Get Kernel version
   shell: uname -r | egrep '^[0-9]*' -o
   register: kernel_shell_output
@@ -2676,37 +2648,39 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
     reboot_timeout: 3600
   when: ubuntu_upack_source.changed or redhat_upack_source.changed or suse_upack_source.changed
 EOF
-cat > ${HOST_PATH}/package-sysctl.yml << EOF
+  cat >${HOST_PATH}/package-sysctl.yml <<EOF
 - hosts: all
   user: root
   roles:
     - package-sysctl
 EOF
-return 0
+  return 0
 }
-runtimeConfig(){
-         if [ ${RUNTIME} == "DOCKER" ]; then
-                 colorEcho ${GREEN} "create for docker Config."
-                 # 创建 docker playbook 目录
-             if [[ ! -d "${HOST_PATH}/roles/docker/" ]]; then
-                    mkdir -p ${HOST_PATH}/roles/docker/{files,tasks,templates}
-                 else
-                     colorEcho ${GREEN} '文件夹已经存在'
-             fi
-             if [[ -e "$DOWNLOAD_PATH/docker-${DOCKER_VERSION}.tgz" ]]|| [[ ! -e "${HOST_PATH}/roles/docker/files/bin/docker" ]]; then
-                 if [[ ! -e "$DOWNLOAD_PATH/docker-${DOCKER_VERSION}/docker/docker" ]] || [[ ! -e "${HOST_PATH}/roles/docker/files/bin/docker" ]]; then
-              # cp 二进制 文件到 ansible 目录
-                 mkdir -p ${HOST_PATH}/roles/docker/files/bin
-                 mkdir -p ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}
-                 tar -xf ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}.tgz -C ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}
-                 \cp -pdr ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}/docker/* ${HOST_PATH}/roles/docker/files/bin/
-                 fi
-            else
-                colorEcho ${RED} "docker no download."
-                exit 1
-            fi
-      #docker 二进制安装playbook　
-cat > ${HOST_PATH}/roles/docker/tasks/main.yml << EOF
+runtimeConfig() {
+  if [ ${RUNTIME} == "DOCKER" ]; then
+    colorEcho ${GREEN} "create for docker Config."
+    # 创建 docker playbook 目录
+    if [[ ! -d "${HOST_PATH}/roles/docker/" ]]; then
+      mkdir -p ${HOST_PATH}/roles/docker/{files,tasks,templates}
+    else
+      colorEcho ${GREEN} '文件夹已经存在'
+    fi
+    if [[ -e "$DOWNLOAD_PATH/docker-${DOCKER_VERSION}.tgz" ]] || [[ ! -e "${HOST_PATH}/roles/docker/files/bin/docker" ]]; then
+      if [[ ! -e "$DOWNLOAD_PATH/docker-${DOCKER_VERSION}/docker/docker" ]] || [[ ! -e "${HOST_PATH}/roles/docker/files/bin/docker" ]]; then
+        # cp 二进制 文件到 ansible 目录
+        mkdir -p ${HOST_PATH}/roles/docker/files/bin
+        mkdir -p ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}
+        tar -xf ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}.tgz -C ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}
+        tar -xf ${DOWNLOAD_PATH}/cri-dockerd-${CRI_DOCKER_VERSION}-linux-amd64.tar.gz -C $DOWNLOAD_PATH
+        \cp -pdr ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}/docker/* ${HOST_PATH}/roles/docker/files/bin/
+        \cp -pdr $DOWNLOAD_PATH/cri-dockerd ${HOST_PATH}/roles/docker/files/bin/cri-dockerd
+      fi
+    else
+      colorEcho ${RED} "docker no download."
+      exit 1
+    fi
+    #docker 二进制安装playbook
+    cat >${HOST_PATH}/roles/docker/tasks/main.yml <<EOF
 - name: btrfs
   shell: 'mount |grep \\${TOTAL_PATH}| grep btrfs'
   ignore_errors: yes
@@ -2823,6 +2797,8 @@ cat > ${HOST_PATH}/roles/docker/tasks/main.yml << EOF
       - containerd.service
       - docker.socket
       - docker.service
+      - cri-docker.service
+      - cri-docker.socket
 - name: Reload service daemon-reload
   shell: systemctl daemon-reload
 - name: Enable service docker, and not touch the state
@@ -2833,9 +2809,17 @@ cat > ${HOST_PATH}/roles/docker/tasks/main.yml << EOF
   service:
     name: docker
     state: restarted
+- name: Enable service cri-docker, and not touch the state
+  service:
+    name: cri-docker
+    enabled: yes
+- name: Start service cri-docker, if not restarted
+  service:
+    name: cri-docker
+    state: restarted 
 EOF
-# docker 配置文件生成　
-cat > ${HOST_PATH}/roles/docker/templates/daemon.json << EOF
+    # docker 配置文件生成
+    cat >${HOST_PATH}/roles/docker/templates/daemon.json <<EOF
 {
     "max-concurrent-downloads": ${MAX_CONCURRENT_DOWNLOADS},
     "data-root": "/var/lib/docker",
@@ -2880,13 +2864,13 @@ cat > ${HOST_PATH}/roles/docker/templates/daemon.json << EOF
     }
 }
 EOF
-# 生成containerd 启动服务文件
-if [ "${DOCKER_BIN_PATH}" == "/usr/bin" ]; then
-        ENVIRONMENT_PATH=""
-else
-        ENVIRONMENT_PATH="Environment=PATH=${DOCKER_BIN_PATH}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin"
-fi
-cat > ${HOST_PATH}/roles/docker/templates/containerd.service << EOF
+    # 生成containerd 启动服务文件
+    if [ "${DOCKER_BIN_PATH}" == "/usr/bin" ]; then
+      ENVIRONMENT_PATH=""
+    else
+      ENVIRONMENT_PATH="Environment=PATH=${DOCKER_BIN_PATH}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin"
+    fi
+    cat >${HOST_PATH}/roles/docker/templates/containerd.service <<EOF
 [Unit]
 Description=containerd container runtime
 Documentation=https://containerd.io
@@ -2908,8 +2892,8 @@ TasksMax=infinity
 [Install]
 WantedBy=multi-user.target
 EOF
-# 生成docker.socket 文件
-cat > ${HOST_PATH}/roles/docker/templates/docker.socket << EOF
+    # 生成docker.socket 文件
+    cat >${HOST_PATH}/roles/docker/templates/docker.socket <<EOF
 [Unit]
 Description=Docker Socket for the API
 PartOf=docker.service
@@ -2923,8 +2907,68 @@ SocketGroup=docker
 [Install]
 WantedBy=sockets.target
 EOF
-# 生成docker 启动文件
-cat > ${HOST_PATH}/roles/docker/templates/docker.service << EOF
+    # 生成 cri docker socket 文件
+    cat >${HOST_PATH}/roles/docker/templates/cri-docker.socket <<EOF
+[Unit]
+Description=CRI Docker Socket for the API
+PartOf=cri-docker.service
+
+[Socket]
+ListenStream=${RUN_DOCKER_SOCK}/cri-dockerd.sock
+SocketMode=0660
+SocketUser=root
+SocketGroup=docker
+
+[Install]
+WantedBy=sockets.target
+EOF
+    # 生成cri-docker.service 启动文件
+    cat >${HOST_PATH}/roles/docker/templates/cri-docker.service <<EOF
+[Unit]
+Description=CRI Interface for Docker Application Container Engine
+Documentation=https://docs.mirantis.com
+After=network-online.target firewalld.service docker.service
+Wants=network-online.target
+Requires=cri-docker.socket
+
+[Service]
+Type=notify
+${ENVIRONMENT_PATH}
+ExecStart=${DOCKER_BIN_PATH}/cri-dockerd --container-runtime-endpoint=${CONTAINER_RUNTIME_ENDPOINT} --network-plugin=cni --cni-bin-dir=${CNI_BIN_DIR} \\
+          --cni-conf-dir=${CNI_CONF_DIR} --image-pull-progress-deadline=${IMAGE_PULL_PROGRESS_DEADLINE} --pod-infra-container-image=${POD_INFRA_CONTAINER_IMAGE} \\
+          --docker-endpoint=unix:///var/run/docker.sock --cri-dockerd-root-directory=/var/lib/docker
+ExecReload=/bin/kill -s HUP \$MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+
+# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
+# Both the old, and new location are accepted by systemd 229 and up, so using the old location
+# to make them work for either version of systemd.
+StartLimitBurst=3
+
+# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+# this option work for either version of systemd.
+StartLimitInterval=60s
+
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+
+# Comment TasksMax if your systemd version does not support it.
+# Only systemd 226 and above support this option.
+TasksMax=infinity
+Delegate=yes
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    # 生成docker 启动文件
+    cat >${HOST_PATH}/roles/docker/templates/docker.service <<EOF
 [Unit]
 Description=Docker Application Container Engine
 Documentation=https://docs.docker.com
@@ -2974,43 +3018,43 @@ KillMode=process
 [Install]
 WantedBy=multi-user.target
 EOF
-cat > ${HOST_PATH}/docker.yml << EOF
+    cat >${HOST_PATH}/docker.yml <<EOF
 - hosts: all
   user: root
   roles:
     - docker
 EOF
-       return 0
-             elif [ ${RUNTIME} == "CONTAINERD" ]; then
-                 colorEcho ${GREEN} "create for containerd Config."
-                 # 创建 containerd playbook 目录
-             if [[ ! -d "${HOST_PATH}/roles/containerd/" ]]; then
-                    mkdir -p ${HOST_PATH}/roles/containerd/{files,tasks,templates}
-                 else
-                     colorEcho ${GREEN} '文件夹已经存在'
-             fi
-             if [[ -e "$DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz" ]]; then
-                 if [[ ! -e "$DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64/bin/containerd" ]] || [[ ! -e "${HOST_PATH}/roles/containerd/files/bin/containerd" ]]; then
-              # cp 二进制 文件到 ansible 目录
-                 mkdir -p $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64
-                 tar -xf $DOWNLOAD_PATH/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz -C $DOWNLOAD_PATH
-                 tar -xf $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz -C $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64
-                 \cp -pdr $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64/bin ${HOST_PATH}/roles/containerd/files/
-                 \cp -pdr $DOWNLOAD_PATH/runc ${HOST_PATH}/roles/containerd/files/bin
-                 \cp -pdr $DOWNLOAD_PATH/crictl ${HOST_PATH}/roles/containerd/files/crictl
-                 fi
-            else
-                colorEcho ${RED} "containerd no download."
-                exit 1
-            fi
+    return 0
+  elif [ ${RUNTIME} == "CONTAINERD" ]; then
+    colorEcho ${GREEN} "create for containerd Config."
+    # 创建 containerd playbook 目录
+    if [[ ! -d "${HOST_PATH}/roles/containerd/" ]]; then
+      mkdir -p ${HOST_PATH}/roles/containerd/{files,tasks,templates}
+    else
+      colorEcho ${GREEN} '文件夹已经存在'
+    fi
+    if [[ -e "$DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz" ]]; then
+      if [[ ! -e "$DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64/bin/containerd" ]] || [[ ! -e "${HOST_PATH}/roles/containerd/files/bin/containerd" ]]; then
+        # cp 二进制 文件到 ansible 目录
+        mkdir -p $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64
+        tar -xf $DOWNLOAD_PATH/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz -C $DOWNLOAD_PATH
+        tar -xf $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz -C $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64
+        \cp -pdr $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64/bin ${HOST_PATH}/roles/containerd/files/
+        \cp -pdr $DOWNLOAD_PATH/runc-${RUNC_VERSION} ${HOST_PATH}/roles/containerd/files/bin/runc
+        \cp -pdr $DOWNLOAD_PATH/crictl ${HOST_PATH}/roles/containerd/files/crictl
+      fi
+    else
+      colorEcho ${RED} "containerd no download."
+      exit 1
+    fi
 
-if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]];then
-CONTAINER_CGROUP="false"
-elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]];then
-CONTAINER_CGROUP="true"
-fi            
-# 生成containerd 配置文件
-cat > ${HOST_PATH}/roles/containerd/templates/config.toml << EOF
+    if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]]; then
+      CONTAINER_CGROUP="false"
+    elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]]; then
+      CONTAINER_CGROUP="true"
+    fi
+    # 生成containerd 配置文件
+    cat >${HOST_PATH}/roles/containerd/templates/config.toml <<EOF
 [plugins.opt]
 path = "${CONTAINERD_PATH}"
 [plugins.cri]
@@ -3054,8 +3098,8 @@ max_concurrent_downloads = ${MAX_CONCURRENT_DOWNLOADS}
 [plugins."io.containerd.runtime.v2.task"]
   platforms = ["linux/amd64"]
 EOF
-# containerd 启动文件创建
-cat > ${HOST_PATH}/roles/containerd/templates/containerd.service << EOF
+    # containerd 启动文件创建
+    cat >${HOST_PATH}/roles/containerd/templates/containerd.service <<EOF
 [Unit]
 Description=Lightweight Kubernetes
 Documentation=https://containerd.io
@@ -3087,8 +3131,8 @@ RestartSec=5s
 [Install]
 WantedBy=multi-user.target
 EOF
-# crictl 配置
-cat > ${HOST_PATH}/roles/containerd/files/crictl.yaml << EOF
+    # crictl 配置
+    cat >${HOST_PATH}/roles/containerd/files/crictl.yaml <<EOF
   runtime-endpoint: unix://${RUN_CONTAINERD_SOCK}/containerd.sock
   image-endpoint: unix://${RUN_CONTAINERD_SOCK}/containerd.sock
   timeout: 10
@@ -3096,7 +3140,7 @@ cat > ${HOST_PATH}/roles/containerd/files/crictl.yaml << EOF
   pull-image-on-create: true
   disable-pull-on-run: false
 EOF
-cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
+    cat >${HOST_PATH}/roles/containerd/tasks/main.yml <<EOF
 - name: btrfs
   shell: 'mount |grep \\${TOTAL_PATH}| grep btrfs'
   ignore_errors: yes
@@ -3210,36 +3254,36 @@ cat > ${HOST_PATH}/roles/containerd/tasks/main.yml << EOF
     name: containerd
     state: restarted 
 EOF
-cat > ${HOST_PATH}/containerd.yml << EOF
+    cat >${HOST_PATH}/containerd.yml <<EOF
 - hosts: all
   user: root
   roles:
     - containerd
 EOF
-    return 0    
-             elif [ ${RUNTIME} == "CRIO" ]; then
-                 colorEcho ${GREEN} "create for crio Config."
-                 # 创建 containerd playbook 目录
-             if [[ ! -d "${HOST_PATH}/roles/crio/" ]]; then
-                    mkdir -p ${HOST_PATH}/roles/crio/{files,tasks,templates}
-                 else
-                     colorEcho ${GREEN} '文件夹已经存在'
-             fi
-             if [[ -e "$DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz" ]]; then
-                 if [[ ! -e "$DOWNLOAD_PATH/crio-${CRIO_VERSION}/bin/crio" ]] || [[ ! -e "${HOST_PATH}/roles/crio/files/bin/crio" ]]; then
-                 mkdir -p ${DOWNLOAD_PATH}/crio-${CRIO_VERSION}
-              # cp 二进制 文件到 ansible 目录
-                 tar -xf $DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/crio-${CRIO_VERSION}
-                 \cp -pdr $DOWNLOAD_PATH/crio-${CRIO_VERSION}/cri-o/bin ${HOST_PATH}/roles/crio/files/
-                 mv -f ${HOST_PATH}/roles/crio/files/bin/crictl  ${HOST_PATH}/roles/crio/files
-                 \cp -pdr $DOWNLOAD_PATH/crio-${CRIO_VERSION}/cri-o/etc/crio-umount.conf ${HOST_PATH}/roles/crio/templates/crio-umount.conf
-                 fi
-            else
-                colorEcho ${RED} "crio no download."
-                exit 1
-            fi
-# 生成 crio 配置文件
-cat > ${HOST_PATH}/roles/crio/templates/crio.conf << EOF
+    return 0
+  elif [ ${RUNTIME} == "CRIO" ]; then
+    colorEcho ${GREEN} "create for crio Config."
+    # 创建 containerd playbook 目录
+    if [[ ! -d "${HOST_PATH}/roles/crio/" ]]; then
+      mkdir -p ${HOST_PATH}/roles/crio/{files,tasks,templates}
+    else
+      colorEcho ${GREEN} '文件夹已经存在'
+    fi
+    if [[ -e "$DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz" ]]; then
+      if [[ ! -e "$DOWNLOAD_PATH/crio-${CRIO_VERSION}/bin/crio" ]] || [[ ! -e "${HOST_PATH}/roles/crio/files/bin/crio" ]]; then
+        mkdir -p ${DOWNLOAD_PATH}/crio-${CRIO_VERSION}
+        # cp 二进制 文件到 ansible 目录
+        tar -xf $DOWNLOAD_PATH/crio-${CRIO_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/crio-${CRIO_VERSION}
+        \cp -pdr $DOWNLOAD_PATH/crio-${CRIO_VERSION}/cri-o/bin ${HOST_PATH}/roles/crio/files/
+        mv -f ${HOST_PATH}/roles/crio/files/bin/crictl ${HOST_PATH}/roles/crio/files
+        \cp -pdr $DOWNLOAD_PATH/crio-${CRIO_VERSION}/cri-o/etc/crio-umount.conf ${HOST_PATH}/roles/crio/templates/crio-umount.conf
+      fi
+    else
+      colorEcho ${RED} "crio no download."
+      exit 1
+    fi
+    # 生成 crio 配置文件
+    cat >${HOST_PATH}/roles/crio/templates/crio.conf <<EOF
 # The CRI-O configuration file specifies all of the available configuration
 # options and command-line flags for the crio(8) OCI Kubernetes Container Runtime
 # daemon, but in a TOML format that can be more easily modified and versioned.
@@ -3643,13 +3687,13 @@ enable_metrics = false
 # The port on which the metrics server will listen.
 metrics_port = 9090
 EOF
-if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]];then
-CONTAINER_CGROUP="Environment=CONTAINER_CONMON_CGROUP=pod"
-elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]];then
-CONTAINER_CGROUP=""
-fi
-# 生成 crio 启动配置文件
-cat > ${HOST_PATH}/roles/crio/templates/crio.service << EOF
+    if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]]; then
+      CONTAINER_CGROUP="Environment=CONTAINER_CONMON_CGROUP=pod"
+    elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]]; then
+      CONTAINER_CGROUP=""
+    fi
+    # 生成 crio 启动配置文件
+    cat >${HOST_PATH}/roles/crio/templates/crio.service <<EOF
 [Unit]
 Description=OCI-based implementation of Kubernetes Container Runtime Interface
 Documentation=https://github.com/github.com/cri-o/cri-o
@@ -3675,8 +3719,8 @@ KillMode=process
 WantedBy=multi-user.target
 
 EOF
-# 生成 crio policy.json
-cat > ${HOST_PATH}/roles/crio/files/policy.json << EOF
+    # 生成 crio policy.json
+    cat >${HOST_PATH}/roles/crio/files/policy.json <<EOF
 {
     "default": [
         {
@@ -3692,8 +3736,8 @@ cat > ${HOST_PATH}/roles/crio/files/policy.json << EOF
         }
 }
 EOF
-# 生成 crio registries.conf
-cat > ${HOST_PATH}/roles/crio/files/registries.conf << EOF
+    # 生成 crio registries.conf
+    cat >${HOST_PATH}/roles/crio/files/registries.conf <<EOF
 # This is a system-wide configuration file used to
 # keep track of registries for various container backends.
 # It adheres to TOML format and does not support recursive
@@ -3719,8 +3763,8 @@ registries = []
 [registries.block]
 registries = []
 EOF
-# 生成 crictl crictl.yaml
-cat > ${HOST_PATH}/roles/crio/files/crictl.yaml << EOF
+    # 生成 crictl crictl.yaml
+    cat >${HOST_PATH}/roles/crio/files/crictl.yaml <<EOF
 runtime-endpoint: "unix://${RUN_CRIO_SOCK}/crio.sock"
 image-endpoint: "unix://${RUN_CRIO_SOCK}/crio.sock"
 timeout: 10
@@ -3728,8 +3772,8 @@ debug: false
 pull-image-on-create: true
 disable-pull-on-run: false
 EOF
-# 生成 cri-o ansible 部署文件
-cat > ${HOST_PATH}/roles/crio/tasks/main.yml  << EOF
+    # 生成 cri-o ansible 部署文件
+    cat >${HOST_PATH}/roles/crio/tasks/main.yml <<EOF
 - name: btrfs
   shell: 'mount |grep \\${TOTAL_PATH}| grep btrfs'
   ignore_errors: yes
@@ -3862,68 +3906,62 @@ cat > ${HOST_PATH}/roles/crio/tasks/main.yml  << EOF
     name: crio
     state: restarted      
 EOF
-cat > ${HOST_PATH}/crio.yml << EOF
+    cat >${HOST_PATH}/crio.yml <<EOF
 - hosts: all
   user: root
   roles:
     - crio
 EOF
-return 0
-fi
-   return 0
+    return 0
+  fi
+  return 0
 }
-kubeletConfig(){
-       colorEcho ${GREEN} "create for kubelet Config."
-       # 创建 kube-apiserver playbook 目录
-       if [[ ! -d "${HOST_PATH}/roles/kubelet/" ]]; then
-          mkdir -p ${HOST_PATH}/roles/kubelet/{files,tasks,templates}
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi
-     if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet" ]]; then
-         # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
-           mkdir -p ${HOST_PATH}/roles/kubelet/files/{bin,ssl}
-           mkdir -p ${HOST_PATH}/roles/kubelet/files/ssl/k8s
-           \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet ${HOST_PATH}/roles/kubelet/files/bin/
-            # 复制ssl
-            \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem ${HOST_PATH}/roles/kubelet/files/ssl/k8s/
-              # 复制bootstrap.kubeconfig 文件
-           \cp -pdr ${HOST_PATH}/kubeconfig/bootstrap.kubeconfig ${HOST_PATH}/roles/kubelet/templates/ 
-          elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet" ]] || [[ ! -e "${HOST_PATH}/roles/kubelet/files/bin/kubelet" ]]; then
-             # cp 二进制文件及ssl 文件到 ansible 目录
-              mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
-              tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
-              # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
-              mkdir -p ${HOST_PATH}/roles/kubelet/files/{bin,ssl}
-              mkdir -p ${HOST_PATH}/roles/kubelet/files/ssl/k8s
-            \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet ${HOST_PATH}/roles/kubelet/files/bin/
-               # 复制ssl
-            \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem ${HOST_PATH}/roles/kubelet/files/ssl/k8s/
-              # 复制bootstrap.kubeconfig 文件
-           \cp -pdr ${HOST_PATH}/kubeconfig/bootstrap.kubeconfig ${HOST_PATH}/roles/kubelet/templates/ 
-       fi
-     else
-      colorEcho ${RED} "kubernetes no download."
-      exit 1
+kubeletConfig() {
+  colorEcho ${GREEN} "create for kubelet Config."
+  # 创建 kube-apiserver playbook 目录
+  if [[ ! -d "${HOST_PATH}/roles/kubelet/" ]]; then
+    mkdir -p ${HOST_PATH}/roles/kubelet/{files,tasks,templates}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
+    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet" ]]; then
+      # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
+      mkdir -p ${HOST_PATH}/roles/kubelet/files/{bin,ssl}
+      mkdir -p ${HOST_PATH}/roles/kubelet/files/ssl/k8s
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet ${HOST_PATH}/roles/kubelet/files/bin/
+      # 复制ssl
+      \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem ${HOST_PATH}/roles/kubelet/files/ssl/k8s/
+      # 复制bootstrap.kubeconfig 文件
+      \cp -pdr ${HOST_PATH}/kubeconfig/bootstrap.kubeconfig ${HOST_PATH}/roles/kubelet/templates/
+    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet" ]] || [[ ! -e "${HOST_PATH}/roles/kubelet/files/bin/kubelet" ]]; then
+      # cp 二进制文件及ssl 文件到 ansible 目录
+      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
+      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
+      # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
+      mkdir -p ${HOST_PATH}/roles/kubelet/files/{bin,ssl}
+      mkdir -p ${HOST_PATH}/roles/kubelet/files/ssl/k8s
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet ${HOST_PATH}/roles/kubelet/files/bin/
+      # 复制ssl
+      \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem ${HOST_PATH}/roles/kubelet/files/ssl/k8s/
+      # 复制bootstrap.kubeconfig 文件
+      \cp -pdr ${HOST_PATH}/kubeconfig/bootstrap.kubeconfig ${HOST_PATH}/roles/kubelet/templates/
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      #FEATURE_GATES=`echo -e "featureGates:\n  EndpointSlice: true\n  ServiceTopology: true"`
-      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n              --v=${LEVEL_LOG}"`
-      else
-      FEATURE_GATES="--v=${LEVEL_LOG}" 
-   fi
-# 生成 kubelet config 配置文件
-if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]];then
-CONTAINER_CGROUP="cgroupfs"
-KUBE_RESERVED=`echo -e "- pods\n- kube-reserved\n- system-reserved"`
-elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]];then
-CONTAINER_CGROUP="systemd"
-KUBE_RESERVED="- pods"
-fi
-K8S_TLS_CIPHER=`echo $TLS_CIPHER| sed  -e "s/\,/\\\\n-\ /g"`
-KUBE_TLS_CIPHER=`echo -e "- $K8S_TLS_CIPHER"`
-cat > ${HOST_PATH}/roles/kubelet/templates/kubelet.yaml  << EOF
+  else
+    colorEcho ${RED} "kubernetes no download."
+    exit 1
+  fi
+  # 生成 kubelet config 配置文件
+  if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]]; then
+    CONTAINER_CGROUP="cgroupfs"
+    KUBE_RESERVED=$(echo -e "- pods\n- kube-reserved\n- system-reserved")
+  elif [[ ${NATIVE_CGROUPDRIVER} == "systemd" ]]; then
+    CONTAINER_CGROUP="systemd"
+    KUBE_RESERVED="- pods"
+  fi
+  K8S_TLS_CIPHER=$(echo $TLS_CIPHER | sed -e "s/\,/\\n-\ /g")
+  KUBE_TLS_CIPHER=$(echo -e "- $K8S_TLS_CIPHER")
+  cat >${HOST_PATH}/roles/kubelet/templates/kubelet.yaml <<EOF
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
@@ -4036,12 +4074,9 @@ allowedUnsafeSysctls:
 - fs.mqueue.*
 - net.*
 EOF
-# 生成 kubelet  配置文件
-cat > ${HOST_PATH}/roles/kubelet/templates/kubelet << EOF
+  # 生成 kubelet  配置文件
+  cat >${HOST_PATH}/roles/kubelet/templates/kubelet <<EOF
 KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
-              --network-plugin=cni \\
-              --cni-conf-dir=${CNI_CONF_DIR} \\
-              --cni-bin-dir=${CNI_BIN_DIR} \\
               --kubeconfig=${K8S_PATH}/conf/kubelet.kubeconfig \\
               --node-ip={{ ${KUBELET_IPV4} }} \\
               --hostname-override={{ ansible_hostname }} \\
@@ -4056,11 +4091,10 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --container-runtime-endpoint=${CONTAINER_RUNTIME_ENDPOINT} \\
               --containerd=${CONTAINERD_ENDPOINT} \\
               --pod-infra-container-image=${POD_INFRA_CONTAINER_IMAGE} \\
-              ${FEATURE_GATES} \\
-              --image-pull-progress-deadline=${IMAGE_PULL_PROGRESS_DEADLINE}"
+              --v=${LEVEL_LOG}"
 EOF
-# 生成 kubelet  配置文件
-cat > ${HOST_PATH}/roles/kubelet/templates/kubelet.service << EOF
+  # 生成 kubelet  配置文件
+  cat >${HOST_PATH}/roles/kubelet/templates/kubelet.service <<EOF
 [Unit]
 Description=Kubernetes Kubelet
 Wants=network-online.target
@@ -4079,8 +4113,8 @@ KillMode=process
 [Install]
 WantedBy=multi-user.target
 EOF
-# kubelet 二进制安装playbook
-cat > ${HOST_PATH}/roles/kubelet/tasks/main.yml << EOF
+  # kubelet 二进制安装playbook
+  cat >${HOST_PATH}/roles/kubelet/tasks/main.yml <<EOF
 #disable swap
 - name: disable swap
   shell: "([ $(swapon -s | wc -l) -ge 1 ] && (swapoff -a && echo disable)) || echo already"
@@ -4166,72 +4200,72 @@ cat > ${HOST_PATH}/roles/kubelet/tasks/main.yml << EOF
     name: kubelet
     state: restarted
 EOF
-cat > ${HOST_PATH}/kubelet.yml << EOF
+  cat >${HOST_PATH}/kubelet.yml <<EOF
 - hosts: all
   user: root
   roles:
     - kubelet
 EOF
- return 0
+  return 0
 }
-bootstrapConfig(){
-       colorEcho ${GREEN} "create for k8s KubeConfig."
-       if [[ ! -d "${HOST_PATH}/kubeconfig" ]]; then
-           mkdir -p  ${HOST_PATH}/kubeconfig
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi 
-       if [[ ! -n `command -v kubectl` ]]; then
-           colorEcho ${GREEN} "download kubectl FATAL kubectl "
-           exit $?  
-       fi 
-       colorEcho ${GREEN} "create for k8s KubeConfig."
-       if [[ ! -d "${HOST_PATH}/yaml" ]]; then
-           mkdir -p  ${HOST_PATH}/yaml
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi 
-     if [[ ! -e "${HOST_PATH}/kubeconfig/bootstrap.kubeconfig" ]]; then 
-       # 创建bootstrap配置
-       TOKEN_ID=$(head -c 30 /dev/urandom | od -An -t x | tr -dc a-f3-9|cut -c 3-8)
-       TOKEN_SECRET=$(head -c 16 /dev/urandom | md5sum | head -c 16)
-       BOOTSTRAP_TOKEN=${TOKEN_ID}.${TOKEN_SECRET}
-      # 创建bootstrap  kubeconfig 配置
-      # 设置集群参数
-      kubectl config set-cluster ${CLUSTER_NAME} \
-        --certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
-        --embed-certs=true \
-        --server=${KUBE_API_KUBELET} \
-        --kubeconfig=${HOST_PATH}/kubeconfig/bootstrap.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL bootstrap.kubeconfig."
-         exit $?
-      fi
-      # 设置客户端认证参数
-      kubectl config set-credentials system:bootstrap:${TOKEN_ID} \
-        --token=${BOOTSTRAP_TOKEN} \
-        --kubeconfig=${HOST_PATH}/kubeconfig/bootstrap.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL bootstrap.kubeconfig."
-         exit $?
-      fi
-      # 设置上下文参数
-      kubectl config set-context default \
-        --cluster=${CLUSTER_NAME} \
-        --user=system:bootstrap:${TOKEN_ID} \
-        --kubeconfig=${HOST_PATH}/kubeconfig/bootstrap.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL bootstrap.kubeconfig."
-         exit $?
-      fi
-      # 设置默认上下文
-      kubectl config use-context default --kubeconfig=${HOST_PATH}/kubeconfig/bootstrap.kubeconfig
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "cfssl  FATAL bootstrap.kubeconfig."
-         exit $?
-      fi
-# 创建bootstrap secret yaml
-cat > ${HOST_PATH}/yaml/bootstrap-secret.yaml << EOF
+bootstrapConfig() {
+  colorEcho ${GREEN} "create for k8s KubeConfig."
+  if [[ ! -d "${HOST_PATH}/kubeconfig" ]]; then
+    mkdir -p ${HOST_PATH}/kubeconfig
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ ! -n $(command -v kubectl) ]]; then
+    colorEcho ${GREEN} "download kubectl FATAL kubectl "
+    exit $?
+  fi
+  colorEcho ${GREEN} "create for k8s KubeConfig."
+  if [[ ! -d "${HOST_PATH}/yaml" ]]; then
+    mkdir -p ${HOST_PATH}/yaml
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ ! -e "${HOST_PATH}/kubeconfig/bootstrap.kubeconfig" ]]; then
+    # 创建bootstrap配置
+    TOKEN_ID=$(head -c 30 /dev/urandom | od -An -t x | tr -dc a-f3-9 | cut -c 3-8)
+    TOKEN_SECRET=$(head -c 16 /dev/urandom | md5sum | head -c 16)
+    BOOTSTRAP_TOKEN=${TOKEN_ID}.${TOKEN_SECRET}
+    # 创建bootstrap  kubeconfig 配置
+    # 设置集群参数
+    kubectl config set-cluster ${CLUSTER_NAME} \
+      --certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
+      --embed-certs=true \
+      --server=${KUBE_API_KUBELET} \
+      --kubeconfig=${HOST_PATH}/kubeconfig/bootstrap.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL bootstrap.kubeconfig."
+      exit $?
+    fi
+    # 设置客户端认证参数
+    kubectl config set-credentials system:bootstrap:${TOKEN_ID} \
+      --token=${BOOTSTRAP_TOKEN} \
+      --kubeconfig=${HOST_PATH}/kubeconfig/bootstrap.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL bootstrap.kubeconfig."
+      exit $?
+    fi
+    # 设置上下文参数
+    kubectl config set-context default \
+      --cluster=${CLUSTER_NAME} \
+      --user=system:bootstrap:${TOKEN_ID} \
+      --kubeconfig=${HOST_PATH}/kubeconfig/bootstrap.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL bootstrap.kubeconfig."
+      exit $?
+    fi
+    # 设置默认上下文
+    kubectl config use-context default --kubeconfig=${HOST_PATH}/kubeconfig/bootstrap.kubeconfig
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "cfssl  FATAL bootstrap.kubeconfig."
+      exit $?
+    fi
+    # 创建bootstrap secret yaml
+    cat >${HOST_PATH}/yaml/bootstrap-secret.yaml <<EOF
 ---
 apiVersion: v1
 kind: Secret
@@ -4258,8 +4292,8 @@ stringData:
   auth-extra-groups: system:bootstrappers:worker,system:bootstrappers:ingress
 EOF
 
-# 创建kubelet-bootstrap 授权
-cat > ${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml << EOF
+    # 创建kubelet-bootstrap 授权
+    cat >${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml <<EOF
 ---
 # 允许 system:bootstrappers 组用户创建 CSR 请求
 apiVersion: rbac.authorization.k8s.io/v1
@@ -4318,8 +4352,8 @@ subjects:
   name: system:nodes
 ---
 EOF
-# 生成集群授权yaml
-cat > ${HOST_PATH}/yaml/kube-api-rbac.yaml << EOF
+    # 生成集群授权yaml
+    cat >${HOST_PATH}/yaml/kube-api-rbac.yaml <<EOF
 ---
 # kube-controller-manager 绑定
 apiVersion: rbac.authorization.k8s.io/v1
@@ -4403,38 +4437,38 @@ subjects:
   kind: User
   name: kubernetes
 EOF
-      if [[ $? -ne 0 ]]; then
-           colorEcho ${RED} "kubelet bootstrap  FATAL."
-         exit $?
-      fi
- fi
-return 0
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "kubelet bootstrap  FATAL."
+      exit $?
+    fi
+  fi
+  return 0
 }
-cniConfig(){
-           colorEcho ${GREEN} "create for cni Config."
-           # 创建 containerd playbook 目录
-       if [[ ! -d "${HOST_PATH}/roles/cni/" ]]; then
-              mkdir -p ${HOST_PATH}/roles/cni/{files,tasks}
-           else
-               colorEcho ${GREEN} '文件夹已经存在'
-       fi
-       if [[ -e "${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" ]]; then
-           if [[ -e "${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin/portmap" ]]; then
-               # cp 二进制文件到 ansible 目录 
-               mkdir -p ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
-               tar -xf ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz -C ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
-               \cp -pdr ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin ${HOST_PATH}/roles/cni/files
-             elif [[ ! -e "${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin/portmap" ]] || [[ ! -e "${HOST_PATH}/roles/cni/files/bin/portmap" ]]; then 
-               mkdir -p ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
-               tar -xf ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz -C ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
-               \cp -pdr ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin ${HOST_PATH}/roles/cni/files            
-           fi
-      else
-          colorEcho ${RED} "cni no download."
-          exit 1
-      fi
-#cni 二进制安装playbook
-cat > ${HOST_PATH}/roles/cni/tasks/main.yml << EOF
+cniConfig() {
+  colorEcho ${GREEN} "create for cni Config."
+  # 创建 containerd playbook 目录
+  if [[ ! -d "${HOST_PATH}/roles/cni/" ]]; then
+    mkdir -p ${HOST_PATH}/roles/cni/{files,tasks}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ -e "${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" ]]; then
+    if [[ -e "${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin/portmap" ]]; then
+      # cp 二进制文件到 ansible 目录
+      mkdir -p ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
+      tar -xf ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz -C ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
+      \cp -pdr ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin ${HOST_PATH}/roles/cni/files
+    elif [[ ! -e "${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin/portmap" ]] || [[ ! -e "${HOST_PATH}/roles/cni/files/bin/portmap" ]]; then
+      mkdir -p ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
+      tar -xf ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz -C ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
+      \cp -pdr ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin ${HOST_PATH}/roles/cni/files
+    fi
+  else
+    colorEcho ${RED} "cni no download."
+    exit 1
+  fi
+  #cni 二进制安装playbook
+  cat >${HOST_PATH}/roles/cni/tasks/main.yml <<EOF
 - name: Create cni
   file:
     path: "${CNI_BIN_DIR}"
@@ -4451,36 +4485,36 @@ cat > ${HOST_PATH}/roles/cni/tasks/main.yml << EOF
     group: root 
     mode: 0755
 EOF
-cat > ${HOST_PATH}/cni.yml << EOF
+  cat >${HOST_PATH}/cni.yml <<EOF
 - hosts: all
   user: root
   roles:
     - cni
 EOF
-return 0      
+  return 0
 }
 
-iptablesConfig(){   
-      
-    if [ ${IPTABLES_INSTALL} == "ON" ]; then 
-           colorEcho ${GREEN} "create for iptables Config."
-           # 创建 iptables playbook 目录
-       if [[ ! -d "${HOST_PATH}/roles/iptables/" ]]; then
-              mkdir -p ${HOST_PATH}/roles/iptables/{files,tasks}
-           else
-               colorEcho ${GREEN} '文件夹已经存在'
-       fi
-       if [[ -e "${DOWNLOAD_PATH}/iptables-${IPTABLES_VERSION}.tar.bz2" ]]; then
-           if [[ ! -e "${HOST_PATH}/roles/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2" ]]; then
-            # 复制 iptables 源码到 playbook
-            \cp -pdr ${DOWNLOAD_PATH}/iptables-${IPTABLES_VERSION}.tar.bz2 ${HOST_PATH}/roles/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2
-           fi
-      else
-          colorEcho ${RED} "iptables no download."
-          exit 1
+iptablesConfig() {
+
+  if [ ${IPTABLES_INSTALL} == "ON" ]; then
+    colorEcho ${GREEN} "create for iptables Config."
+    # 创建 iptables playbook 目录
+    if [[ ! -d "${HOST_PATH}/roles/iptables/" ]]; then
+      mkdir -p ${HOST_PATH}/roles/iptables/{files,tasks}
+    else
+      colorEcho ${GREEN} '文件夹已经存在'
+    fi
+    if [[ -e "${DOWNLOAD_PATH}/iptables-${IPTABLES_VERSION}.tar.bz2" ]]; then
+      if [[ ! -e "${HOST_PATH}/roles/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2" ]]; then
+        # 复制 iptables 源码到 playbook
+        \cp -pdr ${DOWNLOAD_PATH}/iptables-${IPTABLES_VERSION}.tar.bz2 ${HOST_PATH}/roles/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2
       fi
-# iptables playbook 配置
-cat > ${HOST_PATH}/roles/iptables/tasks/main.yml << EOF
+    else
+      colorEcho ${RED} "iptables no download."
+      exit 1
+    fi
+    # iptables playbook 配置
+    cat >${HOST_PATH}/roles/iptables/tasks/main.yml <<EOF
 - name: centos8 dnf Install
   dnf:
     name:
@@ -4546,73 +4580,61 @@ cat > ${HOST_PATH}/roles/iptables/tasks/main.yml << EOF
     chdir: "${SOURCE_PATH}/iptables-${IPTABLES_VERSION}"
   when: iptables_configure.changed and ansible_os_family != 'Suse' 
 EOF
-cat > ${HOST_PATH}/iptables.yml << EOF
+    cat >${HOST_PATH}/iptables.yml <<EOF
 - hosts: all
   user: root
   roles:
     - iptables
 EOF
-      else
-      colorEcho ${BLUE} '不升级iptables'
-    fi 
+  else
+    colorEcho ${BLUE} '不升级iptables'
+  fi
   return 0
 }
-controllerConfig(){
-       colorEcho ${GREEN} "create for kube-controller-manager Config."
-       # 创建 kube-controller-manager playbook 目录
-       if [[ ! -d "${HOST_PATH}/roles/kube-controller-manager/" ]]; then
-          mkdir -p ${HOST_PATH}/roles/kube-controller-manager/{files,tasks,templates}
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi
-     if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager" ]]; then
-         # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
-          mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/{ssl,bin}
-          mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
-           \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager ${HOST_PATH}/roles/kube-controller-manager/files/bin/
-            # 复制kube-controller-manager.kubeconfig 文件
-            \cp -pdr ${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig ${HOST_PATH}/roles/kube-controller-manager/templates/
-            # 复制ssl
-            \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-controller-manager*.pem,k8s-ca*.pem} ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
-          elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager" ]] || [[ ! -e "${HOST_PATH}/roles/kube-controller-manager/files/bin/kube-controller-manager" ]]; then
-             # cp 二进制文件及ssl 文件到 ansible 目录
-              mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
-              tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
-              # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
-              mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/{ssl,bin}
-              mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
-               \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager ${HOST_PATH}/roles/kube-controller-manager/files/bin/
-               # 复制kube-controller-manager.kubeconfig 文件
-               \cp -pdr ${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig ${HOST_PATH}/roles/kube-controller-manager/templates/
-              # 复制ssl
-               \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-controller-manager*.pem,k8s-ca*.pem} ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s      
-       fi
-     else
-      colorEcho ${RED} "kubernetes no download."
-      exit 1
+controllerConfig() {
+  colorEcho ${GREEN} "create for kube-controller-manager Config."
+  # 创建 kube-controller-manager playbook 目录
+  if [[ ! -d "${HOST_PATH}/roles/kube-controller-manager/" ]]; then
+    mkdir -p ${HOST_PATH}/roles/kube-controller-manager/{files,tasks,templates}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
+    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager" ]]; then
+      # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
+      mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/{ssl,bin}
+      mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager ${HOST_PATH}/roles/kube-controller-manager/files/bin/
+      # 复制kube-controller-manager.kubeconfig 文件
+      \cp -pdr ${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig ${HOST_PATH}/roles/kube-controller-manager/templates/
+      # 复制ssl
+      \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-controller-manager*.pem,k8s-ca*.pem} ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
+    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager" ]] || [[ ! -e "${HOST_PATH}/roles/kube-controller-manager/files/bin/kube-controller-manager" ]]; then
+      # cp 二进制文件及ssl 文件到 ansible 目录
+      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
+      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
+      # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
+      mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/{ssl,bin}
+      mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager ${HOST_PATH}/roles/kube-controller-manager/files/bin/
+      # 复制kube-controller-manager.kubeconfig 文件
+      \cp -pdr ${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig ${HOST_PATH}/roles/kube-controller-manager/templates/
+      # 复制ssl
+      \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-controller-manager*.pem,k8s-ca*.pem} ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n--enable-garbage-collector=true"`
-      else
-      FEATURE_GATES="--enable-garbage-collector=true"
-   fi
-if [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS=`echo -e "--horizontal-pod-autoscaler-use-rest-clients=true \\\\\\\\\n--horizontal-pod-autoscaler-sync-period=10s"`
-BIND_ADDRESS=`echo -e "--bind-address={{ $KUBELET_IPV4 }} \\\\\\\\\n--address=127.0.0.1"`
-else
-HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS="--horizontal-pod-autoscaler-sync-period=10s"
-BIND_ADDRESS="--bind-address=0.0.0.0"
-fi
-# 创建kube-controller-manager 启动配置文件
-cat > ${HOST_PATH}/roles/kube-controller-manager/templates/kube-controller-manager << EOF
+  else
+    colorEcho ${RED} "kubernetes no download."
+    exit 1
+  fi
+  # 创建kube-controller-manager 启动配置文件
+  cat >${HOST_PATH}/roles/kube-controller-manager/templates/kube-controller-manager <<EOF
 KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --profiling \\
 --concurrent-service-syncs=${CONCURRENT_SERVICE_SYNCS} \\
 --concurrent-deployment-syncs=${CONCURRENT_DEPLOYMENT_SYNCS} \\
 --concurrent-gc-syncs=${CONCURRENT_GC_SYNCS} \\
 --leader-elect=true \\
-${BIND_ADDRESS} \\
+--bind-address=0.0.0.0 \\
 --service-cluster-ip-range=${SERVICE_CIDR} \\
 --cluster-cidr=${CLUSTER_CIDR} \\
 --node-cidr-mask-size=24 \\
@@ -4637,13 +4659,12 @@ ${BIND_ADDRESS} \\
 --alsologtostderr=${ALSOLOGTOSTDERR} \\
 --cluster-signing-cert-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --cluster-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem  \\
---deployment-controller-sync-period=10s \\
 --experimental-cluster-signing-duration=${EXPIRY_TIME}0m0s \\
 --root-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --service-account-private-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem \\
-${FEATURE_GATES} \\
+--enable-garbage-collector=true \\
 --controllers=*,bootstrapsigner,tokencleaner \\
-${HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS} \\
+--horizontal-pod-autoscaler-sync-period=10s \\
 --tls-cert-file=${K8S_PATH}/ssl/k8s/k8s-controller-manager.pem \\
 --tls-private-key-file=${K8S_PATH}/ssl/k8s/k8s-controller-manager-key.pem \\
 --kube-api-qps=${KUBE_API_QPS} \\
@@ -4652,8 +4673,8 @@ ${HORIZONTAL_POD_AUTOSCALER_USE_REST_CLIENTS} \\
 --log-dir=${K8S_PATH}/log \\
 --v=${LEVEL_LOG}"
 EOF
-# 创建kube-controller-manager 启动文件
-cat  > ${HOST_PATH}/roles/kube-controller-manager/templates/kube-controller-manager.service << EOF
+  # 创建kube-controller-manager 启动文件
+  cat >${HOST_PATH}/roles/kube-controller-manager/templates/kube-controller-manager.service <<EOF
 [Unit]
 Description=Kubernetes Controller Manager
 Documentation=https://github.com/kubernetes/kubernetes
@@ -4672,8 +4693,8 @@ User=k8s
 [Install]
 WantedBy=multi-user.target
 EOF
-# 创建kube-controller-manager playbook
-cat > ${HOST_PATH}/roles/kube-controller-manager/tasks/main.yml << EOF
+  # 创建kube-controller-manager playbook
+  cat >${HOST_PATH}/roles/kube-controller-manager/tasks/main.yml <<EOF
 - name: create groupadd k8s
   group: name=k8s
 - name: create name k8s
@@ -4741,7 +4762,7 @@ cat > ${HOST_PATH}/roles/kube-controller-manager/tasks/main.yml << EOF
     name: kube-controller-manager
     state: restarted
 EOF
-cat > ${HOST_PATH}/kube-controller-manager.yml << EOF
+  cat >${HOST_PATH}/kube-controller-manager.yml <<EOF
 - hosts: all
   user: root
   roles:
@@ -4749,58 +4770,47 @@ cat > ${HOST_PATH}/kube-controller-manager.yml << EOF
 EOF
   return 0
 }
-schedulerConfig(){
-       colorEcho ${GREEN} "create for kube-scheduler Config."
-       # 创建 kube-scheduler playbook 目录
-       if [[ ! -d "${HOST_PATH}/roles/kube-scheduler/" ]]; then
-          mkdir -p ${HOST_PATH}/roles/kube-scheduler/{files,tasks,templates}
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi
-     if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]]; then
-         # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
-          mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/{ssl,bin}
-          mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
-           \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
-           # 复制kube-scheduler.kubeconfig 文件
-           \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/
-            # 复制ssl
-            \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-scheduler*.pem,k8s-ca.pem} ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
-          elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]] || [[ ! -e "${HOST_PATH}/roles/kube-scheduler/files/bin/kube-scheduler" ]]; then
-             # cp 二进制文件及ssl 文件到 ansible 目录
-              mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
-              tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
-               # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
-                mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/{ssl,bin}
-                mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
-               \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
-                 # 复制kube-scheduler.kubeconfig 文件
-               \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/
-                # 复制ssl
-                \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-scheduler*.pem,k8s-ca.pem} ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s 
-       fi
-     else
-      colorEcho ${RED} "kubernetes no download."
-      exit 1
+schedulerConfig() {
+  colorEcho ${GREEN} "create for kube-scheduler Config."
+  # 创建 kube-scheduler playbook 目录
+  if [[ ! -d "${HOST_PATH}/roles/kube-scheduler/" ]]; then
+    mkdir -p ${HOST_PATH}/roles/kube-scheduler/{files,tasks,templates}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
+    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]]; then
+      # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
+      mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/{ssl,bin}
+      mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
+      # 复制kube-scheduler.kubeconfig 文件
+      \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/
+      # 复制ssl
+      \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-scheduler*.pem,k8s-ca.pem} ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
+    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]] || [[ ! -e "${HOST_PATH}/roles/kube-scheduler/files/bin/kube-scheduler" ]]; then
+      # cp 二进制文件及ssl 文件到 ansible 目录
+      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
+      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
+      # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
+      mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/{ssl,bin}
+      mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
+      # 复制kube-scheduler.kubeconfig 文件
+      \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/
+      # 复制ssl
+      \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-scheduler*.pem,k8s-ca.pem} ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]] ; then
-      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n                   --leader-elect=true"`
-      else
-      FEATURE_GATES="--leader-elect=true"
-   fi
-
-if [[ `expr ${KUBERNETES_VER} \< 1.23.0` -eq 1 ]]; then
-BIND_ADDRESS=`echo -e "--bind-address={{ $KUBELET_IPV4 }} \\\\\\\\\n--address=127.0.0.1"`
-else
-BIND_ADDRESS="--bind-address=0.0.0.0"
-fi
-# 创建kube-scheduler 启动配置文件
-cat > ${HOST_PATH}/roles/kube-scheduler/templates/kube-scheduler << EOF
+  else
+    colorEcho ${RED} "kubernetes no download."
+    exit 1
+  fi
+  # 创建kube-scheduler 启动配置文件
+  cat >${HOST_PATH}/roles/kube-scheduler/templates/kube-scheduler <<EOF
 KUBE_SCHEDULER_OPTS=" \\
                    --logtostderr=${LOGTOSTDERR} \\
-                   ${BIND_ADDRESS} \\
-                   ${FEATURE_GATES} \\
+                   --bind-address=0.0.0.0 \\
+                   --leader-elect=true \\
                    --kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authentication-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authorization-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
@@ -4819,8 +4829,8 @@ KUBE_SCHEDULER_OPTS=" \\
                    --tls-cipher-suites=${TLS_CIPHER} \\
                    --v=${LEVEL_LOG}"
 EOF
-# 创建kube-scheduler 启动文件
-cat > ${HOST_PATH}/roles/kube-scheduler/templates/kube-scheduler.service << EOF
+  # 创建kube-scheduler 启动文件
+  cat >${HOST_PATH}/roles/kube-scheduler/templates/kube-scheduler.service <<EOF
 [Unit]
 Description=Kubernetes Scheduler
 Documentation=https://github.com/kubernetes/kubernetes
@@ -4840,8 +4850,8 @@ User=k8s
 [Install]
 WantedBy=multi-user.target
 EOF
-# 创建kube-scheduler playbook 
-cat > ${HOST_PATH}/roles/kube-scheduler/tasks/main.yml << EOF
+  # 创建kube-scheduler playbook
+  cat >${HOST_PATH}/roles/kube-scheduler/tasks/main.yml <<EOF
 - name: create groupadd k8s
   group: name=k8s
 - name: create name k8s
@@ -4903,53 +4913,48 @@ cat > ${HOST_PATH}/roles/kube-scheduler/tasks/main.yml << EOF
     name: kube-scheduler
     state: restarted
 EOF
-cat > ${HOST_PATH}/kube-scheduler.yml << EOF
+  cat >${HOST_PATH}/kube-scheduler.yml <<EOF
 - hosts: all
   user: root
   roles:
     - kube-scheduler
 EOF
-    return 0
+  return 0
 }
-kubeProxyConfig(){
-       colorEcho ${GREEN} "create for kube-proxy Config."
-       # 创建 kube-proxy playbook 目录
-       if [[ ! -d "${HOST_PATH}/roles/kube-proxy/" ]]; then
-          mkdir -p ${HOST_PATH}/roles/kube-proxy/{files,tasks,templates}
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi
-     if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-        if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy" ]]; then
-         # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
-          mkdir -p ${HOST_PATH}/roles/kube-proxy/files/bin
-           \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy ${HOST_PATH}/roles/kube-proxy/files/bin/
-           # 复制kube-proxy.kubeconfig 文件
-           \cp -pdr ${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig ${HOST_PATH}/roles/kube-proxy/templates/
-          elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy" ]] || [[ ! -e "${HOST_PATH}/roles/kube-proxy/files/bin/kube-proxy" ]]; then
-             # cp 二进制文件及ssl 文件到 ansible 目录
-              mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
-              tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
-              # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录 
-              mkdir -p ${HOST_PATH}/roles/kube-proxy/files/bin
-               \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy ${HOST_PATH}/roles/kube-proxy/files/bin/
-                # 复制kube-proxy.kubeconfig 文件
-                \cp -pdr ${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig ${HOST_PATH}/roles/kube-proxy/templates/
-       fi
-     else
-      colorEcho ${RED} "kubernetes no download."
-      exit 1
+kubeProxyConfig() {
+  colorEcho ${GREEN} "create for kube-proxy Config."
+  # 创建 kube-proxy playbook 目录
+  if [[ ! -d "${HOST_PATH}/roles/kube-proxy/" ]]; then
+    mkdir -p ${HOST_PATH}/roles/kube-proxy/{files,tasks,templates}
+  else
+    colorEcho ${GREEN} '文件夹已经存在'
+  fi
+  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
+    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy" ]]; then
+      # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
+      mkdir -p ${HOST_PATH}/roles/kube-proxy/files/bin
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy ${HOST_PATH}/roles/kube-proxy/files/bin/
+      # 复制kube-proxy.kubeconfig 文件
+      \cp -pdr ${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig ${HOST_PATH}/roles/kube-proxy/templates/
+    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy" ]] || [[ ! -e "${HOST_PATH}/roles/kube-proxy/files/bin/kube-proxy" ]]; then
+      # cp 二进制文件及ssl 文件到 ansible 目录
+      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
+      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
+      # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
+      mkdir -p ${HOST_PATH}/roles/kube-proxy/files/bin
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy ${HOST_PATH}/roles/kube-proxy/files/bin/
+      # 复制kube-proxy.kubeconfig 文件
+      \cp -pdr ${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig ${HOST_PATH}/roles/kube-proxy/templates/
     fi
-      if [[ "$SERVICETOPOLOGY" == "true" ]]  && [[ `expr ${KUBERNETES_VER} \>= 1.17.0` -eq 1 ]] && [[ `expr ${KUBERNETES_VER} \< 1.22.0` -eq 1 ]]; then
-      FEATURE_GATES=`echo -e "--feature-gates=${FEATURE_GATES_OPT} \\\\\\\\\n--masquerade-all=true"`
-      else
-      FEATURE_GATES="--masquerade-all=true"
-   fi
-# 创建 kube-proxy 启动配置文件
-cat > ${HOST_PATH}/roles/kube-proxy/templates/kube-proxy << EOF
+  else
+    colorEcho ${RED} "kubernetes no download."
+    exit 1
+  fi
+  # 创建 kube-proxy 启动配置文件
+  cat >${HOST_PATH}/roles/kube-proxy/templates/kube-proxy <<EOF
 KUBE_PROXY_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --v=${LEVEL_LOG} \\
-${FEATURE_GATES} \\
+--masquerade-all=true \\
 --proxy-mode=ipvs \\
 --profiling=true \\
 --ipvs-min-sync-period=5s \\
@@ -4963,8 +4968,8 @@ ${FEATURE_GATES} \\
 --hostname-override={{ ansible_hostname }} \\
 --kubeconfig=${K8S_PATH}/conf/kube-proxy.kubeconfig"
 EOF
-# 创建 kube-proxy 启动文件
-cat > ${HOST_PATH}/roles/kube-proxy/templates/kube-proxy.service << EOF
+  # 创建 kube-proxy 启动文件
+  cat >${HOST_PATH}/roles/kube-proxy/templates/kube-proxy.service <<EOF
 [Unit]
 Description=Kubernetes Proxy
 After=network.target
@@ -4981,8 +4986,8 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
-# 创建kube-proxy ansible
-cat > ${HOST_PATH}/roles/kube-proxy/tasks/main.yml << EOF
+  # 创建kube-proxy ansible
+  cat >${HOST_PATH}/roles/kube-proxy/tasks/main.yml <<EOF
 - name: copy kube-proxy to ${K8S_PATH}
   copy: 
     src: bin 
@@ -5014,24 +5019,24 @@ cat > ${HOST_PATH}/roles/kube-proxy/tasks/main.yml << EOF
     name: kube-proxy
     state: restarted
 EOF
-cat > ${HOST_PATH}/kube-proxy.yml << EOF
+  cat >${HOST_PATH}/kube-proxy.yml <<EOF
 - hosts: all
   user: root
   roles:
     - kube-proxy
 EOF
-    return 0
+  return 0
 }
-netPlugConfig(){
-   if [ ${NET_PLUG} == "flannel" ]; then  # 生成flannel 部署yaml 
-          colorEcho ${GREEN} "create for k8s yaml."
-       if [[ ! -d "${HOST_PATH}/yaml" ]]; then
-           mkdir -p  ${HOST_PATH}/yaml
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi 
-# 创建flannel yaml
-cat > ${HOST_PATH}/yaml/kube-flannel.yaml << EOF
+netPlugConfig() {
+  if [ ${NET_PLUG} == "flannel" ]; then # 生成flannel 部署yaml
+    colorEcho ${GREEN} "create for k8s yaml."
+    if [[ ! -d "${HOST_PATH}/yaml" ]]; then
+      mkdir -p ${HOST_PATH}/yaml
+    else
+      colorEcho ${GREEN} '文件夹已经存在'
+    fi
+    # 创建flannel yaml
+    cat >${HOST_PATH}/yaml/kube-flannel.yaml <<EOF
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -5154,7 +5159,7 @@ spec:
       serviceAccountName: flannel
       initContainers:
       - name: install-cni-plugin
-        image: rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.0
+        image: ${FLANNEL_CNI_PLUGIN}
         command:
         - cp
         args:
@@ -5223,14 +5228,14 @@ spec:
             name: kube-flannel-cfg
 EOF
     return 0
-   elif [ ${NET_PLUG} == "kube-router" ]; then  # 生成kube-router 部署yaml 
-          colorEcho ${GREEN} "create for k8s yaml."
-       if [[ ! -d "${HOST_PATH}/yaml" ]]; then
-           mkdir -p  ${HOST_PATH}/yaml
-       else
-           colorEcho ${GREEN} '文件夹已经存在'
-       fi 
-cat > ${HOST_PATH}/yaml/kube-router.yaml << EOF
+  elif [ ${NET_PLUG} == "kube-router" ]; then # 生成kube-router 部署yaml
+    colorEcho ${GREEN} "create for k8s yaml."
+    if [[ ! -d "${HOST_PATH}/yaml" ]]; then
+      mkdir -p ${HOST_PATH}/yaml
+    else
+      colorEcho ${GREEN} '文件夹已经存在'
+    fi
+    cat >${HOST_PATH}/yaml/kube-router.yaml <<EOF
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -5439,12 +5444,12 @@ subjects:
   name: kube-router
   namespace: kube-system
 EOF
-     return 0
-fi
-   return 0
+    return 0
+  fi
+  return 0
 }
-coreDNS(){
-cat > ${HOST_PATH}/yaml/coredns.yaml << EOF
+coreDNS() {
+  cat >${HOST_PATH}/yaml/coredns.yaml <<EOF
 # __MACHINE_GENERATED_WARNING__
 
 apiVersion: v1
@@ -5655,9 +5660,9 @@ spec:
     protocol: TCP
 EOF
 }
-environment(){
-# 生成环境变量配置方便创建kubeconfig 跟签发新的个人证书
-cat > ${HOST_PATH}/environment.sh << EOF
+environment() {
+  # 生成环境变量配置方便创建kubeconfig 跟签发新的个人证书
+  cat >${HOST_PATH}/environment.sh <<EOF
 #!/bin/sh
 export KUBE_APISERVER="${KUBE_APISERVER}"
 export HOST_PATH="${HOST_PATH}"
@@ -5670,90 +5675,88 @@ export CLUSTER_DNS_DOMAIN="${CLUSTER_DNS_DOMAIN}"
 export CLUSTER_DNS_SVC_IP="${CLUSTER_DNS_SVC_IP}"
 export KUBECONFIG=${HOST_PATH}/kubeconfig/admin.kubeconfig
 EOF
-return 0
+  return 0
 }
-checkETCD(){
-     export ETCD_CACERT=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem
-     export ETCD_CERT=${HOST_PATH}/cfssl/pki/etcd/etcd-client.pem
-     export ETCD_KEY=${HOST_PATH}/cfssl/pki/etcd/etcd-client-key.pem
-     ETCD_IP=`echo $ETCD_SERVER_IPS| sed  -e "s/\"//g"`
-     array=(${ETCD_IP//,/ })
-     
-     for var in ${array[@]}
-     do
-      curl -k --connect-timeout 5 --cacert ${ETCD_CACERT} --cert ${ETCD_CERT} --key ${ETCD_KEY} https://$var:2379/health
-      if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "$var etcd health FATAL."
-          exit $?
-     else
-     colorEcho ${GREEN} "$var etcd health is OK."   
-     fi
-        done
-     if [ ${K8S_EVENTS} == "ON" ]; then
-     ETCD_IP=`echo $ETCD_EVENTS_IPS| sed  -e "s/\"//g"` #  ETCD_EVENTS_IPS
-     array=(${ETCD_IP//,/ })
-     
-     for var in ${array[@]}
-     do
-      curl -k --connect-timeout 5 --cacert ${ETCD_CACERT} --cert ${ETCD_CERT} --key ${ETCD_KEY} https://$var:2379/health
-      if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "$var etcd events health FATAL."
-          exit $?
-     else
-     colorEcho ${GREEN} "$var etcd events health is OK."   
-     fi
-        done
-    fi
-return 0
-}
-checkK8SMaster(){
-     export K8S_CACERT=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem
-     export K8S_CERT=${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin.pem
-     export K8S_KEY=${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin-key.pem
-     curl -k --connect-timeout 5 --cacert ${K8S_CACERT} --cert ${K8S_CERT} --key ${K8S_KEY} ${KUBE_APISERVER}/healthz
+checkETCD() {
+  export ETCD_CACERT=${HOST_PATH}/cfssl/pki/etcd/etcd-ca.pem
+  export ETCD_CERT=${HOST_PATH}/cfssl/pki/etcd/etcd-client.pem
+  export ETCD_KEY=${HOST_PATH}/cfssl/pki/etcd/etcd-client-key.pem
+  ETCD_IP=$(echo $ETCD_SERVER_IPS | sed -e "s/\"//g")
+  array=(${ETCD_IP//,/ })
+
+  for var in ${array[@]}; do
+    curl -k --connect-timeout 5 --cacert ${ETCD_CACERT} --cert ${ETCD_CERT} --key ${ETCD_KEY} https://$var:2379/health
     if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "${KUBE_APISERVER} K8SMaster  health FATAL."
-          exit $?
-     else
-     colorEcho ${GREEN} "${KUBE_APISERVER} K8SMaster  health is OK."   
-     fi
-   return 0
+      colorEcho ${RED} "$var etcd health FATAL."
+      exit $?
+    else
+      colorEcho ${GREEN} "$var etcd health is OK."
+    fi
+  done
+  if [ ${K8S_EVENTS} == "ON" ]; then
+    ETCD_IP=$(echo $ETCD_EVENTS_IPS | sed -e "s/\"//g") #  ETCD_EVENTS_IPS
+    array=(${ETCD_IP//,/ })
+
+    for var in ${array[@]}; do
+      curl -k --connect-timeout 5 --cacert ${ETCD_CACERT} --cert ${ETCD_CERT} --key ${ETCD_KEY} https://$var:2379/health
+      if [[ $? -ne 0 ]]; then
+        colorEcho ${RED} "$var etcd events health FATAL."
+        exit $?
+      else
+        colorEcho ${GREEN} "$var etcd events health is OK."
+      fi
+    done
+  fi
+  return 0
 }
-selectEnv(){
-        if [ ${NET_PLUG} == "flannel" ]; then
-        NETPLUG=kube-flannel.yaml
-        elif [ ${NET_PLUG} == "kube-router" ]; then
-        NETPLUG=kube-router.yaml
-        fi
-        if [ ${RUNTIME} == "DOCKER" ]; then
-        RUNTIME_FILE=docker.yml
-        elif [ ${RUNTIME} == "CONTAINERD" ]; then
-        RUNTIME_FILE=containerd.yml
-        elif [ ${RUNTIME} == "CRIO" ]; then
-        RUNTIME_FILE=crio.yml
-        fi
-        if [ ${IPTABLES_INSTALL} == "ON" ]; then
-        IPTABLES_FILE=iptables.yml
-        else
-        IPTABLES_FILE=""
-        fi
-        if [ ${PACKAGE_SYSCTL} == "ON" ]; then
-            PACKAGE_SYSCTL_FILE=package-sysctl.yml
-        else
-            PACKAGE_SYSCTL_FILE=""
-        fi
-        if [ ${K8S_EVENTS} == ON ]; then
-        EVENTS_ETCD="##########  etcd EVENTS 部署 ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE}  events-etcd.yml --ssh-common-args=\"-o StrictHostKeyChecking=no\" ${ASK_PASS}"
-        else
-        EVENTS_ETCD=""
-        fi        
+checkK8SMaster() {
+  export K8S_CACERT=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem
+  export K8S_CERT=${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin.pem
+  export K8S_KEY=${HOST_PATH}/cfssl/pki/k8s/k8s-apiserver-admin-key.pem
+  curl -k --connect-timeout 5 --cacert ${K8S_CACERT} --cert ${K8S_CERT} --key ${K8S_KEY} ${KUBE_APISERVER}/healthz
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "${KUBE_APISERVER} K8SMaster  health FATAL."
+    exit $?
+  else
+    colorEcho ${GREEN} "${KUBE_APISERVER} K8SMaster  health is OK."
+  fi
+  return 0
 }
-README.md(){
-#colorEcho ${BLUE} "开启选择使用插件"
-selectEnv
-#colorEcho ${BLUE} "验证ansible 连接服务器是否需求输入密码"
-checkAnsible # 检查ansible 连接是否需要输入密码
-cat > ${HOST_PATH}/README.md << EOF
+selectEnv() {
+  if [ ${NET_PLUG} == "flannel" ]; then
+    NETPLUG=kube-flannel.yaml
+  elif [ ${NET_PLUG} == "kube-router" ]; then
+    NETPLUG=kube-router.yaml
+  fi
+  if [ ${RUNTIME} == "DOCKER" ]; then
+    RUNTIME_FILE=docker.yml
+  elif [ ${RUNTIME} == "CONTAINERD" ]; then
+    RUNTIME_FILE=containerd.yml
+  elif [ ${RUNTIME} == "CRIO" ]; then
+    RUNTIME_FILE=crio.yml
+  fi
+  if [ ${IPTABLES_INSTALL} == "ON" ]; then
+    IPTABLES_FILE=iptables.yml
+  else
+    IPTABLES_FILE=""
+  fi
+  if [ ${PACKAGE_SYSCTL} == "ON" ]; then
+    PACKAGE_SYSCTL_FILE=package-sysctl.yml
+  else
+    PACKAGE_SYSCTL_FILE=""
+  fi
+  if [ ${K8S_EVENTS} == ON ]; then
+    EVENTS_ETCD="##########  etcd EVENTS 部署 ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE}  events-etcd.yml --ssh-common-args=\"-o StrictHostKeyChecking=no\" ${ASK_PASS}"
+  else
+    EVENTS_ETCD=""
+  fi
+}
+README.md() {
+  #colorEcho ${BLUE} "开启选择使用插件"
+  selectEnv
+  #colorEcho ${BLUE} "验证ansible 连接服务器是否需求输入密码"
+  checkAnsible # 检查ansible 连接是否需要输入密码
+  cat >${HOST_PATH}/README.md <<EOF
 ########## mkdir -p /root/.kube
 ##########复制admin kubeconfig 到root用户作为kubectl 工具默认密钥文件
 ########## \cp -pdr ${HOST_PATH}/kubeconfig/admin.kubeconfig /root/.kube/config
@@ -5777,283 +5780,283 @@ ${EVENTS_ETCD}
 ########## kubectl proxy --port=8001 &  把kube-apiserver 端口映射成本地 8001 端口      
 ########## 查看kubelet节点配置信息 NODE_NAME="k8s-node-04"; curl -sSL "http://localhost:8001/api/v1/nodes/\${NODE_NAME}/proxy/configz" | jq '.kubeletconfig|.kind="KubeletConfiguration"|.apiVersion="kubelet.config.k8s.io/v1beta1"' > kubelet_configz_\${NODE_NAME} 
 EOF
-return 0        
+  return 0
 }
-installInitScript(){
-     colorEcho ${BLUE} "下载K8S 组件"
-     downloadK8S
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "下载K8S 组件出错."
-        exit $?
-     fi
-     colorEcho ${BLUE} "安装 ansible."
-     ansibleInstall
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "安装 ansible出错."
-        exit $?
-     fi
-     colorEcho ${BLUE} "安装 kubectl."
-     kubectlInstall
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "安装 kubectl出错."
-        exit $?
-     fi
-     colorEcho ${BLUE} "安装 证书签名工具cfssl." 
-     cfsslInstall
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "安装 证书签名工具cfssl出错."
-        exit $? 
-     fi
-     colorEcho ${BLUE} "生成 etcd Cert." 
-     etcdCert
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 etcd Cert出错."
-        exit $? 
-     fi
-     colorEcho ${BLUE} "生成 k8s Cert." 
-     k8sCert
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 k8s Cert出错."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成 etcd ansible-playbook 部署yml." 
-     etcdConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 etcd ansible-playbook 部署yml错误."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成 k8sKubeConfig." 
-     k8sKubeConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 k8sKubeConfig错误."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成 kube-apiserver 部署yml." 
-     KubeApiserverConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 kube-apiserver 部署yml错误."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成 kube-apiserver 部署yml." 
-     KubeApiserverConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 kube-apiserver 部署yml错误."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成kube-Ha-Proxy 部署yml." 
-     kubeHaProxy
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 kube-Ha-Proxy 部署yml错误."
-        exit $?
-     fi  
-     colorEcho ${BLUE} "生成package-Sysctl 部署yml." 
-     packageSysctl
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 package-Sysctl 部署yml错误."
-        exit $?
-     fi  
-     colorEcho ${BLUE} "生成runtime-Config 部署yml." 
-     runtimeConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 runtime-Config 部署yml错误."
-        exit $?
-     fi  
-     colorEcho ${BLUE} "生成bootstrap-Config 部署yaml." 
-     bootstrapConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 bootstrap-Config 部署yaml错误."
-        exit $?
-     fi 
-     colorEcho ${BLUE} "生成kubelet-Config 部署yml." 
-     kubeletConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 kubelet-Config 部署yml错误."
-        exit $?
-     fi   
-     colorEcho ${BLUE} "生成cni-Config 部署yml." 
-     cniConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成 cni-Config 部署yml错误."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成iptables-Config 部署yml." 
-     iptablesConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成iptables-Config 部署yml错误."
-        exit $?
-     fi 
-     colorEcho ${BLUE} "生成kube-controller-manager 部署yml." 
-     controllerConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成kube-controller-manager 部署yml错误."
-        exit $?
-     fi 
-     colorEcho ${BLUE} "生成kube-scheduler 部署yml." 
-     schedulerConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成kube-scheduler 部署yml错误."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成kube-proxy 部署yml." 
-     kubeProxyConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成kube-proxy 部署yml错误."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成net Plug Config 部署yaml." 
-     netPlugConfig
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成net Plug Config 部署yaml错误."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成coreDNS 部署yaml." 
-     coreDNS
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成coreDNS 部署yaml错误."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成environment." 
-     environment
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成environment错误."
-        exit $?
-     fi
-     colorEcho ${BLUE} "生成README.md." 
-     README.md
-     if [[ $? -ne 0 ]]; then
-        colorEcho ${RED} "生成README.md错误."
-        exit $?
-     fi        
+installInitScript() {
+  colorEcho ${BLUE} "下载K8S 组件"
+  downloadK8S
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "下载K8S 组件出错."
+    exit $?
+  fi
+  colorEcho ${BLUE} "安装 ansible."
+  ansibleInstall
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "安装 ansible出错."
+    exit $?
+  fi
+  colorEcho ${BLUE} "安装 kubectl."
+  kubectlInstall
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "安装 kubectl出错."
+    exit $?
+  fi
+  colorEcho ${BLUE} "安装 证书签名工具cfssl."
+  cfsslInstall
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "安装 证书签名工具cfssl出错."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成 etcd Cert."
+  etcdCert
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 etcd Cert出错."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成 k8s Cert."
+  k8sCert
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 k8s Cert出错."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成 etcd ansible-playbook 部署yml."
+  etcdConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 etcd ansible-playbook 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成 k8sKubeConfig."
+  k8sKubeConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 k8sKubeConfig错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成 kube-apiserver 部署yml."
+  KubeApiserverConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 kube-apiserver 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成 kube-apiserver 部署yml."
+  KubeApiserverConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 kube-apiserver 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成kube-Ha-Proxy 部署yml."
+  kubeHaProxy
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 kube-Ha-Proxy 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成package-Sysctl 部署yml."
+  packageSysctl
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 package-Sysctl 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成runtime-Config 部署yml."
+  runtimeConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 runtime-Config 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成bootstrap-Config 部署yaml."
+  bootstrapConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 bootstrap-Config 部署yaml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成kubelet-Config 部署yml."
+  kubeletConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 kubelet-Config 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成cni-Config 部署yml."
+  cniConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成 cni-Config 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成iptables-Config 部署yml."
+  iptablesConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成iptables-Config 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成kube-controller-manager 部署yml."
+  controllerConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成kube-controller-manager 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成kube-scheduler 部署yml."
+  schedulerConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成kube-scheduler 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成kube-proxy 部署yml."
+  kubeProxyConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成kube-proxy 部署yml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成net Plug Config 部署yaml."
+  netPlugConfig
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成net Plug Config 部署yaml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成coreDNS 部署yaml."
+  coreDNS
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成coreDNS 部署yaml错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成environment."
+  environment
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成environment错误."
+    exit $?
+  fi
+  colorEcho ${BLUE} "生成README.md."
+  README.md
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "生成README.md错误."
+    exit $?
+  fi
 }
-checkAnsible(){
-       ansible -i ${K8S_VIP}, all -m ping --ssh-common-args="-o StrictHostKeyChecking=no" > /dev/null 2>&1
-       if [[ $? -ne 0 ]]; then
-            ASK_PASS="-k"
-         else
-           ASK_PASS=""
-      fi
-    return 0
+checkAnsible() {
+  ansible -i ${K8S_VIP}, all -m ping --ssh-common-args="-o StrictHostKeyChecking=no" >/dev/null 2>&1
+  if [[ $? -ne 0 ]]; then
+    ASK_PASS="-k"
+  else
+    ASK_PASS=""
+  fi
+  return 0
 }
-installK8SPackage(){
-          colorEcho ${BLUE} "开启选择使用插件"
-          selectEnv
-          colorEcho ${BLUE} " 验证ansible 连接服务器是否需求输入密码"
-          checkAnsible # 检查ansible 连接是否需要输入密码
-          colorEcho ${BLUE} "部署etcd 集群"
-          ETCD_SERVER_IPS=`echo $ETCD_SERVER_IPS| sed  -e "s/\"//g"`
-          ansible-playbook -i ${ETCD_SERVER_IPS}, ${PACKAGE_SYSCTL_FILE} etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
-      if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "${ETCD_SERVER_IPS} etcd  部署失败."
-          exit $?
-       else
-     colorEcho ${GREEN} "${ETCD_SERVER_IPS} etcd  集群 部署成功."   
-     fi
-   if [ ${K8S_EVENTS} == "ON" ]; then
-       ETCD_EVENTS_IPS=`echo $ETCD_EVENTS_IPS| sed  -e "s/\"//g"`
-       colorEcho ${BLUE} "部署etcd events 集群"
-       ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE} events-etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
-         if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "${ETCD_EVENTS_IPS} etcd events  部署失败."
-          exit $?
-            else
-            colorEcho ${GREEN} "${ETCD_EVENTS_IPS} etcd events 集群 部署成功."   
-          fi
-     fi
-     colorEcho ${BLUE} "检查etcd 集群"
-     checkETCD
-     colorEcho ${BLUE} "部署 kube-apiserver"
-      K8S_APISERVER_VIP=`echo $K8S_APISERVER_VIP| sed  -e "s/\"//g"`
-     ansible-playbook -i ${K8S_APISERVER_VIP}, ${PACKAGE_SYSCTL_FILE} kube-apiserver.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
-         if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "${K8S_APISERVER_VIP} kube-apiserver  部署失败."
-          exit $?
-       else
-     colorEcho ${GREEN} "${K8S_APISERVER_VIP} kube-apiserver 集群 部署成功."      
-     fi  
-        colorEcho ${BLUE} "检查checkK8SMaster 集群"
-       checkK8SMaster
-    colorEcho ${BLUE} "kubectl kubeconfig 配置"  
-    export KUBECONFIG=${HOST_PATH}/kubeconfig/admin.kubeconfig    
-    if [[ -n `command -v kubectl` ]]; then 
-    kubectl=`command -v kubectl`
-    colorEcho ${BLUE} "集群提交bootstrap secret"
-     $kubectl apply -f ${HOST_PATH}/yaml/bootstrap-secret.yaml
-         if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "${HOST_PATH}/yaml/bootstrap-secret.yaml  部署失败."
-          exit $?
-       else
-     colorEcho ${GREEN} "${HOST_PATH}/yaml/bootstrap-secret.yaml 部署成功." 
-      fi     
-    colorEcho ${BLUE} "bootstrap  rbac 绑定"
-      $kubectl apply -f ${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml
-         if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml 部署失败."
-          exit $?
-       else
-      colorEcho ${GREEN} "${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml 部署成功."
-     fi      
-      colorEcho ${BLUE} "K8S 组件  rbac 绑定"
-      $kubectl apply -f ${HOST_PATH}/yaml/kube-api-rbac.yaml 
-         if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "${HOST_PATH}/yaml/kube-api-rbac.yaml  部署失败."
-          exit $?
-       else    
-     colorEcho ${GREEN} "${HOST_PATH}/yaml/kube-api-rbac.yaml 部署成功."
-     fi
-    else
-    colorEcho ${RED} "kubectl 文件不可用."
-     exit $?
-    fi
-    colorEcho ${BLUE} " 部署K8S  kube-controller-manager kube-scheduler 服务器组件"
-    ansible-playbook -i ${K8S_APISERVER_VIP}, ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-controller-manager.yml kube-scheduler.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+installK8SPackage() {
+  colorEcho ${BLUE} "开启选择使用插件"
+  selectEnv
+  colorEcho ${BLUE} " 验证ansible 连接服务器是否需求输入密码"
+  checkAnsible # 检查ansible 连接是否需要输入密码
+  colorEcho ${BLUE} "部署etcd 集群"
+  ETCD_SERVER_IPS=$(echo $ETCD_SERVER_IPS | sed -e "s/\"//g")
+  ansible-playbook -i ${ETCD_SERVER_IPS}, ${PACKAGE_SYSCTL_FILE} etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "${ETCD_SERVER_IPS} etcd  部署失败."
+    exit $?
+  else
+    colorEcho ${GREEN} "${ETCD_SERVER_IPS} etcd  集群 部署成功."
+  fi
+  if [ ${K8S_EVENTS} == "ON" ]; then
+    ETCD_EVENTS_IPS=$(echo $ETCD_EVENTS_IPS | sed -e "s/\"//g")
+    colorEcho ${BLUE} "部署etcd events 集群"
+    ansible-playbook -i ${ETCD_EVENTS_IPS}, ${PACKAGE_SYSCTL_FILE} events-etcd.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
     if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "kube-controller-manager kube-scheduler  部署失败."
-          exit $?
-       else    
-     colorEcho ${GREEN} "kube-controller-manager kube-scheduler 部署成功."
-     fi
-   colorEcho ${BLUE} " node 节点部署."
-   ansible-playbook -i ${NODE_IP}, ${PACKAGE_SYSCTL_FILE} ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
-      if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "node 节点  部署失败."
-          exit $?
-       else    
-     colorEcho ${GREEN} "node 节点 部署成功."
-     fi 
-     colorEcho ${BLUE} "网络插件部署"
-      $kubectl apply -f  ${HOST_PATH}/yaml/${NETPLUG} 
-         if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "kubectl apply -f ${HOST_PATH}/yaml/${NETPLUG}  部署失败."
-          exit $?
-       else    
-     colorEcho ${GREEN} "kubectl apply -f ${HOST_PATH}/yaml/${NETPLUG} 部署成功."
-     fi
-     colorEcho ${BLUE} "coredns 部署"
-      $kubectl apply -f ${HOST_PATH}/yaml/coredns.yaml
-         if [[ $? -ne 0 ]]; then
-         colorEcho ${RED} "kubectl apply -f ${HOST_PATH}/yaml/coredns.yaml  部署失败."
-          exit $?
-       else    
-     colorEcho ${GREEN} "kubectl apply -f ${HOST_PATH}/yaml/coredns.yaml 部署成功."
-     fi 
-     $kubectl get nodes
-     $kubectl get cs
-     $kubectl cluster-info
-     $kubectl get pod -A
-     return 0
-}
-main(){
-    colorEcho ${BLUE} "集群配置生成"
-    installInitScript || return $?
-    if [ ${INSTALL_K8S} == "ON" ]; then    
-       colorEcho ${BLUE} "自动部署开始"
-        installK8SPackage || return $?
-      else
-       colorEcho ${RED} "手动部署请查看脚本当前目录README.md 文件进行部署"
+      colorEcho ${RED} "${ETCD_EVENTS_IPS} etcd events  部署失败."
+      exit $?
+    else
+      colorEcho ${GREEN} "${ETCD_EVENTS_IPS} etcd events 集群 部署成功."
     fi
-   colorEcho ${RED} "访问k8s 集群 可以 source ${HOST_PATH}/environment.sh 或者 cp -pdr ${HOST_PATH}/kubeconfig/admin.kubeconfig /root/.kube/config 这样kubectl 可以直接访问K8S集群！"
-   colorEcho ${RED} "手动部署请查看脚本当前目录README.md 文件进行部署"
-   colorEcho ${RED} "添加node 节点 多IP 192.168.3.10,192.168.3.11, 以 192.168.3.10 IP 为例： 直接执行 ansible-playbook -i 192.168.3.10, ${PACKAGE_SYSCTL_FILE} ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args=\"-o StrictHostKeyChecking=no\" ${ASK_PASS} "
-   return 0
+  fi
+  colorEcho ${BLUE} "检查etcd 集群"
+  checkETCD
+  colorEcho ${BLUE} "部署 kube-apiserver"
+  K8S_APISERVER_VIP=$(echo $K8S_APISERVER_VIP | sed -e "s/\"//g")
+  ansible-playbook -i ${K8S_APISERVER_VIP}, ${PACKAGE_SYSCTL_FILE} kube-apiserver.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "${K8S_APISERVER_VIP} kube-apiserver  部署失败."
+    exit $?
+  else
+    colorEcho ${GREEN} "${K8S_APISERVER_VIP} kube-apiserver 集群 部署成功."
+  fi
+  colorEcho ${BLUE} "检查checkK8SMaster 集群"
+  checkK8SMaster
+  colorEcho ${BLUE} "kubectl kubeconfig 配置"
+  export KUBECONFIG=${HOST_PATH}/kubeconfig/admin.kubeconfig
+  if [[ -n $(command -v kubectl) ]]; then
+    kubectl=$(command -v kubectl)
+    colorEcho ${BLUE} "集群提交bootstrap secret"
+    $kubectl apply -f ${HOST_PATH}/yaml/bootstrap-secret.yaml
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "${HOST_PATH}/yaml/bootstrap-secret.yaml  部署失败."
+      exit $?
+    else
+      colorEcho ${GREEN} "${HOST_PATH}/yaml/bootstrap-secret.yaml 部署成功."
+    fi
+    colorEcho ${BLUE} "bootstrap  rbac 绑定"
+    $kubectl apply -f ${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml 部署失败."
+      exit $?
+    else
+      colorEcho ${GREEN} "${HOST_PATH}/yaml/kubelet-bootstrap-rbac.yaml 部署成功."
+    fi
+    colorEcho ${BLUE} "K8S 组件  rbac 绑定"
+    $kubectl apply -f ${HOST_PATH}/yaml/kube-api-rbac.yaml
+    if [[ $? -ne 0 ]]; then
+      colorEcho ${RED} "${HOST_PATH}/yaml/kube-api-rbac.yaml  部署失败."
+      exit $?
+    else
+      colorEcho ${GREEN} "${HOST_PATH}/yaml/kube-api-rbac.yaml 部署成功."
+    fi
+  else
+    colorEcho ${RED} "kubectl 文件不可用."
+    exit $?
+  fi
+  colorEcho ${BLUE} " 部署K8S  kube-controller-manager kube-scheduler 服务器组件"
+  ansible-playbook -i ${K8S_APISERVER_VIP}, ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml kubelet.yml kube-controller-manager.yml kube-scheduler.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "kube-controller-manager kube-scheduler  部署失败."
+    exit $?
+  else
+    colorEcho ${GREEN} "kube-controller-manager kube-scheduler 部署成功."
+  fi
+  colorEcho ${BLUE} " node 节点部署."
+  ansible-playbook -i ${NODE_IP}, ${PACKAGE_SYSCTL_FILE} ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml kubelet.yml kube-proxy.yml --ssh-common-args="-o StrictHostKeyChecking=no" ${ASK_PASS}
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "node 节点  部署失败."
+    exit $?
+  else
+    colorEcho ${GREEN} "node 节点 部署成功."
+  fi
+  colorEcho ${BLUE} "网络插件部署"
+  $kubectl apply -f ${HOST_PATH}/yaml/${NETPLUG}
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "kubectl apply -f ${HOST_PATH}/yaml/${NETPLUG}  部署失败."
+    exit $?
+  else
+    colorEcho ${GREEN} "kubectl apply -f ${HOST_PATH}/yaml/${NETPLUG} 部署成功."
+  fi
+  colorEcho ${BLUE} "coredns 部署"
+  $kubectl apply -f ${HOST_PATH}/yaml/coredns.yaml
+  if [[ $? -ne 0 ]]; then
+    colorEcho ${RED} "kubectl apply -f ${HOST_PATH}/yaml/coredns.yaml  部署失败."
+    exit $?
+  else
+    colorEcho ${GREEN} "kubectl apply -f ${HOST_PATH}/yaml/coredns.yaml 部署成功."
+  fi
+  $kubectl get nodes
+  $kubectl get cs
+  $kubectl cluster-info
+  $kubectl get pod -A
+  return 0
+}
+main() {
+  colorEcho ${BLUE} "集群配置生成"
+  installInitScript || return $?
+  if [ ${INSTALL_K8S} == "ON" ]; then
+    colorEcho ${BLUE} "自动部署开始"
+    installK8SPackage || return $?
+  else
+    colorEcho ${RED} "手动部署请查看脚本当前目录README.md 文件进行部署"
+  fi
+  colorEcho ${RED} "访问k8s 集群 可以 source ${HOST_PATH}/environment.sh 或者 cp -pdr ${HOST_PATH}/kubeconfig/admin.kubeconfig /root/.kube/config 这样kubectl 可以直接访问K8S集群！"
+  colorEcho ${RED} "手动部署请查看脚本当前目录README.md 文件进行部署"
+  colorEcho ${RED} "添加node 节点 多IP 192.168.3.10,192.168.3.11, 以 192.168.3.10 IP 为例： 直接执行 ansible-playbook -i 192.168.3.10, ${PACKAGE_SYSCTL_FILE} ${IPTABLES_FILE} cni.yml ${RUNTIME_FILE} kube-ha-proxy.yml  kubelet.yml kube-proxy.yml --ssh-common-args=\"-o StrictHostKeyChecking=no\" ${ASK_PASS} "
+  return 0
 }
 main
