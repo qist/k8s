@@ -1,0 +1,106 @@
+---
+apiVersion: v1
+data: {}
+kind: Secret
+metadata:
+  name: jenkins-secret
+  namespace: monitoring
+stringData:
+  JENKINS_SERVER: http://192.168.1.121:8080
+  JENKINS_USERNAME: yunwei
+  JENKINS_PASSWORD: eYuCdOdpwLBykal0
+type: Opaque
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      k8s-app: jenkins-exporter
+  template:
+    metadata:
+      labels:
+        k8s-app: jenkins-exporter
+    spec:   
+      containers:
+        - name: jenkins-exporter
+          image: docker.io/juestnow/jenkins-exporter
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: JENKINS_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: jenkins-secret
+                key: JENKINS_SERVER
+          - name: JENKINS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: jenkins-secret
+                key: JENKINS_USERNAME
+          - name: JENKINS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: jenkins-secret
+                key: JENKINS_PASSWORD
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+          ports:
+          - containerPort: 9118
+            name: http-metrics
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http-metrics
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http-metrics
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 200m
+              memory: 30Mi
+            limits:
+              memory: 50Mi
+              cpu: 250m
+      restartPolicy: Always
+      securityContext:
+        runAsNonRoot: true
+        runAsGroup: 10000
+        runAsUser: 10000
+        fsGroup: 10000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: jenkins-exporter
+  name: jenkins-exporter
+  annotations:
+    prometheus.io/scrape: 'true'
+  namespace: monitoring
+spec:
+  selector:
+    k8s-app: jenkins-exporter
+  ports:
+    - protocol: TCP
+      port: 9118
+      name: http-metrics
