@@ -15,7 +15,7 @@ spec:
       labels:
         app: csi-nfs-node
     spec:
-      hostNetwork: true  # original nfs connection would be broken without hostNetwork setting
+      hostNetwork: true # original nfs connection would be broken without hostNetwork setting
       dnsPolicy: ClusterFirstWithHostNet
       nodeSelector:
         kubernetes.io/os: linux
@@ -42,7 +42,12 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["/bin/sh", "-c", "rm -rf /registration/csi-nfsplugin /registration/csi-nfsplugin-reg.sock"]
+                command:
+                  [
+                    "/bin/sh",
+                    "-c",
+                    "rm -rf /registration/csi-nfsplugin /registration/csi-nfsplugin-reg.sock",
+                  ]
           args:
             - --v=2
             - --csi-address=/csi/csi.sock

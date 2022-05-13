@@ -4,16 +4,16 @@ metadata:
   name: test-cephfs-pod
 spec:
   containers:
-  - name: test-cephfs-pod
-    image: juestnow/busybox:1.24
-    command:
-      - "/bin/sh"
-    args:
-      - "-c"
-      - "touch /mnt/SUCCESS && exit 0 || exit 1"
-    volumeMounts:
-      - name: pvc
-        mountPath: "/mnt"
+    - name: test-cephfs-pod
+      image: juestnow/busybox:1.24
+      command:
+        - "/bin/sh"
+      args:
+        - "-c"
+        - "touch /mnt/SUCCESS && exit 0 || exit 1"
+      volumeMounts:
+        - name: pvc
+          mountPath: "/mnt"
   restartPolicy: "Never"
   volumes:
     - name: pvc

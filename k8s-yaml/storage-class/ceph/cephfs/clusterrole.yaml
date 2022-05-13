@@ -18,7 +18,7 @@ rules:
     verbs: ["create", "update", "patch"]
   - apiGroups: [""]
     resources: ["services"]
-    resourceNames: ["kube-dns","coredns"]
+    resourceNames: ["kube-dns", "coredns"]
     verbs: ["list", "get"]
   - apiGroups: [""]
     resources: ["secrets"]

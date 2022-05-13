@@ -171,9 +171,7 @@ spec:
           imagePullPolicy: "IfNotPresent"
       volumes:
         - name: socket-dir
-          emptyDir: {
-            medium: "Memory"
-          }
+          emptyDir: { medium: "Memory" }
         - name: host-sys
           hostPath:
             path: /sys
@@ -187,6 +185,4 @@ spec:
           configMap:
             name: ceph-csi-config
         - name: keys-tmp-dir
-          emptyDir: {
-            medium: "Memory"
-          }
+          emptyDir: { medium: "Memory" }

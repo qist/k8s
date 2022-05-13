@@ -155,7 +155,7 @@ export RUNC_VERSION=v1.1.1
 export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.c0b2474b80fd0844b883729bda88961bed7b472b.tar.gz"
 export CRIO_VERSION=v1.23.2
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
-# flannel cni 
+# flannel cni
 FLANNEL_CNI_PLUGIN="rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.1"
 # flannel 插件选择
 FLANNEL_VERSION="rancher/mirrored-flannelcni-flannel:v0.17.0"

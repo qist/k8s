@@ -25,12 +25,12 @@ rules:
       - list
       - watch
   - apiGroups:
-    - extensions
-    - networking.k8s.io
+      - extensions
+      - networking.k8s.io
     resources:
-    - ingresses/status
+      - ingresses/status
     verbs:
-    - update
+      - update
   - apiGroups:
       - networking.k8s.io
     resources:
@@ -49,6 +49,6 @@ roleRef:
   kind: ClusterRole
   name: traefik
 subjects:
-- kind: ServiceAccount
-  name: traefik
-  namespace: ingress-system
+  - kind: ServiceAccount
+    name: traefik
+    namespace: ingress-system

@@ -1,5 +1,5 @@
-apiVersion: v1 # 指定api版本，此值必须在kubectl api-versions中 
-kind: Service # 指定创建资源的角色/类型 
+apiVersion: v1 # 指定api版本，此值必须在kubectl api-versions中
+kind: Service # 指定创建资源的角色/类型
 metadata: # 资源的元数据/属性
   name: demo # 资源的名字，在同一个namespace中必须唯一
   namespace: default # 部署在哪个namespace中
@@ -15,30 +15,30 @@ spec: # 资源规范字段
   selector: # 选择器
     app: demo
 ---
-apiVersion: v1 #指定api版本，此值必须在kubectl api-versions中 
-kind: Service #指定创建资源的角色/类型 
+apiVersion: v1 #指定api版本，此值必须在kubectl api-versions中
+kind: Service #指定创建资源的角色/类型
 metadata: # 资源的元数据/属性
   labels: # 设定资源的标签
-    app: demo 
+    app: demo
   name: demo-discovery # 资源的名字，在同一个namespace中必须唯一
   namespace: default # 部署在哪个namespace中
 spec:
   publishNotReadyAddresses: true #没有 hostname 但带有 subdomain 的 Pod 只会为指向Pod的IP地址的 headless 服务创建 A 记录(default-subdomain.my-namespace.svc.cluster-domain.example)。 另外，除非在服务上设置了 publishNotReadyAddresses=True，否则 Pod 需要准备好 A 记录
   type: ClusterIP # ClusterIP 类型
   ports:
-  - name: http # 端口名称
-    port: 8080 # service 端口
-    targetPort: http # 容器暴露的端口
+    - name: http # 端口名称
+      port: 8080 # service 端口
+      targetPort: http # 容器暴露的端口
   clusterIP: None # Headless Service 不分配clusterIP IP
   selector: # 选择器
     app: demo
 ---
-apiVersion: apps/v1  # 指定api版本，此值必须在kubectl api-versions中  
-kind: StatefulSet  # 指定创建资源的角色/类型   
-metadata:  # 资源的元数据/属性 
-  name: demo  # 资源的名字，在同一个namespace中必须唯一
+apiVersion: apps/v1 # 指定api版本，此值必须在kubectl api-versions中
+kind: StatefulSet # 指定创建资源的角色/类型
+metadata: # 资源的元数据/属性
+  name: demo # 资源的名字，在同一个namespace中必须唯一
   namespace: default # 部署在哪个namespace中
-  labels:  # 设定资源的标签
+  labels: # 设定资源的标签
     app: demo
     version: stable
 spec: # 资源规范字段
@@ -50,11 +50,11 @@ spec: # 资源规范字段
       app: demo
       version: stable
   updateStrategy: # StatefulSet 更新策略由
-    type: RollingUpdate 
+    type: RollingUpdate
     rollingUpdate:
-      partition: 0 #分段更新 
+      partition: 0 #分段更新
   template: # 模版
-    metadata: # 资源的元数据/属性 
+    metadata: # 资源的元数据/属性
       annotations: # 自定义注解列表
         sidecar.istio.io/inject: "false" # 自定义注解名字
       labels: # 设定资源的标签
@@ -62,67 +62,68 @@ spec: # 资源规范字段
         version: stable
     spec: # 资源规范字段
       containers:
-      - name: demo # 容器的名字   
-        image: demo:v1 # 容器使用的镜像地址   
-        imagePullPolicy: IfNotPresent # 每次Pod启动拉取镜像策略，三个选择 Always、Never、IfNotPresent
-                                      # Always，每次都检查；Never，每次都不检查（不管本地是否有）；IfNotPresent，如果本地有就不检查，如果没有就拉取 
-        resources: # 资源管理
-          limits: # 最大使用
-            cpu: 300m # CPU，1核心 = 1000m
-            memory: 500Mi # 内存，1G = 1000Mi
-          requests:  # 容器运行时，最低资源需求，也就是说最少需要多少资源容器才能正常运行
-            cpu: 100m
-            memory: 100Mi
-        livenessProbe: # pod 内部健康检查的设置
-          httpGet: # 通过httpget检查健康，返回200-399之间，则认为容器正常
-            path: /healthCheck # URI地址
-            port: 8080 # 端口
-            scheme: HTTP # 协议
-            # host: 127.0.0.1 # 主机地址
-          initialDelaySeconds: 30 # 表明第一次检测在容器启动后多长时间后开始
-          timeoutSeconds: 5 # 检测的超时时间
-          periodSeconds: 30 # 检查间隔时间
-          successThreshold: 1 # 成功门槛
-          failureThreshold: 5 # 失败门槛，连接失败5次，pod杀掉，重启一个新的pod
-        readinessProbe: # Pod 准备服务健康检查设置
-          httpGet:
-            path: /healthCheck
-            port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
-          periodSeconds: 10
-          successThreshold: 1
-          failureThreshold: 5
-        #也可以用这种方法   
-        #exec: 执行命令的方法进行监测，如果其退出码不为0，则认为容器正常   
-        #  command:   
-        #    - cat   
-        #    - /tmp/health   
-        #也可以用这种方法   
-        #tcpSocket: # 通过tcpSocket检查健康  
-        #  port: number 
-        startupProbe: # pod 使用启动探测器保护慢启动容器
-          httpGet:
-            path: /healthCheck
-            port: 8080
-          failureThreshold: 30 # 失败门槛，连接失败5次，pod杀掉，重启一个新的pod
-          periodSeconds: 10 # 检查间隔时间
-        ports:
-          - name: http # 名称
-            containerPort: 8080 # 容器开发对外的端口 
-            protocol: TCP # 协议
+        - name: demo # 容器的名字
+          image: demo:v1 # 容器使用的镜像地址
+          imagePullPolicy:
+            IfNotPresent # 每次Pod启动拉取镜像策略，三个选择 Always、Never、IfNotPresent
+            # Always，每次都检查；Never，每次都不检查（不管本地是否有）；IfNotPresent，如果本地有就不检查，如果没有就拉取
+          resources: # 资源管理
+            limits: # 最大使用
+              cpu: 300m # CPU，1核心 = 1000m
+              memory: 500Mi # 内存，1G = 1000Mi
+            requests: # 容器运行时，最低资源需求，也就是说最少需要多少资源容器才能正常运行
+              cpu: 100m
+              memory: 100Mi
+          livenessProbe: # pod 内部健康检查的设置
+            httpGet: # 通过httpget检查健康，返回200-399之间，则认为容器正常
+              path: /healthCheck # URI地址
+              port: 8080 # 端口
+              scheme: HTTP # 协议
+              # host: 127.0.0.1 # 主机地址
+            initialDelaySeconds: 30 # 表明第一次检测在容器启动后多长时间后开始
+            timeoutSeconds: 5 # 检测的超时时间
+            periodSeconds: 30 # 检查间隔时间
+            successThreshold: 1 # 成功门槛
+            failureThreshold: 5 # 失败门槛，连接失败5次，pod杀掉，重启一个新的pod
+          readinessProbe: # Pod 准备服务健康检查设置
+            httpGet:
+              path: /healthCheck
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+          #也可以用这种方法
+          #exec: 执行命令的方法进行监测，如果其退出码不为0，则认为容器正常
+          #  command:
+          #    - cat
+          #    - /tmp/health
+          #也可以用这种方法
+          #tcpSocket: # 通过tcpSocket检查健康
+          #  port: number
+          startupProbe: # pod 使用启动探测器保护慢启动容器
+            httpGet:
+              path: /healthCheck
+              port: 8080
+            failureThreshold: 30 # 失败门槛，连接失败5次，pod杀掉，重启一个新的pod
+            periodSeconds: 10 # 检查间隔时间
+          ports:
+            - name: http # 名称
+              containerPort: 8080 # 容器开发对外的端口
+              protocol: TCP # 协议
       imagePullSecrets: # 镜像仓库拉取密钥
         - name: harbor-certification
       affinity: # 亲和性调试
         nodeAffinity: # 节点亲和力
           requiredDuringSchedulingIgnoredDuringExecution: # pod 必须部署到满足条件的节点上
             nodeSelectorTerms: # 节点满足任何一个条件就可以
-            - matchExpressions: # 有多个选项，则只有同时满足这些逻辑选项的节点才能运行 pod
-              - key: beta.kubernetes.io/arch
-                operator: In
-                values:
-                - amd64
+              - matchExpressions: # 有多个选项，则只有同时满足这些逻辑选项的节点才能运行 pod
+                  - key: beta.kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
       dnsPolicy: ClusterFirst # Pod 的 DNS 配置可让用户对 Pod 的 DNS 设置进行更多控制
       #serviceAccountName: demo #服务账户名称
       #serviceAccount: demo #为Pod 配置服务账户
@@ -130,15 +131,15 @@ spec: # 资源规范字段
         options:
           - name: single-request-reopen # dns搜索域解决dns 命中低问题
           #volumeMounts: # 定义挂载
-            #- name: demo-data # 挂载名字
-              #mountPath: /data # pod 挂载目录
+          #- name: demo-data # 挂载名字
+          #mountPath: /data # pod 挂载目录
   #volumeClaimTemplates: # 动态挂载pvc  同时使用默认动态磁盘
-    #- metadata:
-        #name: demo-data # 挂载磁盘名字
-      #spec:
-        #accessModes:
-          #- ReadWriteOnce # 一个节点读写其它节点只能读
-        #resources:
-          #requests:
-            #storage: 500Gi # 磁盘大小
-        #volumeMode: Filesystem   # 挂载磁盘类型             
+  #- metadata:
+  #name: demo-data # 挂载磁盘名字
+  #spec:
+  #accessModes:
+  #- ReadWriteOnce # 一个节点读写其它节点只能读
+  #resources:
+  #requests:
+  #storage: 500Gi # 磁盘大小
+  #volumeMode: Filesystem   # 挂载磁盘类型

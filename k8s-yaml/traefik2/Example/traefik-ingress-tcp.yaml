@@ -7,25 +7,25 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`trae.tycng.com`)
-    kind: Rule
-    priority: 12
-    services:
-    - name: jaeger-query
-      port: 80
-      weight: 1
-     # 开启粘性会话
-      sticky:
-        cookie:
-          httpOnly: true
-          name: cookie
-          secure: true
-          sameSite: none
-      passHostHeader: true
-      responseForwarding:
-        flushInterval: 100ms
+    - match: Host(`trae.tycng.com`)
+      kind: Rule
+      priority: 12
+      services:
+        - name: jaeger-query
+          port: 80
+          weight: 1
+          # 开启粘性会话
+          sticky:
+            cookie:
+              httpOnly: true
+              name: cookie
+              secure: true
+              sameSite: none
+          passHostHeader: true
+          responseForwarding:
+            flushInterval: 100ms
   tls:
-    options: 
+    options:
       name: default
       namespace: ingress-system
     secretName: tls-cert
@@ -39,26 +39,25 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`trae.tycng.com`)
-    kind: Rule
-    priority: 12
-    services:
-    - name: jaeger-query
-      port: 80
-      weight: 1
-      # 开启粘性会话
-      sticky:
-        cookie:
-          httpOnly: true
-          name: cookie
-          secure: true
-          sameSite: none
-      passHostHeader: true
-      responseForwarding:
-        flushInterval: 100ms
-    middlewares:
-      - name: redirect
-
+    - match: Host(`trae.tycng.com`)
+      kind: Rule
+      priority: 12
+      services:
+        - name: jaeger-query
+          port: 80
+          weight: 1
+          # 开启粘性会话
+          sticky:
+            cookie:
+              httpOnly: true
+              name: cookie
+              secure: true
+              sameSite: none
+          passHostHeader: true
+          responseForwarding:
+            flushInterval: 100ms
+      middlewares:
+        - name: redirect
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
@@ -70,11 +69,11 @@ spec:
   entryPoints:
     - jaeger
   routes:
-  # Match is the rule corresponding to an underlying router.
-  - match: HostSNI(`*`)
-    services:
-    - name: jaeger-query
-      port: 80
+    # Match is the rule corresponding to an underlying router.
+    - match: HostSNI(`*`)
+      services:
+        - name: jaeger-query
+          port: 80
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware

@@ -22,18 +22,18 @@ spec:
         - effect: NoExecute
           operator: Exists
       containers:
-      - name: net-tools
-        image: juestnow/net-tools
-        command:
-          - /bin/sh
-          - '-c'
-          - set -e -x; tail -f /dev/null
-        resources:
-          limits:
-            memory: 30Mi
-          requests:
-            cpu: 50m
-            memory: 20Mi
+        - name: net-tools
+          image: juestnow/net-tools
+          command:
+            - /bin/sh
+            - "-c"
+            - set -e -x; tail -f /dev/null
+          resources:
+            limits:
+              memory: 30Mi
+            requests:
+              cpu: 50m
+              memory: 20Mi
       dnsConfig:
         options:
           - name: single-request-reopen

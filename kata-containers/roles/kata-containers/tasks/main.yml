@@ -1,9 +1,9 @@
-- name: kata-containers.list  
-  copy: 
+- name: kata-containers.list
+  copy:
     src: kata-containers.list
     dest: /etc/apt/sources.list.d/kata-containers.list
-    owner: root 
-    group: root 
+    owner: root
+    group: root
     mode: 640
   when: ansible_facts.distribution == 'Ubuntu'
 - name: Install gnupg
@@ -12,14 +12,14 @@
       - gnupg
       - gnupg2
       - gnupg1
-    state: latest 
+    state: latest
   when: ansible_facts.distribution == 'Ubuntu'
 - name: katacontainers.key
-  copy: 
+  copy:
     src: katacontainers.key
     dest: /tmp/katacontainers.key
-    owner: root 
-    group: root 
+    owner: root
+    group: root
     mode: 640
   when: ansible_facts.distribution == 'Ubuntu'
 - name: Add Apt signing key on remote server to keyring
@@ -38,7 +38,7 @@
     update_cache: yes
   when: ansible_facts.distribution == 'Ubuntu'
 #- name: add  http_proxy  https_proxy
-#  lineinfile: 
+#  lineinfile:
 #    dest: /etc/environment
 #    line: '{{ item.key }}'
 #  with_items:
@@ -47,8 +47,8 @@
 - name: Install Kata Containers
   apt:
     name:
-      - kata-runtime 
-      - kata-proxy 
+      - kata-runtime
+      - kata-proxy
       - kata-shim
     state: present
   when: ansible_facts.distribution == 'Ubuntu'
@@ -60,9 +60,9 @@
   when: ansible_os_family == 'RedHat'
 - name: install kata-containers
   yum:
-    name: 
-      - kata-runtime 
-      - kata-proxy 
+    name:
+      - kata-runtime
+      - kata-proxy
       - kata-shim
     state: present
   when: ansible_os_family == 'RedHat'

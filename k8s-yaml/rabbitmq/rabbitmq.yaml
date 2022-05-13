@@ -37,7 +37,7 @@ spec:
                 path: enabled_plugins
       containers:
         - name: rabbitmq-k8s
-          image: 'docker.io/juestnow/rabbitmq:3.8'
+          image: "docker.io/juestnow/rabbitmq:3.8"
           ports:
             - name: http
               containerPort: 15672
@@ -47,7 +47,7 @@ spec:
               protocol: TCP
             - name: metrics
               containerPort: 15692
-              protocol: TCP              
+              protocol: TCP
           env:
             - name: MY_POD_NAME
               valueFrom:
@@ -60,7 +60,7 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.namespace
             - name: RABBITMQ_USE_LONGNAME
-              value: 'true'
+              value: "true"
             - name: K8S_SERVICE_NAME
               value: rabbitmq
             - name: RABBITMQ_NODENAME
@@ -82,7 +82,7 @@ spec:
       #securityContext:
       #  fsGroup: 65535
       #  runAsNonRoot: true
-      #  runAsUser: 65535        
+      #  runAsUser: 65535
       terminationGracePeriodSeconds: 10
       dnsPolicy: ClusterFirst
       nodeSelector:
@@ -156,8 +156,8 @@ metadata:
     app: rabbitmq
     type: LoadBalancer
   annotations:
-    prometheus.io/port: '15692'
-    prometheus.io/scrape: 'true'
+    prometheus.io/port: "15692"
+    prometheus.io/scrape: "true"
 spec:
   ports:
     - name: metrics
@@ -182,7 +182,7 @@ rules:
   - verbs:
       - get
     apiGroups:
-      - ''
+      - ""
     resources:
       - endpoints
 ---
@@ -198,4 +198,3 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: rabbitmq-peer-discovery-rbac
-

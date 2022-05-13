@@ -151,9 +151,7 @@ spec:
           configMap:
             name: ceph-csi-config
         - name: keys-tmp-dir
-          emptyDir: {
-            medium: "Memory"
-          }
+          emptyDir: { medium: "Memory" }
 ---
 # This is a service to expose the liveness metrics
 apiVersion: v1

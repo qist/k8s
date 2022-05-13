@@ -7,9 +7,9 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-  - host: traefik.tycng.com
-    http:
-      paths:
-        - backend:
-            serviceName: traefik
-            servicePort: 8080
+    - host: traefik.tycng.com
+      http:
+        paths:
+          - backend:
+              serviceName: traefik
+              servicePort: 8080

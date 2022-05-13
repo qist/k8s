@@ -1,21 +1,21 @@
 - hosts: all
   user: root
-  tasks: 
+  tasks:
     - name: disable service all
       service:
-        name: '{{ item }}'
+        name: "{{ item }}"
         enabled: no
       with_items:
-          - kubelet
-          - docker
-          - crio
-          - containerd
-          - kube-proxy
-          - kube-scheduler
-          - kube-controller-manager
-          - kube-apiserver
-          - etcd
-          - cri-docker
+        - kubelet
+        - docker
+        - crio
+        - containerd
+        - kube-proxy
+        - kube-scheduler
+        - kube-controller-manager
+        - kube-apiserver
+        - etcd
+        - cri-docker
       ignore_errors: True
     - name: Reboot system
       reboot:
@@ -25,45 +25,45 @@
         path: "/lib/systemd/system/{{ item }}"
         state: absent
       with_items:
-          - kubelet.service
-          - docker.service
-          - crio.service
-          - containerd.service
-          - kube-proxy.service
-          - kube-scheduler.service
-          - kube-controller-manager.service
-          - kube-apiserver.service
-          - etcd.service
-          - docker.socket
-          - cri-docker.sock
-          - cri-docker.service
+        - kubelet.service
+        - docker.service
+        - crio.service
+        - containerd.service
+        - kube-proxy.service
+        - kube-scheduler.service
+        - kube-controller-manager.service
+        - kube-apiserver.service
+        - etcd.service
+        - docker.socket
+        - cri-docker.sock
+        - cri-docker.service
       ignore_errors: True
     - name: Remove file (delete file)
       file:
         path: "/usr/bin/{{ item }}"
         state: absent
       with_items:
-          - crictl
-          - docker
-          - docker
-          - docker-init
-          - docker-proxy
-          - containerd-shim
-          - runc
-          - ctr
-          - containerd
-          - cri-dockerd
+        - crictl
+        - docker
+        - docker
+        - docker-init
+        - docker-proxy
+        - containerd-shim
+        - runc
+        - ctr
+        - containerd
+        - cri-dockerd
       ignore_errors: True
     - name: Remove file (delete file)
       file:
         path: "/etc/{{ item }}"
         state: absent
       with_items:
-          - crictl.yaml
-          - containers
-          - containerd
-          - docker
-          - cni
+        - crictl.yaml
+        - containers
+        - containerd
+        - docker
+        - cni
       ignore_errors: True
 
     - name: Unmount k8s volume
@@ -71,46 +71,45 @@
         path: "{{ item }}"
         state: absent
       with_items:
-          - /var/lib/docker
-          - /run/docker 
-          - /var/lib/kubelet 
-          - /var/lib/containers/storage  
-          - /run/containers/storage  
-          - /var/lib/containerd  
-          - /run/containerd         
-#    - name: remove  mount K8S
-#      lineinfile: 
-#        dest: /etc/fstab
-#        regexp: "^{{ item }}"
-#        line: "#{{ item }}" 
-#        state: absent  
-#      with_items:
-#          - /apps/docker/data
-#          - /apps/docker/root
-#          - /apps/work/kubernetes/kubelet
-#          - /apps/crio/lib/containers/storage
-#          - /apps/crio/run/containers/storage
-#          - /apps/containerd/containerd
-#          - /apps/containerd/run/containerd          
+        - /var/lib/docker
+        - /run/docker
+        - /var/lib/kubelet
+        - /var/lib/containers/storage
+        - /run/containers/storage
+        - /var/lib/containerd
+        - /run/containerd
+    #    - name: remove  mount K8S
+    #      lineinfile:
+    #        dest: /etc/fstab
+    #        regexp: "^{{ item }}"
+    #        line: "#{{ item }}"
+    #        state: absent
+    #      with_items:
+    #          - /apps/docker/data
+    #          - /apps/docker/root
+    #          - /apps/work/kubernetes/kubelet
+    #          - /apps/crio/lib/containers/storage
+    #          - /apps/crio/run/containers/storage
+    #          - /apps/containerd/containerd
+    #          - /apps/containerd/run/containerd
     - name: Remove file (delete file)
       file:
         path: "{{ item }}"
         state: absent
       with_items:
-          - /apps/etcd
-          - /apps/k8s
-          - /apps/work
-          - /apps/docker
-          - /opt/cni
-          - /apps/crio
-          - /apps/containerd
-          - /var/lib/docker
-          - /run/docker 
-          - /var/lib/kubelet 
-          - /var/lib/containers/storage  
-          - /run/containers/storage  
-          - /var/lib/containerd  
-          - /run/containerd
-          - /var/lib/cni
+        - /apps/etcd
+        - /apps/k8s
+        - /apps/work
+        - /apps/docker
+        - /opt/cni
+        - /apps/crio
+        - /apps/containerd
+        - /var/lib/docker
+        - /run/docker
+        - /var/lib/kubelet
+        - /var/lib/containers/storage
+        - /run/containers/storage
+        - /var/lib/containerd
+        - /run/containerd
+        - /var/lib/cni
       ignore_errors: True
-      

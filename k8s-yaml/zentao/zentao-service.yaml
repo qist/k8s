@@ -1,10 +1,10 @@
 ---
 kind: Service
 apiVersion: v1
-metadata:   
+metadata:
   annotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: '8080'
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
   labels:
     k8s-app: zentao
   name: zentao
@@ -22,16 +22,16 @@ spec:
       name: http
     - protocol: TCP
       port: 8080
-      name: http-metrics      
+      name: http-metrics
   type: ClusterIP
 ---
 kind: Service
 apiVersion: v1
 metadata:
   annotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: '9253'
-    
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9253"
+
   labels:
     k8s-app: zentao-metrics
   name: zentao-metrics

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: zentao
-  namespace: zentao 
+  namespace: zentao
   labels:
     k8s-app: zentao
 spec:
@@ -25,19 +25,19 @@ spec:
               cpu: 200m
               memory: 200Mi
           volumeMounts:
-          - name: www
-            mountPath: /www
-          - name: php-fpm-volume
-            mountPath: /var/run/svr/
-          - name: www-etc-volume
-            mountPath: /etc/php-fpm.d/www.conf
-            subPath: www.conf
+            - name: www
+              mountPath: /www
+            - name: php-fpm-volume
+              mountPath: /var/run/svr/
+            - name: www-etc-volume
+              mountPath: /etc/php-fpm.d/www.conf
+              subPath: www.conf
         - name: zentao-php-fpm-exporter
           image: juestnow/php-fpm_exporter:2.0.3
           imagePullPolicy: IfNotPresent
           env:
-          - name: PHP_FPM_SCRAPE_URI
-            value: "unix:///var/run/svr/php-fpm.sock;/status"
+            - name: PHP_FPM_SCRAPE_URI
+              value: "unix:///var/run/svr/php-fpm.sock;/status"
           ports:
             - containerPort: 9253
               name: php-metrics
@@ -50,8 +50,8 @@ spec:
               memory: 50Mi
               cpu: 250m
           volumeMounts:
-          - name: php-fpm-volume
-            mountPath: /var/run/svr
+            - name: php-fpm-volume
+              mountPath: /var/run/svr
         - name: zentao-nginx
           image: juestnow/nginx-alpine:1.21.2
           imagePullPolicy: Always
@@ -72,7 +72,7 @@ spec:
             periodSeconds: 3
           livenessProbe:
             httpGet:
-              path: /healthz            
+              path: /healthz
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 15
@@ -85,41 +85,41 @@ spec:
               memory: 4096Mi
               cpu: 200m
           volumeMounts:
-          - name: www
-            mountPath: /www/
-          - name: nginx-etc-volume
-            mountPath: /etc/nginx/conf.d/default.conf
-            subPath: default.conf
-          - name: php-fpm-volume
-            mountPath: /var/run/svr                    
+            - name: www
+              mountPath: /www/
+            - name: nginx-etc-volume
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            - name: php-fpm-volume
+              mountPath: /var/run/svr
       initContainers:
         - name: zentao-http
           image: busybox
           imagePullPolicy: IfNotPresent
           env:
-          - name: ZENTZO_VERSION
-            value: "15.4"          
+            - name: ZENTZO_VERSION
+              value: "15.4"
           command:
-          - /bin/sh
-          - -c
-          - set -e -x;
-             if [ ! -d /www/zentaopms/www ]; then
-                cd /www;
-                wget https://www.zentao.net/dl/zentao/15.4/ZenTaoPMS.15.4.zip;
-                unzip -o ZenTaoPMS.${ZENTZO_VERSION}.zip;
-                rm -f ZenTaoPMS.${ZENTZO_VERSION}.zip;
-                echo "<?php phpinfo(); ?>" >/www/zentaopms/www/phpinfo.php;
-             fi;
-                cat /www/zentaopms/VERSION | grep ${ZENTZO_VERSION};
-             if [ $? != 0 ];then
-                cd /www;
-                wget https://www.zentao.net/dl/zentao/15.4/ZenTaoPMS.15.4.zip;
-                unzip -o ZenTaoPMS.${ZENTZO_VERSION}.zip;
-                rm -f ZenTaoPMS.${ZENTZO_VERSION}.zip;
-             fi                
+            - /bin/sh
+            - -c
+            - set -e -x;
+              if [ ! -d /www/zentaopms/www ]; then
+              cd /www;
+              wget https://www.zentao.net/dl/zentao/15.4/ZenTaoPMS.15.4.zip;
+              unzip -o ZenTaoPMS.${ZENTZO_VERSION}.zip;
+              rm -f ZenTaoPMS.${ZENTZO_VERSION}.zip;
+              echo "<?php phpinfo(); ?>" >/www/zentaopms/www/phpinfo.php;
+              fi;
+              cat /www/zentaopms/VERSION | grep ${ZENTZO_VERSION};
+              if [ $? != 0 ];then
+              cd /www;
+              wget https://www.zentao.net/dl/zentao/15.4/ZenTaoPMS.15.4.zip;
+              unzip -o ZenTaoPMS.${ZENTZO_VERSION}.zip;
+              rm -f ZenTaoPMS.${ZENTZO_VERSION}.zip;
+              fi
           volumeMounts:
-           - name: www
-             mountPath: /www/
+            - name: www
+              mountPath: /www/
       volumes:
         - name: www
           persistentVolumeClaim:
@@ -129,15 +129,15 @@ spec:
             name: nginx-etc
             defaultMode: 0644
             items:
-            - key: default.conf
-              path: default.conf
+              - key: default.conf
+                path: default.conf
         - name: www-etc-volume
           configMap:
             name: www-etc
             defaultMode: 0644
             items:
-            - key: www.conf
-              path: www.conf
+              - key: www.conf
+                path: www.conf
         - name: php-fpm-volume
-          emptyDir: 
+          emptyDir:
             medium: Memory
