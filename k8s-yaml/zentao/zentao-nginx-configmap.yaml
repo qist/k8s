@@ -2,13 +2,13 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-etc
-  namespace: zentao 
+  namespace: zentao
   labels:
-    k8s-app: zentao  
+    k8s-app: zentao
 data:
   default.conf: |
     server {
-    
+
             listen                  80;
             listen [::]:80 ipv6only=on;
             server_name  zentao.mddgame.com;
@@ -19,9 +19,9 @@ data:
                 index  index.php;
                 client_max_body_size 1024m;
                 chunked_transfer_encoding on;
-    
+
             }
-    
+
             error_page  404              /404.html;
             error_page   500 502 503 504  /50x.html;
             location = /50x.html {

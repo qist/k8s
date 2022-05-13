@@ -13,7 +13,7 @@ spec:
           - pathType: ImplementationSpecific
             path: /
             backend:
-              service: 
+              service:
                 name: zentao
-                port: 
+                port:
                   number: 80

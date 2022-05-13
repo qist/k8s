@@ -2,9 +2,9 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: zentao-pvc
-  namespace: zentao 
+  namespace: zentao
   labels:
-    k8s-app: zentao  
+    k8s-app: zentao
 spec:
   accessModes:
     - ReadWriteMany

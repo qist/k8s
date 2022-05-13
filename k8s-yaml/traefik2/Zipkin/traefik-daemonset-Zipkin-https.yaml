@@ -41,11 +41,11 @@ spec:
             - --entryPoints.websecure.forwardedHeaders.insecure
             - --providers.kubernetescrd
             - --providers.kubernetescrd.allowCrossNamespace=false
-            - --providers.kubernetescrd.throttleDuration=10s              
+            - --providers.kubernetescrd.throttleDuration=10s
             - --providers.kubernetesingress=true
             - --providers.kubernetesingress.throttleDuration=10s
             - --metrics.prometheus
-            - --serverstransport.insecureskipverify=true            
+            - --serverstransport.insecureskipverify=true
             - --tracing.zipkin=true
             - --tracing.zipkin.httpEndpoint=http://zipkin:9411/api/v2/spans
             - --tracing.zipkin.sameSpan=true
@@ -64,19 +64,19 @@ spec:
           securityContext:
             capabilities:
               drop:
-              - ALL
+                - ALL
               add:
-              - NET_BIND_SERVICE
+                - NET_BIND_SERVICE
           volumeMounts:
             - name: localtime
               mountPath: /etc/localtime
               readOnly: true
       #nodeSelector:
-        #ingress: "yes"
+      #ingress: "yes"
       tolerations:
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/ingress
-        operator: Equal
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/ingress
+          operator: Equal
       volumes:
         - name: localtime
           hostPath:
@@ -86,13 +86,13 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1
-      
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    k8s-app: traefik  
+    k8s-app: traefik
   name: traefik
   namespace: ingress-system
 spec:

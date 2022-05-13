@@ -216,9 +216,7 @@ spec:
           hostPath:
             path: /lib/modules
         - name: socket-dir
-          emptyDir: {
-            medium: "Memory"
-          }
+          emptyDir: { medium: "Memory" }
         - name: ceph-csi-config
           configMap:
             name: ceph-csi-config
@@ -226,6 +224,4 @@ spec:
           configMap:
             name: ceph-csi-encryption-kms-config
         - name: keys-tmp-dir
-          emptyDir: {
-            medium: "Memory"
-          }
+          emptyDir: { medium: "Memory" }

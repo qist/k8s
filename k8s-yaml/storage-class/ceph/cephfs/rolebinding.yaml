@@ -8,5 +8,5 @@ roleRef:
   kind: Role
   name: cephfs-provisioner
 subjects:
-- kind: ServiceAccount
-  name: cephfs-provisioner
+  - kind: ServiceAccount
+    name: cephfs-provisioner

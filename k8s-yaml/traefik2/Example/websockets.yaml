@@ -7,14 +7,14 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`rke.tycng.com`)
-    kind: Rule
-    priority: 12
-    services:
-    - name: rancher
-      port: 80
-    middlewares:
-      - name: redirect
+    - match: Host(`rke.tycng.com`)
+      kind: Rule
+      priority: 12
+      services:
+        - name: rancher
+          port: 80
+      middlewares:
+        - name: redirect
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -22,7 +22,7 @@ metadata:
   name: rancher
   namespace: cattle-system
 spec:
-  entryPoints:   
+  entryPoints:
     - websecure
   routes:
     - match: Host(`rke.tycng.com`)
@@ -34,11 +34,11 @@ spec:
         - name: rancher
           port: 80
   tls:
-    options: 
+    options:
       name: default
       namespace: cattle-system
-    secretName: tls-rancher-ingress    
----    
+    secretName: tls-rancher-ingress
+---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
@@ -46,8 +46,8 @@ metadata:
   namespace: cattle-system
 spec:
   redirectScheme:
-    scheme: https    
----    
+    scheme: https
+---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSOption
 metadata:
@@ -55,8 +55,8 @@ metadata:
   namespace: cattle-system
 
 spec:
-  minVersion: VersionTLS12  
---- 
+  minVersion: VersionTLS12
+---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:

@@ -8,8 +8,8 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`traefik.tycng.com`)
-    kind: Rule
-    services:
-    - name: api@internal
-      kind: TraefikService
+    - match: Host(`traefik.tycng.com`)
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService

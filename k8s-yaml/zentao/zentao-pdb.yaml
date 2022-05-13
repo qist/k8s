@@ -1,12 +1,12 @@
 apiVersion: policy/v1
-kind: PodDisruptionBudget  
-metadata:  
+kind: PodDisruptionBudget
+metadata:
   name: zentao
-  namespace: zentao 
+  namespace: zentao
   labels:
     k8s-app: zentao
-spec:  
+spec:
   minAvailable: 1
-  selector:  
-    matchLabels:  
+  selector:
+    matchLabels:
       k8s-app: zentao

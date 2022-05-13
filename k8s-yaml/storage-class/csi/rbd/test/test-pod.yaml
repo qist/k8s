@@ -4,18 +4,18 @@ metadata:
   name: test-rbd-pod
 spec:
   containers:
-  - name: test-rbd-pod
-    image: juestnow/busybox:1.24
-    command:
-    - "/bin/sh"
-    args:
-    - "-c"
-    - "touch /mnt/SUCCESS && exit 0 || exit 1"
-    volumeMounts:
-    - name: pvc
-      mountPath: "/mnt"
+    - name: test-rbd-pod
+      image: juestnow/busybox:1.24
+      command:
+        - "/bin/sh"
+      args:
+        - "-c"
+        - "touch /mnt/SUCCESS && exit 0 || exit 1"
+      volumeMounts:
+        - name: pvc
+          mountPath: "/mnt"
   restartPolicy: "Never"
   volumes:
-  - name: pvc
-    persistentVolumeClaim:
-      claimName: rbd-claim1
+    - name: pvc
+      persistentVolumeClaim:
+        claimName: rbd-claim1

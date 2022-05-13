@@ -6,9 +6,9 @@ metadata:
 provisioner: cephfs.csi.ceph.com
 parameters:
   #此处就是填写上面的clusterID
-  clusterID: 7b4eebe5-c501-41a5-a7db-1cc132972df0  
+  clusterID: 7b4eebe5-c501-41a5-a7db-1cc132972df0
   #填写上面的文件系统
-  fsName: cephfs 
+  fsName: cephfs
   pool: cephfs_data
   # 注意，这里的命名空间都改为 clusterstorage
   csi.storage.k8s.io/provisioner-secret-name: csi-cephfs-secret
@@ -22,4 +22,4 @@ parameters:
 reclaimPolicy: Delete
 allowVolumeExpansion: true
 mountOptions:
- # - debug
+  # - debug

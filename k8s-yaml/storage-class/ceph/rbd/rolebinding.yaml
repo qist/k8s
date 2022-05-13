@@ -8,5 +8,5 @@ roleRef:
   kind: Role
   name: rbd-provisioner
 subjects:
-- kind: ServiceAccount
-  name: rbd-provisioner
+  - kind: ServiceAccount
+    name: rbd-provisioner

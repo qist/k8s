@@ -5,11 +5,11 @@ metadata:
    namespace: clusterstorage
 spec:
    selector:
-     matchLabels:
-       app: nfs-client-provisioner
+      matchLabels:
+         app: nfs-client-provisioner
    replicas: 1
    strategy:
-     type: Recreate
+      type: Recreate
    template:
       metadata:
          labels:
@@ -17,20 +17,20 @@ spec:
       spec:
          serviceAccount: nfs-provisioner
          containers:
-            -  name: nfs-client-provisioner
-               image: quay.io/external_storage/nfs-client-provisioner:latest
-               volumeMounts:
-                 -  name: nfs-client-root
-                    mountPath:  /persistentvolumes
-               env:
-                 -  name: PROVISIONER_NAME
-                    value: fuseim.pri/ifs
-                 -  name: NFS_SERVER
-                    value: 192.168.2.220
-                 -  name: NFS_PATH
-                    value: /apps/data
+            - name: nfs-client-provisioner
+              image: quay.io/external_storage/nfs-client-provisioner:latest
+              volumeMounts:
+                 - name: nfs-client-root
+                   mountPath: /persistentvolumes
+              env:
+                 - name: PROVISIONER_NAME
+                   value: fuseim.pri/ifs
+                 - name: NFS_SERVER
+                   value: 192.168.2.220
+                 - name: NFS_PATH
+                   value: /apps/data
          volumes:
-           - name: nfs-client-root
-             nfs:
-               server: 192.168.2.220
-               path: /apps/data
+            - name: nfs-client-root
+              nfs:
+                 server: 192.168.2.220
+                 path: /apps/data

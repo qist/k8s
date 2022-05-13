@@ -17,12 +17,12 @@ metadata:
     app: redis-cluster
 spec:
   ports:
-  - port: 6379
-    targetPort: 6379
-    name: client
-  - port: 16379
-    targetPort: 16379
-    name: gossip
+    - port: 6379
+      targetPort: 6379
+      name: client
+    - port: 16379
+      targetPort: 16379
+      name: gossip
   clusterIP: None
   #type: ClusterIP
   selector:
@@ -46,10 +46,10 @@ data:
     appendonly yes
     # Other cluster members need to be able to connect
     protected-mode no
-#
-# A script to bootstrap Stateful Set members as they initialize
-# TODO: Move this logic into a separate Docker image. We shouldn't be doing this kind of hackery here.
-#
+  #
+  # A script to bootstrap Stateful Set members as they initialize
+  # TODO: Move this logic into a separate Docker image. We shouldn't be doing this kind of hackery here.
+  #
   bootstrap-pod.sh: |+
     #!/bin/sh
     set -e
@@ -112,125 +112,125 @@ spec:
       terminationGracePeriodSeconds: 10
       #hostNetwork: true
       initContainers:
-      - name: init-sysctl
-        image: busybox
-        command:
-          - /bin/sh
-          - '-c'
-          - |
-            mount -o remount rw /proc/sys
-            sysctl -w net.core.somaxconn=65535
-            sysctl -w net.ipv4.ip_local_port_range="1024 65535"
-            sysctl -w kernel.core_uses_pid=0
-            #sysctl -w fs.file-max=1048576
-            #sysctl -w fs.inotify.max_user_instances=16384
-            #sysctl -w fs.inotify.max_user_watches=1048576
-            #sysctl -w fs.inotify.max_queued_events=16384
-        imagePullPolicy: IfNotPresent
-        securityContext:
-          capabilities:
-            add:
-              - SYS_ADMIN
-            drop:
-              - ALL
-      - name: install-peer-finder
-        image: busybox
-        command:
-        - wget
-        args:
-        - --no-check-certificate
-        - https://gio.tycng.com/peer-finder
-        - -O
-        - /tmp/peer-finder/peer-finder
-        volumeMounts:
-        - name: peer-finder
-          mountPath: /tmp/peer-finder
+        - name: init-sysctl
+          image: busybox
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              mount -o remount rw /proc/sys
+              sysctl -w net.core.somaxconn=65535
+              sysctl -w net.ipv4.ip_local_port_range="1024 65535"
+              sysctl -w kernel.core_uses_pid=0
+              #sysctl -w fs.file-max=1048576
+              #sysctl -w fs.inotify.max_user_instances=16384
+              #sysctl -w fs.inotify.max_user_watches=1048576
+              #sysctl -w fs.inotify.max_queued_events=16384
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            capabilities:
+              add:
+                - SYS_ADMIN
+              drop:
+                - ALL
+        - name: install-peer-finder
+          image: busybox
+          command:
+            - wget
+          args:
+            - --no-check-certificate
+            - https://gio.tycng.com/peer-finder
+            - -O
+            - /tmp/peer-finder/peer-finder
+          volumeMounts:
+            - name: peer-finder
+              mountPath: /tmp/peer-finder
       containers:
-      - name: redis-cluster
-        image: docker.io/library/redis:6.2.6
-        ports:
-        - containerPort: 6379
-          name: client
-        - containerPort: 16379
-          name: gossip
-        command:
-        - sh
-        args:
-        - /conf/bootstrap-pod.sh
-        # Ensure that Redis is online before initializing the next node.
-        # TODO: Test that the cluster node is init'd properly.
-        readinessProbe:
-          exec:
-            command:
+        - name: redis-cluster
+          image: docker.io/library/redis:6.2.6
+          ports:
+            - containerPort: 6379
+              name: client
+            - containerPort: 16379
+              name: gossip
+          command:
             - sh
-            - -c
-            - "redis-cli -h $(hostname) ping"
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
+          args:
+            - /conf/bootstrap-pod.sh
+          # Ensure that Redis is online before initializing the next node.
+          # TODO: Test that the cluster node is init'd properly.
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "redis-cli -h $(hostname) ping"
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
 
-        # Mark a node as down if Redis server stops running
-        livenessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - "redis-cli -h $(hostname) ping"
-          initialDelaySeconds: 20
-          periodSeconds: 3         
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        volumeMounts:
-        - name: conf-volume
-          mountPath: /conf        
-        - name: redis-conf
-          mountPath: /conf/redis.conf
-          subPath: redis.conf
-          readOnly: false
-        - name: bootstrap-conf
-          mountPath: /conf/bootstrap-pod.sh
-          subPath: bootstrap-pod.sh
-          readOnly: false
-        - name: podinfo
-          mountPath: /etc/podinfo
-          readOnly: false
-        - name: peer-finder
-          mountPath: /tmp/peer-finder          
+          # Mark a node as down if Redis server stops running
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "redis-cli -h $(hostname) ping"
+            initialDelaySeconds: 20
+            periodSeconds: 3
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: conf-volume
+              mountPath: /conf
+            - name: redis-conf
+              mountPath: /conf/redis.conf
+              subPath: redis.conf
+              readOnly: false
+            - name: bootstrap-conf
+              mountPath: /conf/bootstrap-pod.sh
+              subPath: bootstrap-pod.sh
+              readOnly: false
+            - name: podinfo
+              mountPath: /etc/podinfo
+              readOnly: false
+            - name: peer-finder
+              mountPath: /tmp/peer-finder
       volumes:
-      - name: conf-volume
-        emptyDir: 
-          medium: Memory      
-      # Insert our pre-baked Redis configuration file into /conf/redis.conf
-      - name: redis-conf
-        configMap:
-          name: redis-cluster-config
-          items: 
-          - key: redis.conf
-            path: redis.conf
-      - name: bootstrap-conf
-        configMap:
-          name: redis-cluster-config
-          items: 
-          - key: bootstrap-pod.sh  # TODO: Move this or extract it into its own Docker image
-            path: bootstrap-pod.sh
-      - name: peer-finder
-        emptyDir: 
-          medium: Memory           
-      # The init container will use this info to find cluster peers
-      - name: podinfo
-        downwardAPI:
-          items:
-            - path: "labels"
-              fieldRef:
-                fieldPath: metadata.labels
-            - path: "annotations"
-              fieldRef:
-                fieldPath: metadata.annotations
-            - path: "pod_name"
-              fieldRef:
-                fieldPath: metadata.name
-            - path: "pod_namespace"
-              fieldRef:
-                fieldPath: metadata.namespace
+        - name: conf-volume
+          emptyDir:
+            medium: Memory
+        # Insert our pre-baked Redis configuration file into /conf/redis.conf
+        - name: redis-conf
+          configMap:
+            name: redis-cluster-config
+            items:
+              - key: redis.conf
+                path: redis.conf
+        - name: bootstrap-conf
+          configMap:
+            name: redis-cluster-config
+            items:
+              - key: bootstrap-pod.sh # TODO: Move this or extract it into its own Docker image
+                path: bootstrap-pod.sh
+        - name: peer-finder
+          emptyDir:
+            medium: Memory
+        # The init container will use this info to find cluster peers
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: "labels"
+                fieldRef:
+                  fieldPath: metadata.labels
+              - path: "annotations"
+                fieldRef:
+                  fieldPath: metadata.annotations
+              - path: "pod_name"
+                fieldRef:
+                  fieldPath: metadata.name
+              - path: "pod_namespace"
+                fieldRef:
+                  fieldPath: metadata.namespace
