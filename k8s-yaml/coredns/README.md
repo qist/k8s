@@ -1,5 +1,6 @@
-## 修改coredns 配置
-```
+# 修改coredns 配置
+
+```yaml
 # Ubuntu 系统 配置网卡dns 服务ip   不能让CoreDNS的上游DNS服务器使用127.0.0.53,因为会导致死循环 或者修改prometheus :9153  forward . /etc/resolv.conf 改成外部IP 
 apiVersion: v1
 data:

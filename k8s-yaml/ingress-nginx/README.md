@@ -1,5 +1,6 @@
-##  ingress-nginx
-```
+# ingress-nginx
+
+```shell
 #ingressClassName: nginx # nginx ingress 1.0版本及以上必填
 # ingress-nginx-ipv4.yaml 支持 1.20 及以上版本
 # 官方项目地址: https://github.com/kubernetes/ingress-nginx/blob/master/deploy/static/provider/baremetal/deploy.yaml
@@ -58,4 +59,3 @@ spec:
   - secretName: tls-cert
 EOF
 ```
-

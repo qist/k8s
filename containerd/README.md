@@ -1,5 +1,6 @@
-## ansible 部署  cri-o 及containerd 容器运行时
-```
+# ansible 部署  cri-o 及containerd 容器运行时
+
+```text
 # ansible 版本 2.8 
 # 下载地址 有些文件大小超过50M github 不能上传成功请大家自行下载
 https://github.com/cri-o/cri-o/releases/download/v1.18.0/crio-v1.18.0.tar.gz

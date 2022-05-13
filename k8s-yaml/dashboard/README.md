@@ -1,5 +1,6 @@
-##  kubernetes-dashboard 部署说明
-```
+# kubernetes-dashboard 部署说明
+
+```text
 # autotls 文件夹官方yaml tls 文件夹需要自签名证书
 # 签发证书并生成secrets 
 # deploy.sh 如果不是使用脚本生成并安装的请打开deploy.sh 修改变量改成自己环境

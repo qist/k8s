@@ -1,5 +1,6 @@
-##  traefik 2版本部署
-```
+# traefik 2版本部署
+
+```yaml
 # 修改 traefik-dashboard.yaml 改成自己的域名
 # 修改 traefik-secret.yaml 添加外部域名证书 与nginx 证书一样
 # 部署api 及 rbac

@@ -1,5 +1,6 @@
-## ansible 部署 kata-containers 
-```
+# ansible 部署 kata-containers
+
+```yaml
 # ansible 版本 2.8 
 # 部署方式  ansible-playbook -i 127.0.0.1, kata-containers.yml   127.0.0.1 需要部署的节点IP 多个IP 127.0.0.1,127.0.0.2, 
 # 在centos 7,8 Ubuntu 18.04 19.04 进行测试完美运行

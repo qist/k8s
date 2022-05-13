@@ -1,11 +1,18 @@
 # prometheus 配置 blackbox-exporter 配置 alertmanager 配置都会自动刷新不需要手动重载
+
 支持 自定义 hpa 扩容
+
 ## prometheus 监控部署说明
+
 prometheus 存储 现在使用临时存储 生产记得修改 prometheus.yaml 修改
+
 ### 创建命名空间
+
 `kubectl create namespace monitoring`
+
 ### 创建etcd 证书secret
-```
+
+```shell
 kubectl -n monitoring create secret generic etcd-certs \
 --from-file=/opt/rocky/cfssl/pki/etcd/etcd-ca.pem \
 --from-file=/opt/rocky/cfssl/pki/etcd/etcd-client.pem \
@@ -16,8 +23,10 @@ kubectl -n monitoring create secret generic etcd-certs \
 --from-file=/etc/kubernetes/pki/apiserver-etcd-client.crt \
 --from-file=/etc/kubernetes/pki/apiserver-etcd-client.key
 ```
+
 ### 创建监控rule
-```
+
+```shell
 # rule 为规则存放文件夹
 kubectl -n monitoring create configmap prometheus-k8s-rulefiles --from-file rule
 ## 报警规则更新
@@ -26,16 +35,21 @@ kubectl -n monitoring delete configmap prometheus-k8s-rulefiles
 # 再次创建规则 实现报警规则更新
 kubectl -n monitoring create configmap prometheus-k8s-rulefiles --from-file rule
 ```
+
 ### 部署 prometheus
-```
+
+```shell
 # 进入prometheus 目录
 # blackbox-exporter-files-discover.yaml 文件为监控外部站点配置文件
 kubectl apply -f .
 # rule 规则目录文件夹
 ```
+
 部署custom-metrics-api 后在部署prometheus-adapter
+
 ### service 监控写法
-```
+
+```shell
 # 集群 内部 Service 监控
 cat << EOF | kubectl apply -f -
 apiVersion: v1
@@ -173,8 +187,10 @@ subsets:
     protocol: TCP
 EOF
 ```
+
 ### POD 监控写法
-```
+
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -220,9 +236,10 @@ spec:
         prometheus.io/port: '8080'  # 多端口指定监控端口 prometheus.io/port: '8080'  # 监控路径 prometheus.io/path: '/metrics' # 监控http协议 prometheus.io/scheme: 'http' 或者https
         prometheus.io/scrape: 'true'
 ```
+
 ### blackbox-exporter 集群内部监控注释方法
 
-```
+```shell
 # service 写法 http 模式 监控
 
 cat << EOF | kubectl apply -f -
@@ -309,8 +326,10 @@ spec:
 
 EOF
 ```
+
 ### blackbox-exporter 集群外部监控
-```
+
+```shell
 # 修改 blackbox-exporter-files-discover.yaml
 kubectl apply -f blackbox-exporter-files-discover.yaml
 # 会自动刷新

@@ -14,7 +14,7 @@
 
 ### kata-containers kata-containers ansible 部署脚本
 
-### k8s-install.sh 一键自动ansible 部署 K8S 集群支持1.15及以上的版本
+### k8s-install.sh 一键自动ansible 部署 K8S 集群
 
 ### kubens 命名空间切换脚本
 

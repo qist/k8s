@@ -1,68 +1,82 @@
-##  istio 版本部署
+# istio 版本部署
 
-# 使用Helm v3 版本部署
+## 使用Helm v3 版本部署
 
-# 下载 Helm v3.0.2 
-```
+## 下载 Helm v3.0.2
+
+```shell
 wget  https://get.helm.sh/helm-v3.0.2-linux-amd64.tar.gz
 ```
 
-# 解压下载文件
+## 解压下载文件
 
-```
+```shell
 tar -xv helm-v3.0.2-linux-amd64.tar.gz
 ```
 
-# 复制文件到/bin 目录
+## 复制文件到/bin 目录
 
-```
+```shell
 cp ./linux-amd64/helm /bin
 ```
 
-# 下载istio 
+## 下载istio
 
-```
+```shell
 export ISTIO_VERSION=1.4.2 # 指定版本
 curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.4.2 TARGET_ARCH=x86_64 sh -
 ```
 
-# 等待下载完成 现在版本是1.4.2
+## 等待下载完成 现在版本是1.4.2
 
-```
+```shell
 cd istio-1.4.2
 ```
 
-# 创建命名空间
-```
+## 创建命名空间
+
+```shell
 kubectl apply -f install/kubernetes/namespace.yaml
 ```
-# istio api
-```
+
+## istio api
+
+```shell
 helm install install/kubernetes/helm/istio-init --name-template istio-init --namespace istio-system
 ```
-#查询api 是否安装
-```
+
+## 查询api 是否安装
+
+```shell
 kubectl get crds | grep 'istio.io' | wc -l
 root@Qist:istio-1.4.2# kubectl get crds | grep 'istio.io' | wc -l
 23 
 ```
-```
+
+```shell
 vim install/kubernetes/helm/istio/charts/gateways/values.yaml
 ```
-#修改gateways values.yaml 文件 删除nodePort 当然也可不用删除
-#参数gateways.istio-ingressgateway.type=NodePort 
-#参数gateways.istio-ingressgateway.type=ClusterIP 必须删除nodePort
-```
+
+### 修改gateways values.yaml 文件 删除nodePort 当然也可不用删除
+
+### 参数gateways.istio-ingressgateway.type=NodePort
+
+### 参数gateways.istio-ingressgateway.type=ClusterIP 必须删除nodePort
+
+```shell
 vim install/kubernetes/helm/istio/charts/gateways/templates/service.yaml
 ```
-#添加 clusterIP: None # 方便暴露其它tcp 端口
-```
+
+## 添加 clusterIP: None # 方便暴露其它tcp 端口
+
+```shell
   clusterIP: None
   ports:
 ```  
-# 创建prometheus 
 
-```
+## 创建prometheus
+
+```shell
 cat <<EOF | kubectl create -f -
 kind: Service
 apiVersion: v1
@@ -86,8 +100,10 @@ spec:
   externalName: grafana.monitoring.svc.cluster.local
 EOF
 ```
-# 安装istio cniBinDir  cniConfDir 跟部署node节点目录一致
-```
+
+## 安装istio cniBinDir  cniConfDir 跟部署node节点目录一致
+
+```shell
 helm install  install/kubernetes/helm/istio --name-template istio --namespace istio-system --timeout=300s --no-hooks  \
 --set gateways.istio-ingressgateway.type=ClusterIP   \
 --set gateways.istio-egressgateway.enabled=true \
@@ -115,26 +131,35 @@ helm install  install/kubernetes/helm/istio --name-template istio --namespace is
 --set global.disablePolicyChecks=false \
 --set global.proxy.autoInject=disabled
 ```
-# 添加namespace标签
-```
+
+## 添加namespace标签
+
+```shell
 kubectl label namespace default istio-injection=enabled
 ```
-# 查询添加标签
-```
+
+## 查询添加标签
+
+```shell
  kubectl get namespace -L istio-injection
  ```
-# cni 部署
-```
+
+## cni 部署
+
+```shell
 helm install install/kubernetes/helm/istio-cni --name-template istio-cni --namespace istio-system \
 --set cniBinDir=/opt/cni/bin \
 --set cniConfDir=/etc/cni/net.d   \
 --set excludeNamespaces={"istio-system,monitoring,kubernetes-dashboard,kube-system"}
 ```
-# 测试项目
+
+## 测试项目
+
 * [测试项目](./test)
 
-##  istio 更新
-```
+## istio 更新
+
+```shell
 #检查是否安装 istio-cni  插件
 helm status istio-cni --namespace istio-system
 #由于istio-cni 安装在非kube-system命名空间 先卸载istio-cni
@@ -176,4 +201,3 @@ helm upgrade --install istio install/kubernetes/helm/istio --namespace istio-sys
 # 替换tracing 跟踪器为zipkin
 添加--set tracing.provider=zipkin \
 ```
-
