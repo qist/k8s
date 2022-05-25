@@ -234,8 +234,8 @@ data:
           action: replace
         - source_labels: [__address__]
           action: replace
-          regex: '(.*):5443'
-          replacement: '${1}:(.+)'
+          regex: '(.*):(.+)'
+          replacement: '${1}:(10259)'
           target_label: __address__
         - source_labels: [__address__]
           separator: ;
@@ -252,7 +252,7 @@ data:
           target_label: endpoint
           replacement: https
           action: replace
-          
+
       - job_name: 'kubelet/0'
         honor_timestamps: true
         scrape_interval: 30s
