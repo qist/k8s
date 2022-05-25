@@ -118,6 +118,141 @@ data:
           target_label: endpoint
           replacement: https
           action: replace
+
+      - job_name: kube-controller-manager/0
+        honor_timestamps: true
+        scrape_interval: 30s
+        scrape_timeout: 30s
+        metrics_path: /metrics
+        scheme: https
+        authorization:
+          type: Bearer
+          credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        follow_redirects: true
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - default
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_component]
+          separator: ;
+          regex: apiserver
+          replacement: $1
+          action: keep
+        - source_labels: [__meta_kubernetes_service_label_provider]
+          separator: ;
+          regex: kubernetes
+          replacement: $1
+          action: keep
+        - source_labels: [__meta_kubernetes_endpoint_port_name]
+          separator: ;
+          regex: https
+          replacement: $1
+          action: keep
+        - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+          separator: ;
+          regex: Node;(.*)
+          target_label: node
+          replacement: ${1}
+          action: replace
+        - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+          separator: ;
+          regex: Pod;(.*)
+          target_label: pod
+          replacement: ${1}
+          action: replace
+        - source_labels: [__address__]
+          action: replace
+          regex: '(.*):(.+)'
+          replacement: '${1}:10257'
+          target_label: __address__
+        - source_labels: [__address__]
+          separator: ;
+          regex: (.*)
+          target_label: instance
+          replacement: $1
+          action: replace
+        - target_label: job
+          replacement: kube-controller-manager
+        - target_label: service
+          replacement: kube-controller-manager
+        - separator: ;
+          regex: (.*)
+          target_label: endpoint
+          replacement: https
+          action: replace
+
+      - job_name: kube-scheduler/0
+        honor_timestamps: true
+        scrape_interval: 30s
+        scrape_timeout: 30s
+        metrics_path: /metrics
+        scheme: https
+        authorization:
+          type: Bearer
+          credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        follow_redirects: true
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - default
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_component]
+          separator: ;
+          regex: apiserver
+          replacement: $1
+          action: keep
+        - source_labels: [__meta_kubernetes_service_label_provider]
+          separator: ;
+          regex: kubernetes
+          replacement: $1
+          action: keep
+        - source_labels: [__meta_kubernetes_endpoint_port_name]
+          separator: ;
+          regex: https
+          replacement: $1
+          action: keep
+        - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+          separator: ;
+          regex: Node;(.*)
+          target_label: node
+          replacement: ${1}
+          action: replace
+        - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+          separator: ;
+          regex: Pod;(.*)
+          target_label: pod
+          replacement: ${1}
+          action: replace
+        - source_labels: [__address__]
+          action: replace
+          regex: '(.*):5443'
+          replacement: '${1}:(.+)'
+          target_label: __address__
+        - source_labels: [__address__]
+          separator: ;
+          regex: (.*)
+          target_label: instance
+          replacement: $1
+          action: replace
+        - target_label: job
+          replacement: kube-scheduler
+        - target_label: service
+          replacement: kube-scheduler
+        - separator: ;
+          regex: (.*)
+          target_label: endpoint
+          replacement: https
+          action: replace
+          
       - job_name: 'kubelet/0'
         honor_timestamps: true
         scrape_interval: 30s
@@ -168,6 +303,7 @@ data:
           action: replace          
         - action: labelmap
           regex: __meta_kubernetes_node_label_(.+)
+
       - job_name: 'kubelet/1'
         honor_timestamps: true
         scrape_interval: 30s
@@ -218,6 +354,7 @@ data:
           action: replace          
         - action: labelmap
           regex: __meta_kubernetes_node_label_(.+)
+
       - job_name: 'kubelet/2'
         honor_timestamps: true
         scrape_interval: 30s
@@ -268,6 +405,7 @@ data:
           action: replace          
         - action: labelmap
           regex: __meta_kubernetes_node_label_(.+)
+
       - job_name: 'kube-proxy/0'
         honor_timestamps: true
         scrape_interval: 30s
@@ -290,7 +428,7 @@ data:
           regex: (.+)
         - source_labels: [__address__]
           action: replace
-          regex: '(.*):10250'
+          regex: '(.*):(.+)'
           replacement: '${1}:10249'
           target_label: __address__
         - source_labels: [__address__]

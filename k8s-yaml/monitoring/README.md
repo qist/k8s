@@ -76,20 +76,20 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    prometheus.io/port: "10257"
+    prometheus.io/port: "102 "
     prometheus.io/scrape: "true"
-    prometheus.io/scheme: "https"
+    prometheus.io/scheme: "https" #http
   labels:
-    k8s-app: kube-controller-manager
-  name: kube-controller-manager
+    k8s-app: kube 
+  name: kube 
   namespace: monitoring
 spec:
   clusterIP: None
   ports:
   - name: https-metrics
-    port: 10257
+    port: 102
     protocol: TCP
-    targetPort: 10257
+    targetPort: 102
   sessionAffinity: None
   type: ClusterIP
 ---
@@ -97,8 +97,8 @@ apiVersion: v1
 kind: Endpoints
 metadata:
   labels:
-    k8s-app: kube-controller-manager
-  name: kube-controller-manager
+    k8s-app: kube 
+  name: kube 
   namespace: monitoring
 subsets:
 - addresses:
@@ -107,46 +107,7 @@ subsets:
   - ip: 192.168.2.177
   ports:
   - name: https-metrics
-    port: 10257
-    protocol: TCP
-EOF
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    prometheus.io/port: "10259"
-    prometheus.io/scrape: "true"
-    prometheus.io/scheme: "https"
-  labels:
-    k8s-app: kube-scheduler
-  name: kube-scheduler
-  namespace: monitoring
-spec:
-  clusterIP: None
-  ports:
-  - name: https-metrics
-    port: 10259
-    protocol: TCP
-    targetPort: 10259
-  sessionAffinity: None
-  type: ClusterIP
----
-apiVersion: v1
-kind: Endpoints
-metadata:
-  labels:
-    k8s-app: kube-scheduler
-  name: kube-scheduler
-  namespace: monitoring
-subsets:
-- addresses:
-  - ip: 192.168.2.175
-  - ip: 192.168.2.176
-  - ip: 192.168.2.177
-  ports:
-  - name: https-metrics
-    port: 10259
+    port: 102
     protocol: TCP
 EOF
 # etcd 独立tls 监控
@@ -334,3 +295,7 @@ EOF
 kubectl apply -f blackbox-exporter-files-discover.yaml
 # 会自动刷新
 ```
+
+### master kube-controller-manager kube-scheduler 部署到相同机器实现自动发现监控
+
+ kube-controller-manager kube-scheduler 不需额外配置监控
