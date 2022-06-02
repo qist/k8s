@@ -2441,7 +2441,7 @@ EOF
 - name: is set  epel-release
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
-    regexp: '^#baseurl=https://download.fedoraproject.org/pub'
+    regexp: '^#baseurl=https://download.example/pub'
     replace: 'baseurl=https://mirrors.aliyun.com'
   with_items:
       - epel-modular.repo
