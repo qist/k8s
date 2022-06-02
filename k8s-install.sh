@@ -144,7 +144,7 @@ export CFSSL_VERSION=1.4.1
 # docker 版本
 export DOCKER_VERSION=20.10.14
 # docker cri 版本
-export CRI_DOCKER_VERSION=v0.2.0
+export CRI_DOCKER_VERSION=0.2.1
 # containerd 版本
 export CONTAINERD_VERSION=1.6.4
 # crictl 版本
@@ -479,8 +479,8 @@ downloadK8S() {
       exit $?
     fi
     # 下载 docker-cri
-    wget -c --tries=40 https://github.com/Mirantis/cri-dockerd/releases/download/${CRI_DOCKER_VERSION}/cri-dockerd-${CRI_DOCKER_VERSION}-linux-amd64.tar.gz \
-      -O $DOWNLOAD_PATH/cri-dockerd-${CRI_DOCKER_VERSION}-linux-amd64.tar.gz
+    wget -c --tries=40 https://github.com/Mirantis/cri-dockerd/releases/download/v${CRI_DOCKER_VERSION}/cri-dockerd-${CRI_DOCKER_VERSION}.amd64.tgz \
+      -O $DOWNLOAD_PATH/cri-dockerd-${CRI_DOCKER_VERSION}.amd64.tgz
     if [[ $? -ne 0 ]]; then
       colorEcho ${RED} "download  FATAL cri-dockerd."
       exit $?
@@ -2671,9 +2671,9 @@ runtimeConfig() {
         mkdir -p ${HOST_PATH}/roles/docker/files/bin
         mkdir -p ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}
         tar -xf ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}.tgz -C ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}
-        tar -xf ${DOWNLOAD_PATH}/cri-dockerd-${CRI_DOCKER_VERSION}-linux-amd64.tar.gz -C $DOWNLOAD_PATH
+        tar -xf ${DOWNLOAD_PATH}/cri-dockerd-${CRI_DOCKER_VERSION}.amd64.tgz -C $DOWNLOAD_PATH
         \cp -pdr ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}/docker/* ${HOST_PATH}/roles/docker/files/bin/
-        \cp -pdr $DOWNLOAD_PATH/cri-dockerd ${HOST_PATH}/roles/docker/files/bin/cri-dockerd
+        \cp -pdr $DOWNLOAD_PATH/cri-dockerd/cri-dockerd ${HOST_PATH}/roles/docker/files/bin/cri-dockerd
       fi
     else
       colorEcho ${RED} "docker no download."
