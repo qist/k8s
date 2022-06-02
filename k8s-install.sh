@@ -2425,7 +2425,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
     regexp: '^#baseurl=http://dl.rockylinux.org/\\\$contentdir'
-    replace: 'baseurl=https://mirrors.sjtug.sjtu.edu.cn/rocky'
+    replace: 'baseurl=https://mirrors.aliyun.com/rockylinux'
   with_items:
       - Rocky-AppStream.repo
       - Rocky-PowerTools.repo
@@ -2454,7 +2454,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
 - name: is set  epel-release
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
-    regexp: '^#baseurl=https://download.fedoraproject.org/pub'
+    regexp: '^#baseurl=https://download.example/pub'
     replace: 'baseurl=https://mirrors.aliyun.com'
   with_items:
       - epel-modular.repo
