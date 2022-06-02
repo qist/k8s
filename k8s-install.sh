@@ -2413,7 +2413,7 @@ EOF
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
     regexp: '^#baseurl=http://dl.rockylinux.org/\\\$contentdir'
-    replace: 'baseurl=https://mirrors.sjtug.sjtu.edu.cn/rocky'
+    replace: 'baseurl=https://mirrors.aliyun.com/rockylinux'
   with_items:
       - Rocky-AppStream.repo
       - Rocky-PowerTools.repo
