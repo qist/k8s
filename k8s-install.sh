@@ -2277,7 +2277,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
   when: ansible_distribution_major_version == '7'
 - name: CentOS 8 repo
   get_url:
-    url: https://mirrors.aliyun.com/repo/Centos-8.repo
+    url: https://mirrors.aliyun.com/repo/Centos-vault-8.5.2111.repo
     dest: /etc/yum.repos.d/CentOS-Base.repo
     force: yes
   when: ansible_distribution_major_version == '8'
@@ -2308,7 +2308,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
 - name: is set centos8 epel
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
-    regexp: '^#baseurl=https://download.fedoraproject.org/pub'
+    regexp: '^#baseurl=https://download.example/pub'
     replace: 'baseurl=https://mirrors.aliyun.com'
   with_items:
       - epel-modular.repo

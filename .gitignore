@@ -1,0 +1,16 @@
+k8s-yaml/victoriametrics/victoriametrics-serviceAccount.yaml
+k8s-yaml/victoriametrics/victoriametrics-rbac.yaml
+k8s-yaml/victoriametrics/victoriametrics-configmap.yaml
+k8s-yaml/victoriametrics/ca.pem
+k8s-yaml/jenkins-exporter/jenkins-exporter.yaml
+k8s-yaml/victoriametrics/monitoring.kubeconfig
+k8s-yaml/jenkins-exporter/dashboard.json
+k8s-yaml/dashboard/1/sss.txt
+k8s-yaml/dashboard/1/kubernetes-dashboard.pem
+k8s-yaml/dashboard/1/kubernetes-dashboard.csr
+k8s-yaml/dashboard/1/kubernetes-dashboard-secrets.yaml
+k8s-yaml/dashboard/1/kubernetes-dashboard-key.pem
+k8s-yaml/dashboard/1/gitlab.kubeconfig
+k8s-yaml/dashboard/1/dd
+k8s-yaml/dashboard/1/dashboard.kubeconfig
+k8s-yaml/dashboard/dashboard.kubeconfig
