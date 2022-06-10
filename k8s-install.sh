@@ -144,7 +144,7 @@ export CFSSL_VERSION=1.4.1
 # docker 版本
 export DOCKER_VERSION=20.10.14
 # docker cri 版本
-export CRI_DOCKER_VERSION=0.2.1
+export CRI_DOCKER_VERSION=0.2.2
 # containerd 版本
 export CONTAINERD_VERSION=1.6.4
 # crictl 版本
@@ -4108,8 +4108,10 @@ LimitCORE=infinity
 LimitMEMLOCK=infinity
 EnvironmentFile=-${K8S_PATH}/conf/kubelet
 ExecStart=${K8S_PATH}/bin/kubelet \$KUBELET_OPTS
-Restart=on-failure
 KillMode=process
+Restart=always
+StartLimitInterval=0
+RestartSec=10
 [Install]
 WantedBy=multi-user.target
 EOF
