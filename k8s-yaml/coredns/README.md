@@ -13,6 +13,7 @@ data:
         ready
         kubernetes cluster.local in-addr.arpa ip6.arpa {
             pods insecure
+            endpoint_pod_names
             fallthrough in-addr.arpa ip6.arpa
             ttl 30
         }
