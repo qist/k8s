@@ -101,7 +101,7 @@ spec:
           runAsNonRoot: true
           runAsUser: 65532
       - name: addon-resizer
-        image: juestnow/addon-resizer:1.8.11
+        image: juestnow/addon-resizer-amd64:2.3
         resources:
           limits:
             cpu: 100m
@@ -125,7 +125,7 @@ spec:
           - --extra-cpu=1m
           - --memory=200Mi
           - --extra-memory=2Mi
-          - --threshold=5
+          - --stderrthreshold=5
           - --deployment=kube-state-metrics          
       nodeSelector:
         kubernetes.io/os: linux
