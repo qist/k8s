@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: kube-state-metrics
-    app.kubernetes.io/version: v2.2.3
+    app.kubernetes.io/version: v2.5.0
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/scheme: "https"
