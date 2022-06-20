@@ -2,8 +2,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
+    app.kubernetes.io/component: exporter
     app.kubernetes.io/name: kube-state-metrics
-    app.kubernetes.io/version: v2.5.0
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 2.5.0
   name: kube-state-metrics
 rules:
 - apiGroups:
@@ -23,18 +25,7 @@ rules:
   - endpoints
   verbs:
   - list
-  - get  
   - watch
-- apiGroups:
-  - extensions
-  resources:
-  - daemonsets
-  - deployments
-  - replicasets
-  - ingresses
-  verbs:
-  - list
-  - watch  
 - apiGroups:
   - apps
   resources:
@@ -44,8 +35,6 @@ rules:
   - replicasets
   verbs:
   - list
-  - get 
-  - update
   - watch
 - apiGroups:
   - batch
@@ -54,7 +43,6 @@ rules:
   - jobs
   verbs:
   - list
-  - get   
   - watch
 - apiGroups:
   - autoscaling
@@ -112,7 +100,6 @@ rules:
   - ingresses
   verbs:
   - list
-  - get 
   - watch
 - apiGroups:
   - coordination.k8s.io
@@ -121,7 +108,3 @@ rules:
   verbs:
   - list
   - watch
-- nonResourceURLs:
-  - /metrics
-  verbs:
-  - get   
