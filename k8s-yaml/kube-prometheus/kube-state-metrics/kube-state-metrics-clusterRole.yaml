@@ -25,7 +25,18 @@ rules:
   - endpoints
   verbs:
   - list
+  - get  
   - watch
+- apiGroups:
+  - extensions
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  - ingresses
+  verbs:
+  - list
+  - watch  
 - apiGroups:
   - apps
   resources:
@@ -35,6 +46,8 @@ rules:
   - replicasets
   verbs:
   - list
+  - get 
+  - update
   - watch
 - apiGroups:
   - batch
@@ -43,6 +56,7 @@ rules:
   - jobs
   verbs:
   - list
+  - get   
   - watch
 - apiGroups:
   - autoscaling
@@ -100,6 +114,7 @@ rules:
   - ingresses
   verbs:
   - list
+  - get 
   - watch
 - apiGroups:
   - coordination.k8s.io
@@ -108,3 +123,7 @@ rules:
   verbs:
   - list
   - watch
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get   

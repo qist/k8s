@@ -6,6 +6,10 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/part-of: kube-prometheus
     app.kubernetes.io/version: 2.5.0
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/scheme: "https"
+    prometheus.io/port: "9443"
   name: kube-state-metrics
   namespace: monitoring
 spec:
