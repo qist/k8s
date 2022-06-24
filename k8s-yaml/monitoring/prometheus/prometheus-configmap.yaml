@@ -235,7 +235,7 @@ data:
         - source_labels: [__address__]
           action: replace
           regex: '(.*):(.+)'
-          replacement: '${1}:(10259)'
+          replacement: '${1}:10259'
           target_label: __address__
         - source_labels: [__address__]
           separator: ;
