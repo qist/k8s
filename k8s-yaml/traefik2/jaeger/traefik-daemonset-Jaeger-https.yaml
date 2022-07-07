@@ -27,7 +27,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: ingress-system
-          image: traefik:v2.5.0
+          image: traefik:v2.6.1
           args:
             - --api.insecure
             - --api.dashboard
@@ -37,6 +37,8 @@ spec:
             - --accessLog.fields.headers.defaultMode=redact
             - --entrypoints.web.Address=:80
             - --entrypoints.websecure.Address=:443
+            - --experimental.http3=true
+            - --entrypoints.websecure.http3.advertisedport=443
             - --entryPoints.web.forwardedHeaders.insecure
             - --entryPoints.websecure.forwardedHeaders.insecure
             - --providers.kubernetescrd
@@ -46,6 +48,10 @@ spec:
             - --providers.kubernetesingress.throttleDuration=10s
             - --metrics.prometheus
             - --serverstransport.insecureskipverify=true
+            - --entrypoints.websecure.http.tls=true
+            - --entrypoints.websecure.transport.respondingtimeouts.idletimeout=3600
+            - --entryPoints.websecure.transport.respondingTimeouts.writeTimeout=3600
+            - --entryPoints.websecure.transport.respondingTimeouts.readTimeout=3600
             - --tracing.jaeger=true
             - --tracing.jaeger.samplingServerURL=http://jaeger-agent:5778/sampling
             - --tracing.jaeger.samplingType=const
@@ -105,6 +111,10 @@ spec:
     - protocol: TCP
       name: web
       port: 80
+    - name: http3
+      protocol: UDP
+      port: 443
+      targetPort: http3
     - protocol: TCP
       name: admin
       port: 8080

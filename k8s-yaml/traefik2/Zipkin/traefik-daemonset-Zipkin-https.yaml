@@ -27,7 +27,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: traefik
-          image: traefik:v2.5.0
+          image: traefik:v2.6.1
           args:
             - --api.insecure
             - --api.dashboard
@@ -37,6 +37,8 @@ spec:
             - --accessLog.fields.headers.defaultMode=redact
             - --entrypoints.web.Address=:80
             - --entrypoints.websecure.Address=:443
+            - --experimental.http3=true
+            - --entrypoints.websecure.http3.advertisedport=443
             - --entryPoints.web.forwardedHeaders.insecure
             - --entryPoints.websecure.forwardedHeaders.insecure
             - --providers.kubernetescrd
@@ -46,6 +48,10 @@ spec:
             - --providers.kubernetesingress.throttleDuration=10s
             - --metrics.prometheus
             - --serverstransport.insecureskipverify=true
+            - --entrypoints.websecure.http.tls=true
+            - --entrypoints.websecure.transport.respondingtimeouts.idletimeout=3600
+            - --entryPoints.websecure.transport.respondingTimeouts.writeTimeout=3600
+            - --entryPoints.websecure.transport.respondingTimeouts.readTimeout=3600
             - --tracing.zipkin=true
             - --tracing.zipkin.httpEndpoint=http://zipkin:9411/api/v2/spans
             - --tracing.zipkin.sameSpan=true
@@ -58,6 +64,10 @@ spec:
             - name: websecure
               containerPort: 443
               hostPort: 443
+            - name: http3
+              hostPort: 443
+              containerPort: 443
+              protocol: UDP
             - name: admin
               containerPort: 8080
               hostPort: 8080
@@ -102,6 +112,10 @@ spec:
     - protocol: TCP
       name: web
       port: 80
+    - name: http3
+      protocol: UDP
+      port: 443
+      targetPort: http3
     - protocol: TCP
       name: admin
       port: 8080
