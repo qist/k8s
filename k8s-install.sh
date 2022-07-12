@@ -418,6 +418,15 @@ elif [ ${RUNTIME} == "CRIO" ]; then
   # 拉取镜像使用命令
   PULL_IMAGES=crictl
 fi
+#　disable ipv6
+#- name: disabled ipv6
+# shell: nmcli c modify "System {{ ansible_default_ipv4.interface }}" ipv6.method ignore
+# when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky'
+#- name: restarted service NetworkManager
+# service:
+#   name: NetworkManager 
+#   state: restarted
+# when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky'
 # 后端 kube-apiserver ip列表
 CP_HOSTS=$(echo $K8S_APISERVER_VIP | sed -e "s/\"//g")
 #######
