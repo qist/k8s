@@ -35,7 +35,7 @@ K8S_VIP="192.168.2.175"
 IPVS=true
 if [ $IPVS = true ]; then
 # ipvs 负载均衡vip ip 
-  MASTER_IP=100.100.100.100
+  MASTER_IP=169.254.0.10
 else
   # K8S 组件连接 master IP 这里采用 NGINX 每个节点部署所以本地IP
   MASTER_IP=127.0.0.1
