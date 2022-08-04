@@ -21,11 +21,25 @@ UNProxy() {
 # node 节点 ansible 接受写法
 NODE_IP="192.168.2.185,192.168.2.187,192.168.3.62"
 #kube-apiserver 服务器IP列表 有更多的节点时请添加IP K8S_APISERVER_VIP="\"192.168.2.247\",\"192.168.2.248\",\"192.168.2.249\",\"192.168.2.250\",\"192.168.2.251\""
-K8S_APISERVER_VIP="\"192.168.2.175\",\"192.168.2.176\",\"192.168.2.177\""
+MASTER_FRONTEND_IP1=192.168.2.175
+MASTER_FRONTEND_IP2=192.168.2.176
+MASTER_FRONTEND_IP3=192.168.2.177
+K8S_APISERVER_VIP="\"${MASTER_FRONTEND_IP1}\",\"${MASTER_FRONTEND_IP2}\",\"${MASTER_FRONTEND_IP3}\""
+#kube-apiserver 监听port
+SECURE_PORT=5443
+# kube-apiserver vip 监听port proxy 工具监听端口不能与kube-apiserver 端口重复master 不能做高可用。
+K8S_VIP_PORT=6443
 # k8s apiserver IP 外部操作K8S 使用 建议使用lb ip 如果使用LB IP 请先配置好，自动部署集群验证会用到不然会报错 可以是master 任意节点IP 或者解析域名
 K8S_VIP="192.168.2.175"
-# K8S 组件连接 master IP 这里采用 NGINX 每个节点部署所以本地IP 就可以
-MASTER_IP=127.0.0.1
+# 是否使用ipvs 负载均衡 默认开启
+IPVS=true
+if [ $IPVS = true ]; then
+# ipvs 负载均衡vip ip 
+  MASTER_IP=100.100.100.100
+else
+  # K8S 组件连接 master IP 这里采用 NGINX 每个节点部署所以本地IP
+  MASTER_IP=127.0.0.1
+fi
 # 配置etcd 集群IP
 ETCD_MEMBER_1_IP="192.168.2.175"
 ETCD_MEMBER_1_HOSTNAMES="k8s-master-1"
@@ -68,10 +82,6 @@ export CERT_OU="Qist"
 export CERT_PROFILE="kubernetes"
 # 数字证书时间及kube-controller-manager 签发证书时间 默认100年
 export EXPIRY_TIME="876000h"
-#kube-apiserver 监听port
-SECURE_PORT=5443
-# kube-apiserver vip 监听port proxy 工具监听端口不能与kube-apiserver 端口重复master 不能做高可用。
-K8S_VIP_PORT=6443
 #######################################################################################################################################################################
 #######################################################################################################################################################################
 ##############################参数选择，选择需要部署网络查询 容器运行时，是否升级iptables  是否部署K8S 事件集群etcd等 #################################################
@@ -119,7 +129,12 @@ FEATURE_GATES_OPT="ServiceTopology=true,EndpointSlice=true,TTLAfterFinished=true
 # nginx 启动进程数 auto 当前机器cpu 核心数的进程数
 CPU_NUM=4
 # 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者haproxy docker.io/juestnow/haproxy-proxy:2.5.4
-HA_PROXY_IMAGE="docker.io/juestnow/nginx-proxy:1.21.6"
+if [ $IPVS = true ]; then
+  HA_PROXY_IMAGE="docker.io/juestnow/lvscare-proxy:v1.1.3-beta.8"
+else
+  HA_PROXY_IMAGE="docker.io/juestnow/nginx-proxy:1.21.6"
+fi
+
 # pod-infra-container-image 地址
 POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause:3.6"
 #########################################################################################################################################################################
@@ -237,7 +252,7 @@ TLS_CIPHER="TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_G
 # kube-apiserver 配置
 # K8S ETCD存储 目录名字
 ETCD_PREFIX="/registry"
-K8S_SSL="\"${K8S_VIP}\",\"127.0.0.1\""
+K8S_SSL="\"${K8S_VIP}\",\"127.0.0.1\",\"${MASTER_IP}\""
 # 生成 EncryptionConfig 所需的加密 key
 ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 # kubectl 连接 kube-apiserver
@@ -2035,6 +2050,55 @@ kubeHaProxy() {
   else
     colorEcho ${GREEN} '文件夹已经存在'
   fi
+  if [ $IPVS = true ]; then
+  cat >${HOST_PATH}/roles/kube-ha-proxy/files/kube-ha-proxy.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    component: kube-apiserver-ha-proxy
+    tier: control-plane
+  name: kube-apiserver-ha-proxy
+  namespace: kube-system
+spec:
+  containers:
+  - args:
+    - care
+    - --vs
+    - ${MASTER_IP}:${K8S_VIP_PORT}
+    - --health-path
+    - /
+    - --health-schem
+    - https
+    - --rs
+    - ${MASTER_FRONTEND_IP1}:${SECURE_PORT}
+    - --rs
+    - ${MASTER_FRONTEND_IP2}:${SECURE_PORT}
+    - --rs
+    - ${MASTER_FRONTEND_IP3}:${SECURE_PORT}
+    command:
+    - /usr/bin/lvscare
+    image: ${HA_PROXY_IMAGE}
+    imagePullPolicy: IfNotPresent
+    name: kube-apiserver-ha-proxy
+    resources: {}
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /lib/modules
+      name: lib-modules
+      readOnly: true
+  hostNetwork: true
+  priorityClassName: system-cluster-critical
+  volumes:
+  - hostPath:
+      path: /lib/modules
+      type: ""
+    name: lib-modules
+status: {}
+EOF
+else
   cat >${HOST_PATH}/roles/kube-ha-proxy/files/kube-ha-proxy.yaml <<EOF
 apiVersion: v1
 kind: Pod
@@ -2068,6 +2132,7 @@ spec:
   priorityClassName: system-cluster-critical
 status: {}
 EOF
+fi
   # 创建kube-proxy ansible
   cat >${HOST_PATH}/roles/kube-ha-proxy/tasks/main.yml <<EOF
 - name: Create ${POD_MANIFEST_PATH}
@@ -4962,6 +5027,26 @@ kubeProxyConfig() {
     exit 1
   fi
   # 创建 kube-proxy 启动配置文件
+    if [ $IPVS = true ]; then
+  cat >${HOST_PATH}/roles/kube-proxy/templates/kube-proxy <<EOF
+KUBE_PROXY_OPTS="--logtostderr=${LOGTOSTDERR} \\
+--v=${LEVEL_LOG} \\
+--masquerade-all=true \\
+--proxy-mode=ipvs \\
+--profiling=true \\
+--ipvs-min-sync-period=5s \\
+--ipvs-sync-period=5s \\
+--ipvs-scheduler=rr \\
+--conntrack-max-per-core=0 \\
+--cluster-cidr=${CLUSTER_CIDR} \\
+--log-dir=${K8S_PATH}/log \\
+--metrics-bind-address=0.0.0.0 \\
+--alsologtostderr=${ALSOLOGTOSTDERR} \\
+--hostname-override={{ ansible_hostname }} \\
+--kubeconfig=${K8S_PATH}/conf/kube-proxy.kubeconfig \\
+--ipvs-exclude-cidrs=${MASTER_IP}/32"
+EOF
+else
   cat >${HOST_PATH}/roles/kube-proxy/templates/kube-proxy <<EOF
 KUBE_PROXY_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --v=${LEVEL_LOG} \\
@@ -4979,6 +5064,7 @@ KUBE_PROXY_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --hostname-override={{ ansible_hostname }} \\
 --kubeconfig=${K8S_PATH}/conf/kube-proxy.kubeconfig"
 EOF
+fi
   # 创建 kube-proxy 启动文件
   cat >${HOST_PATH}/roles/kube-proxy/templates/kube-proxy.service <<EOF
 [Unit]
