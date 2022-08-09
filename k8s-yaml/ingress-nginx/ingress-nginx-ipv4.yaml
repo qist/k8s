@@ -40,7 +40,7 @@ data:
   ignore-invalid-headers: "true"
   compute-full-forwarded-for: "true"
   forwarded-for-header: "X-Forwarded-For"
-  use-forwarded-headers: "true"
+  use-forwarded-headers: "false"
   load-balance: ewma
   large-client-header-buffers: 4 128k
   server-name-hash-bucket-size: "128"
