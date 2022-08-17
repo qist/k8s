@@ -130,7 +130,7 @@ FEATURE_GATES_OPT="ServiceTopology=true,EndpointSlice=true,TTLAfterFinished=true
 CPU_NUM=4
 # 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者haproxy docker.io/juestnow/haproxy-proxy:2.5.4
 if [ $IPVS = true ]; then
-  HA_PROXY_IMAGE="docker.io/juestnow/lvscare-proxy:v1.1.3-beta.8"
+  HA_PROXY_IMAGE="docker.io/juestnow/lvscare-proxy:v1.1.3-beta.8-amd64"
 else
   HA_PROXY_IMAGE="docker.io/juestnow/nginx-proxy:1.21.6"
 fi
@@ -2077,11 +2077,14 @@ spec:
     - ${MASTER_FRONTEND_IP2}:${SECURE_PORT}
     - --rs
     - ${MASTER_FRONTEND_IP3}:${SECURE_PORT}
-    command:
-    - /usr/bin/lvscare
     image: ${HA_PROXY_IMAGE}
     imagePullPolicy: IfNotPresent
     name: kube-apiserver-ha-proxy
+    env:
+    - name: vip
+      value: "${MASTER_IP}"
+    - name: K8S_VIP_PORT
+      value: "${K8S_VIP_PORT}"
     resources: {}
     securityContext:
       privileged: true
