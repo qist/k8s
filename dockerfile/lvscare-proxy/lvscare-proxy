@@ -1,0 +1,9 @@
+#!/bin/sh
+routeip=$(route -n|grep $vip| wc -l)
+if [[ $routeip == 0 ]]; then
+ifconfig lo:0 $vip broadcast $vip netmask 255.255.255.255 up
+route add -host $vip lo:0
+iptables -t nat -A POSTROUTING -m ipvs --vaddr $vip --vport $K8S_VIP_PORT -j MASQUERADE
+iptables -t mangle -A POSTROUTING -m ipvs --vaddr $vip --vport $K8S_VIP_PORT -j LOG --log-prefix '[k8svip ipvs]'
+fi
+/usr/bin/lvscare "$@"
