@@ -381,7 +381,8 @@ elif [ ${RUNTIME} == "CONTAINERD" ]; then
   # containerd.sock 路径
   RUN_CONTAINERD_SOCK=/run/containerd
   # kubelet 启动出错解决
-  EXEC_START_PRE=$(echo -e "ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/hugetlb/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/blkio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpuset/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/devices/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/net_cls,net_prio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/perf_event/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpu,cpuacct/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/freezer/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/memory/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/pids/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice")
+   EXEC_START_PRE=""
+  #EXEC_START_PRE=$(echo -e "ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/hugetlb/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/blkio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpuset/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/devices/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/net_cls,net_prio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/perf_event/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpu,cpuacct/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/freezer/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/memory/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/pids/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice")
   # kubelet 启动配置
   AFTER_REQUIRES=containerd.service
   # kubelet runtime 配置
@@ -425,7 +426,8 @@ elif [ ${RUNTIME} == "CRIO" ]; then
   # kubelet 启动配置
   AFTER_REQUIRES=crio.service
   # kubelet 启动出错解决
-  EXEC_START_PRE=$(echo -e "ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/hugetlb/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/blkio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpuset/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/devices/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/net_cls,net_prio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/perf_event/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpu,cpuacct/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/freezer/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/memory/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/pids/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice")
+   EXEC_START_PRE=""
+  #EXEC_START_PRE=$(echo -e "ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/hugetlb/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/blkio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpuset/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/devices/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/net_cls,net_prio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/perf_event/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpu,cpuacct/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/freezer/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/memory/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/pids/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice")
   # kubelet runtime 配置
   CONTAINER_RUNTIME=remote
   CONTAINER_RUNTIME_ENDPOINT=unix://${RUN_CRIO_SOCK}/crio.sock
