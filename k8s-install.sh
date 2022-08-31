@@ -149,7 +149,7 @@ export DOWNLOAD_PATH=${HOST_PATH}/download
 # ETCD 版本
 export ETCD_VERSION=v3.5.4
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.24.0
+export KUBERNETES_VERSION=v1.25.0
 # cni 版本
 export CNI_VERSION=v1.1.1
 # iptables
@@ -167,8 +167,8 @@ export CRICTL_VERSION=v1.24.0
 # runc 版本
 export RUNC_VERSION=v1.1.1
 # cri-o 版本
-export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.c0b2474b80fd0844b883729bda88961bed7b472b.tar.gz"
-export CRIO_VERSION=v1.23.2
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.25.0.tar.gz"
+export CRIO_VERSION=v1.25.0
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
 FLANNEL_CNI_PLUGIN="rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.1"
@@ -3761,10 +3761,73 @@ plugin_dirs = [
 [crio.metrics]
 
 # Globally enable or disable metrics support.
-enable_metrics = false
+# enable_metrics = false
 
+# Specify enabled metrics collectors.
+# Per default all metrics are enabled.
+# It is possible, to prefix the metrics with "container_runtime_" and "crio_".
+# For example, the metrics collector "operations" would be treated in the same
+# way as "crio_operations" and "container_runtime_crio_operations".
+# metrics_collectors = [
+# 	"operations",
+# 	"operations_latency_microseconds_total",
+# 	"operations_latency_microseconds",
+# 	"operations_errors",
+# 	"image_pulls_by_digest",
+# 	"image_pulls_by_name",
+# 	"image_pulls_by_name_skipped",
+# 	"image_pulls_failures",
+# 	"image_pulls_successes",
+# 	"image_pulls_layer_size",
+# 	"image_layer_reuse",
+# 	"containers_oom_total",
+# 	"containers_oom",
+# 	"processes_defunct",
+# 	"operations_total",
+# 	"operations_latency_seconds",
+# 	"operations_latency_seconds_total",
+# 	"operations_errors_total",
+# 	"image_pulls_bytes_total",
+# 	"image_pulls_skipped_bytes_total",
+# 	"image_pulls_failure_total",
+# 	"image_pulls_success_total",
+# 	"image_layer_reuse_total",
+# 	"containers_oom_count_total",
+# ]
 # The port on which the metrics server will listen.
-metrics_port = 9090
+# metrics_port = 9090
+
+# Local socket path to bind the metrics server to
+# metrics_socket = ""
+
+# The certificate for the secure metrics server.
+# If the certificate is not available on disk, then CRI-O will generate a
+# self-signed one. CRI-O also watches for changes of this path and reloads the
+# certificate on any modification event.
+# metrics_cert = ""
+
+# The certificate key for the secure metrics server.
+# Behaves in the same way as the metrics_cert.
+# metrics_key = ""
+
+# A necessary configuration for OpenTelemetry trace data exporting
+[crio.tracing]
+
+# Globally enable or disable exporting OpenTelemetry traces.
+# enable_tracing = false
+
+# Address on which the gRPC trace collector listens on.
+# tracing_endpoint = "0.0.0.0:4317"
+
+# Number of samples to collect per million spans.
+# tracing_sampling_rate_per_million = 0
+
+# Necessary information pertaining to container and pod stats reporting.
+[crio.stats]
+
+# The number of seconds between collecting pod and container stats.
+# If set to 0, the stats are collected on-demand instead.
+# stats_collection_period = 0
 EOF
     if [[ ${NATIVE_CGROUPDRIVER} == "cgroupfs" ]]; then
       CONTAINER_CGROUP="Environment=CONTAINER_CONMON_CGROUP=pod"
