@@ -4740,7 +4740,7 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --alsologtostderr=${ALSOLOGTOSTDERR} \\
 --cluster-signing-cert-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --cluster-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem  \\
---cluster-signing-duration=${EXPIRY_TIME}0m0s \\
+--experimental-cluster-signing-duration=${EXPIRY_TIME}0m0s \\
 --root-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --service-account-private-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem \\
 --enable-garbage-collector=true \\
