@@ -91,6 +91,7 @@ INSTALL_K8S=OFF
 # 配置容器运行时 DOCKER,CONTAINERD,CRIO 默认docker
 RUNTIME=DOCKER
 # 网络插件 选择 flannel,kube-router 默认 flannel
+
 # calico 插件下载地址
 # https://docs.projectcalico.org/manifests/calico.yaml
 # https://docs.projectcalico.org/manifests/calico-typha.yaml
