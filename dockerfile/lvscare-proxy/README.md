@@ -28,6 +28,8 @@ vip=192.168.3.220
 ifconfig lo:0 $vip broadcast $vip netmask 255.255.255.255 up
 route add -host $vip lo:0
 iptables -t nat -A POSTROUTING -m ipvs --vaddr $vip --vport 6443 -j MASQUERADE
-iptables -t mangle -A POSTROUTING -m ipvs --vaddr $vip --vport 6443 -j LOG --log-prefix '[k8svip ipvs]'
+iptables -t mangle -A POSTROUTING -m ipvs --vaddr $vip --vport 6443 
+# 记录日志
+#iptables -t mangle -A POSTROUTING -m ipvs --vaddr $vip --vport 6443 -j LOG --log-prefix '[k8svip ipvs]'
 echo 1 | tee /proc/sys/net/ipv4/vs/conntrack
 ```
