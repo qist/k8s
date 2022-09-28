@@ -1927,3 +1927,18 @@ groups:
     for: 2m
     labels:
       severity: warning
+- name: kube_node_rules
+  interval: 1m
+  rules:
+  - record: kube_node_status_allocatable_cpu_cores
+    expr: kube_node_status_allocatable{job= "kube-state-metrics", resource= "cpu"}
+  - record: kube_node_status_allocatable_memory_bytes
+    expr: kube_node_status_allocatable{job= "kube-state-metrics", resource= "memory"}
+  - record: kube_pod_container_resource_requests_cpu_cores
+    expr: kube_pod_container_resource_requests{job= "kube-state-metrics", resource= "cpu"}
+  - record: kube_pod_container_resource_requests_memory_bytes
+    expr: kube_pod_container_resource_requests{job= "kube-state-metrics", resource= "memory"}
+  - record: kube_pod_container_resource_limits_cpu_cores
+    expr: kube_pod_container_resource_limits{job= "kube-state-metrics", resource= "cpu"}
+  - record: kube_pod_container_resource_limits_memory_bytes
+    expr: kube_pod_container_resource_limits{job= "kube-state-metrics", resource= "memory"}
