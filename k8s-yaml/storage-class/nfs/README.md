@@ -1,9 +1,14 @@
+- 支持k8s 1.19以下的版本
+
 # 创建命名空间
-```
+
+```bash
 kubectl create namespace clusterstorage
 ```
-# nfs storageClass 部署
-```
+
+## nfs storageClass 部署
+
+```bash
 # 修改nfs-deployment.yaml server path 改成自己nfs 服务器配置
 # 修改storageClass.yaml 改成自己喜欢的名字 修改是否为默认存储  storageclass.kubernetes.io/is-default-class: "true"   # true|false
 # 部署nfs storageClass kubectl apply -f .

@@ -1,9 +1,14 @@
+- 支持k8s 1.19以下的版本
+
 # 创建命名空间
-```
+
+```bash
 kubectl create namespace clusterstorage
 ```
-# cephfs storageClass 部署
-```
+
+## cephfs storageClass 部署
+
+```bash
 # 获取ceph secret  base64
 ceph auth get-key client.admin | base64
 # [root@ceph-adm ~]# ceph auth get-key client.admin | base64

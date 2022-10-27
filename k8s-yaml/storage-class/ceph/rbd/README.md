@@ -1,9 +1,15 @@
+- 支持k8s 1.19以下的版本
+
 # 创建命名空间
-```
+
+```bash
+
 kubectl create namespace clusterstorage
 ```
-# rbd storageClass 部署
-```
+
+## rbd storageClass 部署
+
+```bash 
 #进入ceph 创建存储空间
 ceph osd pool ls
 #创建 pool
