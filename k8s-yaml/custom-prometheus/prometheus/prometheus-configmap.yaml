@@ -301,8 +301,8 @@ data:
           target_label: endpoint
           replacement: https
           action: replace          
-        - action: labelmap
-          regex: __meta_kubernetes_node_label_(.+)
+        # - action: labelmap
+        #   regex: __meta_kubernetes_node_label_(.+)
 
       - job_name: 'kubelet/1'
         honor_timestamps: true
@@ -352,8 +352,8 @@ data:
           target_label: endpoint
           replacement: https
           action: replace          
-        - action: labelmap
-          regex: __meta_kubernetes_node_label_(.+)
+        # - action: labelmap
+        #   regex: __meta_kubernetes_node_label_(.+)
 
       - job_name: 'kubelet/2'
         honor_timestamps: true
@@ -403,8 +403,8 @@ data:
           target_label: endpoint
           replacement: https
           action: replace          
-        - action: labelmap
-          regex: __meta_kubernetes_node_label_(.+)
+        # - action: labelmap
+        #   regex: __meta_kubernetes_node_label_(.+)
 
       - job_name: 'kube-proxy/0'
         honor_timestamps: true
@@ -446,8 +446,8 @@ data:
           target_label: endpoint
           replacement: http
           action: replace          
-        - action: labelmap
-          regex: __meta_kubernetes_node_label_(.+)
+        # - action: labelmap
+        #   regex: __meta_kubernetes_node_label_(.+)
 
       - job_name: kubernetes-endpoints
         honor_timestamps: true
@@ -488,10 +488,10 @@ data:
           target_label: __address__
           replacement: $1:$2
           action: replace
-        - separator: ;
-          regex: __meta_kubernetes_service_label_(.+)
-          replacement: $1
-          action: labelmap
+        # - separator: ;
+        #   regex: __meta_kubernetes_service_label_(.+)
+        #   replacement: $1
+        #   action: labelmap
         - source_labels: [__meta_kubernetes_namespace]
           separator: ;
           regex: (.*)
@@ -687,10 +687,10 @@ data:
           target_label: instance
           replacement: $1
           action: replace
-        - separator: ;
-          regex: __meta_kubernetes_service_label_(.+)
-          replacement: $1
-          action: labelmap
+        # - separator: ;
+        #   regex: __meta_kubernetes_service_label_(.+)
+        #   replacement: $1
+        #   action: labelmap
         - source_labels: [__meta_kubernetes_namespace]
           separator: ;
           regex: (.*)
@@ -749,10 +749,10 @@ data:
           target_label: instance
           replacement: $1
           action: replace
-        - separator: ;
-          regex: __meta_kubernetes_service_label_(.+)
-          replacement: $1
-          action: labelmap
+        # - separator: ;
+        #   regex: __meta_kubernetes_service_label_(.+)
+        #   replacement: $1
+        #   action: labelmap
         - source_labels: [__meta_kubernetes_namespace]
           separator: ;
           regex: (.*)
@@ -811,10 +811,10 @@ data:
           target_label: instance
           replacement: $1
           action: replace
-        - separator: ;
-          regex: __meta_kubernetes_service_label_(.+)
-          replacement: $1
-          action: labelmap
+        # - separator: ;
+        #   regex: __meta_kubernetes_service_label_(.+)
+        #   replacement: $1
+        #   action: labelmap
         - source_labels: [__meta_kubernetes_namespace]
           separator: ;
           regex: (.*)
@@ -862,8 +862,8 @@ data:
         - source_labels: [__param_target]
           separator: ;
           target_label: instance
-        - action: labelmap
-          regex: __meta_kubernetes_ingress_label_(.+)
+        # - action: labelmap
+        #   regex: __meta_kubernetes_ingress_label_(.+)
         - source_labels: [__meta_kubernetes_namespace]
           separator: ;
           target_label: namespace
@@ -909,10 +909,10 @@ data:
           target_label: __address__
           replacement: $1:$2
           action: replace
-        - separator: ;
-          regex: __meta_kubernetes_pod_label_(.+)
-          replacement: $1
-          action: labelmap
+        # - separator: ;
+        #   regex: __meta_kubernetes_pod_label_(.+)
+        #   replacement: $1
+        #   action: labelmap
         - source_labels: [__meta_kubernetes_namespace]
           separator: ;
           regex: (.*)
