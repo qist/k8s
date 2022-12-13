@@ -148,9 +148,9 @@ export HOST_PATH=$(pwd)
 export DOWNLOAD_PATH=${HOST_PATH}/download
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.5.4
+export ETCD_VERSION=v3.5.6
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.25.0
+export KUBERNETES_VERSION=v1.26.0
 # cni 版本
 export CNI_VERSION=v1.1.1
 # iptables
@@ -158,18 +158,18 @@ export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
 export CFSSL_VERSION=1.4.1
 # docker 版本
-export DOCKER_VERSION=20.10.14
+export DOCKER_VERSION=20.10.21
 # docker cri 版本
-export CRI_DOCKER_VERSION=0.2.2
+export CRI_DOCKER_VERSION=0.2.6
 # containerd 版本
-export CONTAINERD_VERSION=1.6.4
+export CONTAINERD_VERSION=1.6.12
 # crictl 版本
-export CRICTL_VERSION=v1.24.0
+export CRICTL_VERSION=v1.25.0
 # runc 版本
-export RUNC_VERSION=v1.1.1
+export RUNC_VERSION=v1.1.4
 # cri-o 版本
-export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.25.0.tar.gz"
-export CRIO_VERSION=v1.25.0
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.25.1.tar.gz"
+export CRIO_VERSION=v1.25.1
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
 FLANNEL_CNI_PLUGIN="rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.1"
@@ -1887,8 +1887,7 @@ EOF
   fi
   # 创建 kube-apiserver 启动配置文件
   cat >${HOST_PATH}/roles/kube-apiserver/templates/kube-apiserver <<EOF
-KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
-        --bind-address={{ $KUBELET_IPV4 }} \\
+KUBE_APISERVER_OPTS="--bind-address={{ $KUBELET_IPV4 }} \\
         --advertise-address={{ $KUBELET_IPV4 }} \\
         --secure-port=${SECURE_PORT} \\
         --service-cluster-ip-range=${SERVICE_CIDR} \\
@@ -1916,8 +1915,8 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --enable-aggregator-routing=true \\
         --anonymous-auth=false \\
         --encryption-provider-config=${K8S_PATH}/config/encryption-config.yaml \\
-        --enable-admission-plugins=${ENABLE_ADMISSION_PLUGINS_OPT} \\
-        --disable-admission-plugins=${DISABLE_ADMISSION_PLUGINS_OPT} \\
+        --enable-admission-plugins=${ENABLE_ADMISSION_PLUGINS} \\
+        --disable-admission-plugins=${DISABLE_ADMISSION_PLUGINS} \\
         --cors-allowed-origins=.* \\
         --runtime-config=${RUNTIME_CONFIG} \\
         --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname \\
@@ -1935,8 +1934,6 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --http2-max-streams-per-connection=10000 \\
         --event-ttl=1h \\
         --enable-bootstrap-token-auth=true \\
-        --alsologtostderr=${ALSOLOGTOSTDERR} \\
-        --log-dir=${K8S_PATH}/log \\
         --v=${LEVEL_LOG} \\
         --tls-cipher-suites=${TLS_CIPHER} \\
         --endpoint-reconciler-type=lease \\
@@ -4226,10 +4223,7 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --cert-dir=${K8S_PATH}/ssl \\
               --runtime-cgroups=/systemd/system.slice \\
               --root-dir=/var/lib/kubelet \\
-              --log-dir=${K8S_PATH}/log \\
-              --alsologtostderr=${ALSOLOGTOSTDERR} \\
               --config=${K8S_PATH}/conf/kubelet.yaml \\
-              --logtostderr=${LOGTOSTDERR} \\
               --container-runtime=${CONTAINER_RUNTIME} \\
               --container-runtime-endpoint=${CONTAINER_RUNTIME_ENDPOINT} \\
               --containerd=${CONTAINERD_ENDPOINT} \\
@@ -4773,8 +4767,7 @@ controllerConfig() {
   fi
   # 创建kube-controller-manager 启动配置文件
   cat >${HOST_PATH}/roles/kube-controller-manager/templates/kube-controller-manager <<EOF
-KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
---profiling \\
+KUBE_CONTROLLER_MANAGER_OPTS="--profiling \\
 --concurrent-service-syncs=${CONCURRENT_SERVICE_SYNCS} \\
 --concurrent-deployment-syncs=${CONCURRENT_DEPLOYMENT_SYNCS} \\
 --concurrent-gc-syncs=${CONCURRENT_GC_SYNCS} \\
@@ -4801,7 +4794,6 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --pod-eviction-timeout=${POD_EVICTION_TIMEOUT} \\
 --node-startup-grace-period=${NODE_STARTUP_GRACE_PERIOD} \\
 --terminated-pod-gc-threshold=${TERMINATED_POD_GC_THRESHOLD} \\
---alsologtostderr=${ALSOLOGTOSTDERR} \\
 --cluster-signing-cert-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --cluster-signing-key-file=${K8S_PATH}/ssl/k8s/k8s-ca-key.pem  \\
 --cluster-signing-duration=${EXPIRY_TIME}0m0s \\
@@ -4815,7 +4807,6 @@ KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --kube-api-qps=${KUBE_API_QPS} \\
 --kube-api-burst=${KUBE_API_BURST} \\
 --tls-cipher-suites=${TLS_CIPHER} \\
---log-dir=${K8S_PATH}/log \\
 --v=${LEVEL_LOG}"
 EOF
   # 创建kube-controller-manager 启动文件
@@ -4952,9 +4943,7 @@ schedulerConfig() {
   fi
   # 创建kube-scheduler 启动配置文件
   cat >${HOST_PATH}/roles/kube-scheduler/templates/kube-scheduler <<EOF
-KUBE_SCHEDULER_OPTS=" \\
-                   --logtostderr=${LOGTOSTDERR} \\
-                   --bind-address=0.0.0.0 \\
+KUBE_SCHEDULER_OPTS="--bind-address=0.0.0.0 \\
                    --leader-elect=true \\
                    --kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
                    --authentication-kubeconfig=${K8S_PATH}/config/kube-scheduler.kubeconfig \\
@@ -4966,11 +4955,9 @@ KUBE_SCHEDULER_OPTS=" \\
                    --requestheader-extra-headers-prefix=X-Remote-Extra- \\
                    --requestheader-group-headers=X-Remote-Group \\
                    --requestheader-username-headers=X-Remote-User \\
-                   --alsologtostderr=${ALSOLOGTOSTDERR} \\
                    --kube-api-qps=${KUBE_API_QPS} \\
                    --authentication-tolerate-lookup-failure=false \\
                    --kube-api-burst=${KUBE_API_BURST} \\
-                   --log-dir=${K8S_PATH}/log \\
                    --tls-cipher-suites=${TLS_CIPHER} \\
                    --v=${LEVEL_LOG}"
 EOF
@@ -5098,8 +5085,7 @@ kubeProxyConfig() {
   # 创建 kube-proxy 启动配置文件
     if [ $IPVS = true ]; then
   cat >${HOST_PATH}/roles/kube-proxy/templates/kube-proxy <<EOF
-KUBE_PROXY_OPTS="--logtostderr=${LOGTOSTDERR} \\
---v=${LEVEL_LOG} \\
+KUBE_PROXY_OPTS="--v=${LEVEL_LOG} \\
 --masquerade-all=true \\
 --proxy-mode=ipvs \\
 --profiling=true \\
@@ -5108,17 +5094,14 @@ KUBE_PROXY_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --ipvs-scheduler=rr \\
 --conntrack-max-per-core=0 \\
 --cluster-cidr=${CLUSTER_CIDR} \\
---log-dir=${K8S_PATH}/log \\
 --metrics-bind-address=0.0.0.0 \\
---alsologtostderr=${ALSOLOGTOSTDERR} \\
 --hostname-override={{ ansible_hostname }} \\
 --kubeconfig=${K8S_PATH}/conf/kube-proxy.kubeconfig \\
 --ipvs-exclude-cidrs=${MASTER_IP}/32"
 EOF
 else
   cat >${HOST_PATH}/roles/kube-proxy/templates/kube-proxy <<EOF
-KUBE_PROXY_OPTS="--logtostderr=${LOGTOSTDERR} \\
---v=${LEVEL_LOG} \\
+KUBE_PROXY_OPTS="--v=${LEVEL_LOG} \\
 --masquerade-all=true \\
 --proxy-mode=ipvs \\
 --profiling=true \\
@@ -5127,9 +5110,7 @@ KUBE_PROXY_OPTS="--logtostderr=${LOGTOSTDERR} \\
 --ipvs-scheduler=rr \\
 --conntrack-max-per-core=0 \\
 --cluster-cidr=${CLUSTER_CIDR} \\
---log-dir=${K8S_PATH}/log \\
 --metrics-bind-address=0.0.0.0 \\
---alsologtostderr=${ALSOLOGTOSTDERR} \\
 --hostname-override={{ ansible_hostname }} \\
 --kubeconfig=${K8S_PATH}/conf/kube-proxy.kubeconfig"
 EOF
