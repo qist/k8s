@@ -56,7 +56,7 @@ ETCD_EVENTS_MEMBER_3_IP="192.168.3.62"
 ETCD_EVENTS_MEMBER_3_HOSTNAMES="k8s-node-3"
 ### cgroup驱动 cgroupfs systemd 默认 systemd
 NATIVE_CGROUPDRIVER=systemd
-#### 以下参数根据实际网络环境修改不能有重复网段
+##### 以下参数根据实际网络环境修改不能有重复网段
 # 最好使用 当前未用的网段 来定义服务网段和 Pod 网段
 # 服务网段，部署前路由不可达，部署后集群内路由可达(kube-proxy 保证)
 export SERVICE_CIDR="10.66.0.0/16"
