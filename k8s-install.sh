@@ -265,7 +265,7 @@ RUNTIME_CONFIG="api/all=true"
 #开启插件enable-admission-plugins #AlwaysPullImages 启用istio 不能自动注入需要手动执行注入
 ENABLE_ADMISSION_PLUGINS="DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceExists,NamespaceLifecycle,NodeRestriction,PodNodeSelector,PersistentVolumeClaimResize,PodTolerationRestriction,ResourceQuota,ServiceAccount,StorageObjectInUseProtection,MutatingAdmissionWebhook,ValidatingAdmissionWebhook"
 #禁用插件disable-admission-plugins
-DISABLE_ADMISSION_PLUGINS="ExtendedResourceToleration,ImagePolicyWebhook,LimitPodHardAntiAffinityTopology,NamespaceAutoProvision,Priority,EventRateLimit,PodSecurityPolicy"
+DISABLE_ADMISSION_PLUGINS="ExtendedResourceToleration,ImagePolicyWebhook,LimitPodHardAntiAffinityTopology,NamespaceAutoProvision,Priority,EventRateLimit"
 # 设置api 副本数
 APISERVER_COUNT="3"
 # api 突变请求最大数
