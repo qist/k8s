@@ -1916,8 +1916,8 @@ KUBE_APISERVER_OPTS="--logtostderr=${LOGTOSTDERR} \\
         --enable-aggregator-routing=true \\
         --anonymous-auth=false \\
         --encryption-provider-config=${K8S_PATH}/config/encryption-config.yaml \\
-        --enable-admission-plugins=${ENABLE_ADMISSION_PLUGINS_OPT} \\
-        --disable-admission-plugins=${DISABLE_ADMISSION_PLUGINS_OPT} \\
+        --enable-admission-plugins=${ENABLE_ADMISSION_PLUGINS} \\
+        --disable-admission-plugins=${DISABLE_ADMISSION_PLUGINS} \\
         --cors-allowed-origins=.* \\
         --runtime-config=${RUNTIME_CONFIG} \\
         --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname \\
