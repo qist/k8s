@@ -29,3 +29,13 @@ kubectl taint nodes  k8s-ingress-02 node-role.kubernetes.io/ingress=:NoSchedule
  kubectl label nodes k8s-ingress-01  ingress=yes
  kubectl label nodes k8s-ingress-02  ingress=yes
 ```
+
+## k8s 1.26及以上的版本日志收集
+
+```bash
+# 示例
+/apps/k8s/bin/kube-log-runner -log-file=/apps/k8s/log/kube-apiserver.log --also-stdout=false /apps/k8s/bin/kube-apiserver $KUBE_APISERVER_OPTS
+
+service 需修改Type
+Type=simple
+```
