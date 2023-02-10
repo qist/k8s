@@ -160,7 +160,7 @@ export CFSSL_VERSION=1.4.1
 # docker 版本
 export DOCKER_VERSION=20.10.21
 # docker cri 版本
-export CRI_DOCKER_VERSION=0.2.6
+export CRI_DOCKER_VERSION=0.3.1
 # containerd 版本
 export CONTAINERD_VERSION=1.6.12
 # crictl 版本
