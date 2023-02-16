@@ -7,6 +7,8 @@ kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --
 ADMIN_SECRET=$(kubectl get secrets -n kube-system | grep dashboard-admin | awk '{print $1}')
 #获取dashboard.kubeconfig 使用token   值
 DASHBOARD_LOGIN_TOKEN=$(kubectl describe secret -n kube-system ${ADMIN_SECRET} | grep -E '^token' | awk '{print $2}')
+# 1.24 版本使用
+# DASHBOARD_LOGIN_TOKEN=`kubectl create token  dashboard-admin -n kube-system`
 echo ${DASHBOARD_LOGIN_TOKEN}
 kubectl config set-cluster kubernetes \
   --certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
