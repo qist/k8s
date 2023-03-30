@@ -1,6 +1,6 @@
 # istio 部署
 
-* [使用monitoring 监控项目可以直接使用不需要进行特性配置](../monitoring)
+* [使用monitoring 监控项目可以直接使用不需要进行特性配置](../custom-prometheus)
 
 ## istio 版本部署
 
