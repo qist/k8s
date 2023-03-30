@@ -4,6 +4,8 @@
 
 ## istio 版本部署
 
+kube-apiserver 配置删除AlwaysPullImages 不然自动注入不生效
+
 ### 1.4.2  支持K8S 1.14到1.18
 
 * [1.4.2版本安装](./CHANGELOG-1.4.2.md)
