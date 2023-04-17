@@ -32,7 +32,7 @@ K8S_VIP_PORT=6443
 # k8s apiserver IP 外部操作K8S 使用 建议使用lb ip 如果使用LB IP 请先配置好，自动部署集群验证会用到不然会报错 可以是master 任意节点IP 或者解析域名
 K8S_VIP="192.168.2.175"
 # 是否使用ipvs 负载均衡 默认开启
-IPVS=true
+IPVS=false
 if [ $IPVS = true ]; then
 # ipvs 负载均衡vip ip 
   MASTER_IP=169.254.0.10
@@ -89,7 +89,7 @@ export EXPIRY_TIME="876000h"
 # 是否自动安装 K8S 集群 ON 开启 OFF 关闭
 INSTALL_K8S=OFF
 # 配置容器运行时 DOCKER,CONTAINERD,CRIO 默认docker
-RUNTIME=DOCKER
+RUNTIME=CONTAINERD
 # 网络插件 选择 flannel,kube-router 默认 flannel
 
 # calico 插件下载地址
@@ -148,33 +148,33 @@ export HOST_PATH=$(pwd)
 export DOWNLOAD_PATH=${HOST_PATH}/download
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.5.6
+export ETCD_VERSION=v3.5.8
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.26.0
+export KUBERNETES_VERSION=v1.27.0
 # cni 版本
-export CNI_VERSION=v1.1.1
+export CNI_VERSION=v1.2.0
 # iptables
 export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
 export CFSSL_VERSION=1.4.1
 # docker 版本
-export DOCKER_VERSION=20.10.21
+export DOCKER_VERSION=23.0.3
 # docker cri 版本
 export CRI_DOCKER_VERSION=0.3.1
 # containerd 版本
-export CONTAINERD_VERSION=1.6.12
+export CONTAINERD_VERSION=1.7.0
 # crictl 版本
-export CRICTL_VERSION=v1.25.0
+export CRICTL_VERSION=v1.26.1
 # runc 版本
-export RUNC_VERSION=v1.1.4
+export RUNC_VERSION=v1.1.6
 # cri-o 版本
-export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.25.1.tar.gz"
-export CRIO_VERSION=v1.25.1
+export DOWNLOAD_CRIO_VERSION="https://github.com/cri-o/cri-o/releases/download/v1.26.3/cri-o.amd64.v1.26.3.tar.gz"
+export CRIO_VERSION=v1.26.3
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
-FLANNEL_CNI_PLUGIN="rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.1"
+FLANNEL_CNI_PLUGIN="docker.io/flannel/flannel-cni-plugin:v1.1.2"
 # flannel 插件选择
-FLANNEL_VERSION="rancher/mirrored-flannelcni-flannel:v0.17.0"
+FLANNEL_VERSION="docker.io/flannel/flannel:v0.21.4"
 # kube-router 镜像
 KUBE_ROUTER_INIT="docker.io/cloudnativelabs/kube-router"
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
@@ -291,8 +291,6 @@ CONCURRENT_GC_SYNCS=30
 NODE_MONITOR_GRACE_PERIOD=30s
 #在NodeController中同步节点状态的周期。默认5s
 NODE_MONITOR_PERIOD=5s
-# 删除失败节点上的pods的宽限期。默认5m
-POD_EVICTION_TIMEOUT=1m0s
 # 我们允许启动节点在标记为不健康之前没有响应的时间。，默认1m0s。
 NODE_STARTUP_GRACE_PERIOD=20s
 # 默认,exit状态的pod回收阀值 12500
@@ -364,7 +362,6 @@ if [ ${RUNTIME} == "DOCKER" ]; then
   # docker.sock 路径
   RUN_DOCKER_SOCK=/var/run/cri-docker
   # kubelet runtime 配置
-  CONTAINER_RUNTIME=remote
   CONTAINER_RUNTIME_ENDPOINT=unix://${RUN_DOCKER_SOCK}/cri-docker.sock
   CONTAINERD_ENDPOINT=unix://${RUN_DOCKER_SOCK}/cri-docker.sock
   # 拉取镜像使用命令
@@ -387,7 +384,6 @@ elif [ ${RUNTIME} == "CONTAINERD" ]; then
   # kubelet 启动配置
   AFTER_REQUIRES=containerd.service
   # kubelet runtime 配置
-  CONTAINER_RUNTIME=remote
   CONTAINER_RUNTIME_ENDPOINT=unix://${RUN_CONTAINERD_SOCK}/containerd.sock
   CONTAINERD_ENDPOINT=unix:///${RUN_CONTAINERD_SOCK}/containerd.sock
   # 拉取镜像使用命令
@@ -430,7 +426,6 @@ elif [ ${RUNTIME} == "CRIO" ]; then
    EXEC_START_PRE=""
   #EXEC_START_PRE=$(echo -e "ExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/hugetlb/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/blkio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpuset/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/devices/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/net_cls,net_prio/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/perf_event/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/cpu,cpuacct/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/freezer/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/memory/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/pids/systemd/system.slice\nExecStartPre=-/bin/mkdir -p /sys/fs/cgroup/systemd/systemd/system.slice")
   # kubelet runtime 配置
-  CONTAINER_RUNTIME=remote
   CONTAINER_RUNTIME_ENDPOINT=unix://${RUN_CRIO_SOCK}/crio.sock
   CONTAINERD_ENDPOINT=unix://${RUN_CRIO_SOCK}/crio.sock
   # 拉取镜像使用命令
@@ -4224,7 +4219,6 @@ KUBELET_OPTS="--bootstrap-kubeconfig=${K8S_PATH}/conf/bootstrap.kubeconfig \\
               --runtime-cgroups=/systemd/system.slice \\
               --root-dir=/var/lib/kubelet \\
               --config=${K8S_PATH}/conf/kubelet.yaml \\
-              --container-runtime=${CONTAINER_RUNTIME} \\
               --container-runtime-endpoint=${CONTAINER_RUNTIME_ENDPOINT} \\
               --containerd=${CONTAINERD_ENDPOINT} \\
               --pod-infra-container-image=${POD_INFRA_CONTAINER_IMAGE} \\
@@ -4791,7 +4785,6 @@ KUBE_CONTROLLER_MANAGER_OPTS="--profiling \\
 --requestheader-username-headers=X-Remote-User \\
 --node-monitor-grace-period=${NODE_MONITOR_GRACE_PERIOD} \\
 --node-monitor-period=${NODE_MONITOR_PERIOD} \\
---pod-eviction-timeout=${POD_EVICTION_TIMEOUT} \\
 --node-startup-grace-period=${NODE_STARTUP_GRACE_PERIOD} \\
 --terminated-pod-gc-threshold=${TERMINATED_POD_GC_THRESHOLD} \\
 --cluster-signing-cert-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
@@ -5185,34 +5178,54 @@ netPlugConfig() {
     # 创建flannel yaml
     cat >${HOST_PATH}/yaml/kube-flannel.yaml <<EOF
 ---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: kube-flannel
+  labels:
+    k8s-app: flannel
+    pod-security.kubernetes.io/enforce: privileged
+---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
+  labels:
+    k8s-app: flannel
   name: flannel
 rules:
-  - apiGroups:
-      - ""
-    resources:
-      - pods
-    verbs:
-      - get
-  - apiGroups:
-      - ""
-    resources:
-      - nodes
-    verbs:
-      - list
-      - watch
-  - apiGroups:
-      - ""
-    resources:
-      - nodes/status
-    verbs:
-      - patch
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes/status
+  verbs:
+  - patch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - clustercidrs
+  verbs:
+  - list
+  - watch
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
+  labels:
+    k8s-app: flannel
   name: flannel
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -5221,60 +5234,63 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: flannel
-  namespace: kube-system
+  namespace: kube-flannel
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  labels:
+    k8s-app: flannel
   name: flannel
-  namespace: kube-system
+  namespace: kube-flannel
 ---
 kind: ConfigMap
 apiVersion: v1
 metadata:
   name: kube-flannel-cfg
-  namespace: kube-system
+  namespace: kube-flannel
   labels:
     tier: node
+    k8s-app: flannel
     app: flannel
 data:
   cni-conf.json: |
-     {
-     "name":"cni0",
-     "cniVersion":"0.3.1",
-     "plugins":[
-       {
-         "type":"flannel",
-         "delegate":{
-           "forceAddress":false,
-           "hairpinMode": true,
-           "isDefaultGateway":true
-         }
-       },
-       {
-         "type":"portmap",
-         "capabilities":{
-           "portMappings":true
-         }
-       }
-     ]
-     }
+    {
+      "name": "cni0",
+      "cniVersion": "0.3.1",
+      "plugins": [
+        {
+          "type": "flannel",
+          "delegate": {
+            "hairpinMode": true,
+            "isDefaultGateway": true
+          }
+        },
+        {
+          "type": "portmap",
+          "capabilities": {
+            "portMappings": true
+          }
+        }
+      ]
+    }
   net-conf.json: |
     {
       "Network": "${CLUSTER_CIDR}",
       "Backend": {
-        "Type": "VXLAN"
+        "Type": "vxlan"
       }
     }
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: kube-flannel-ds-amd64
-  namespace: kube-system
+  name: kube-flannel-ds
+  namespace: kube-flannel
   labels:
     tier: node
     app: flannel
+    k8s-app: flannel
 spec:
   selector:
     matchLabels:
@@ -5285,7 +5301,6 @@ spec:
         tier: node
         app: flannel
     spec:
-      hostNetwork: true
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -5295,7 +5310,8 @@ spec:
                 operator: In
                 values:
                 - linux
-      priorityClassName: system-node-critical                
+      hostNetwork: true
+      priorityClassName: system-node-critical
       tolerations:
         - effect: NoSchedule
           operator: Exists
@@ -5315,7 +5331,7 @@ spec:
         - /opt/cni/bin/flannel
         volumeMounts:
         - name: cni-plugin
-          mountPath: /opt/cni/bin      
+          mountPath: /opt/cni/bin
       - name: install-cni
         image: ${FLANNEL_VERSION}
         command:
@@ -5341,11 +5357,10 @@ spec:
           requests:
             cpu: "100m"
             memory: "50Mi"
-          limits:
-            cpu: "100m"
-            memory: "50Mi"
         securityContext:
-          privileged: true
+          privileged: false
+          capabilities:
+            add: ["NET_ADMIN", "NET_RAW"]
         env:
         - name: POD_NAME
           valueFrom:
@@ -5355,24 +5370,32 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: EVENT_QUEUE_DEPTH
+          value: "5000"
         volumeMounts:
         - name: run
-          mountPath: /run
+          mountPath: /run/flannel
         - name: flannel-cfg
           mountPath: /etc/kube-flannel/
+        - name: xtables-lock
+          mountPath: /run/xtables.lock
       volumes:
-        - name: run
-          hostPath:
-            path: /run
-        - name: cni-plugin
-          hostPath:
-            path: ${CNI_BIN_DIR}            
-        - name: cni
-          hostPath:
-            path: ${CNI_CONF_DIR}
-        - name: flannel-cfg
-          configMap:
-            name: kube-flannel-cfg
+      - name: run
+        hostPath:
+          path: /run/flannel
+      - name: cni-plugin
+        hostPath:
+          path: ${CNI_BIN_DIR}
+      - name: cni
+        hostPath:
+          path: ${CNI_CONF_DIR}
+      - name: flannel-cfg
+        configMap:
+          name: kube-flannel-cfg
+      - name: xtables-lock
+        hostPath:
+          path: /run/xtables.lock
+          type: FileOrCreate
 EOF
     return 0
   elif [ ${NET_PLUG} == "kube-router" ]; then # 生成kube-router 部署yaml
