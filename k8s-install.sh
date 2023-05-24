@@ -3884,7 +3884,7 @@ EOF
 # and 'registries.block'.
 
 [registries.search]
-registries = ['registry.access.redhat.com', 'docker.io', 'registry.fedoraproject.org', 'quay.io', 'registry.centos.org']
+registries = ['docker.io']
 
 # If you need to access insecure registries, add the registry's fully-qualified name.
 # An insecure registry is one that does not have a valid SSL certificate or only does HTTP.
