@@ -2898,7 +2898,6 @@ EOF
     "exec-root": "/var/run/docker",
     "log-driver": "${LOG_DRIVER}",
     "bridge": "${NET_BRIDGE}",
-    "oom-score-adjust": -1000,
     "live-restore": true,
     "exec-opts": ["native.cgroupdriver=${NATIVE_CGROUPDRIVER}"],
     {% if  btrfs_result.rc == 0 or btr_result.rc == 0 %}
