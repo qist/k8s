@@ -2841,13 +2841,13 @@ runtimeConfig() {
     opts: defaults,bind,nofail
     state: mounted
     fstype: none  
-- name: Mount docker exec a volume
-  mount:
-    path: /run/docker
-    src:  "${EXEC_ROOT}"
-    opts: defaults,bind,nofail
-    state: mounted
-    fstype: none 
+# - name: Mount docker exec a volume
+#   mount:
+#     path: /run/docker
+#     src:  "${EXEC_ROOT}"
+#     opts: defaults,bind,nofail
+#     state: mounted
+#     fstype: none 
 #- name: mount docker data 
 #  lineinfile: 
 #    dest: /etc/fstab
@@ -3290,13 +3290,13 @@ EOF
     opts: defaults,bind,nofail
     state: mounted
     fstype: none 
-- name: Mount containerd exec volume
-  mount:
-    path: /run/containerd
-    src:  "${CONTAINERD_PATH}/run/containerd"
-    opts: defaults,bind,nofail
-    state: mounted
-    fstype: none     
+# - name: Mount containerd exec volume
+#   mount:
+#     path: /run/containerd
+#     src:  "${CONTAINERD_PATH}/run/containerd"
+#     opts: defaults,bind,nofail
+#     state: mounted
+#     fstype: none     
 #- name: mount containerd data 
 #  lineinfile:
 #    dest: /etc/fstab
@@ -4004,13 +4004,13 @@ EOF
     opts: defaults,bind,nofail
     state: mounted
     fstype: none 
-- name: Mount CRIO exec volume
-  mount:
-    path: /run/containers/storage
-    src:  "${RUNROOT}"
-    opts: defaults,bind,nofail
-    state: mounted
-    fstype: none     
+# - name: Mount CRIO exec volume
+#   mount:
+#     path: /run/containers/storage
+#     src:  "${RUNROOT}"
+#     opts: defaults,bind,nofail
+#     state: mounted
+#     fstype: none     
 #- name: mount CRIO data 
 #  lineinfile: 
 #    dest: /etc/fstab
