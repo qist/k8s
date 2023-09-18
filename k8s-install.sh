@@ -31,7 +31,7 @@ SECURE_PORT=5443
 K8S_VIP_PORT=6443
 # k8s apiserver IP 外部操作K8S 使用 建议使用lb ip 如果使用LB IP 请先配置好，自动部署集群验证会用到不然会报错 可以是master 任意节点IP 或者解析域名
 K8S_VIP="192.168.2.175"
-# 是否使用ipvs 负载均衡 默认开启
+# 是否使用ipvs 负载均衡 默认关闭
 IPVS=false
 if [ $IPVS = true ]; then
 # ipvs 负载均衡vip ip 
