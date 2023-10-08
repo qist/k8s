@@ -5599,6 +5599,28 @@ rules:
       - get
       - list
       - watch
+  - apiGroups:
+      - "coordination.k8s.io"
+    resources:
+      - leases
+    verbs:
+      - get
+      - create
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - services/status
+    verbs:
+      - update
+  - apiGroups:
+      - "discovery.k8s.io"
+    resources:
+      - endpointslices
+    verbs:
+      - get
+      - list
+      - watch
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
