@@ -60,7 +60,7 @@ spec:
           args:
             - "--v=2"
             - "--csi-address=$(ADDRESS)"
-            - "--leader-election-namespace=kube-system"
+            - "--leader-election-namespace=clusterstorage"
             - "--leader-election"
             - "--timeout=1200s"
           env:
