@@ -14,5 +14,5 @@ volumeBindingMode: Immediate
 allowVolumeExpansion: true
 mountOptions:
   - hard
-  - rw,nolock,tcp
+  - rw,nolock
   - nfsvers=4.1
