@@ -5,7 +5,7 @@ metadata:
   name: csi-nfs-controller
   namespace: clusterstorage
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: csi-nfs-controller
@@ -14,28 +14,35 @@ spec:
       labels:
         app: csi-nfs-controller
     spec:
-      hostNetwork: true # controller also needs to mount nfs to create dir
-      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true  # controller also needs to mount nfs to create dir
+      dnsPolicy: ClusterFirstWithHostNet  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
       serviceAccountName: csi-nfs-controller-sa
       nodeSelector:
-        kubernetes.io/os: linux # add "kubernetes.io/role: master" to run controller on master node
+        kubernetes.io/os: linux  # add "kubernetes.io/role: master" to run controller on master node
       priorityClassName: system-cluster-critical
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       tolerations:
         - key: "node-role.kubernetes.io/master"
-          operator: "Equal"
-          value: "true"
+          operator: "Exists"
           effect: "NoSchedule"
         - key: "node-role.kubernetes.io/controlplane"
-          operator: "Equal"
-          value: "true"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
           effect: "NoSchedule"
       containers:
         - name: csi-provisioner
-          image: docker.io/juestnow/csi-provisioner:v2.1.0
+          image: docker.io/juestnow/csi-provisioner:v3.5.0
           args:
             - "-v=2"
             - "--csi-address=$(ADDRESS)"
             - "--leader-election"
+            - "--leader-election-namespace=clusterstorage"
+            - "--extra-create-metadata=true"
+            - "--timeout=1200s"
           env:
             - name: ADDRESS
               value: /csi/csi.sock
@@ -44,13 +51,33 @@ spec:
               name: socket-dir
           resources:
             limits:
-              cpu: 100m
               memory: 400Mi
             requests:
               cpu: 10m
               memory: 20Mi
+        - name: csi-snapshotter
+          image: docker.io/juestnow/csi-snapshotter:v6.2.2
+          args:
+            - "--v=2"
+            - "--csi-address=$(ADDRESS)"
+            - "--leader-election-namespace=kube-system"
+            - "--leader-election"
+            - "--timeout=1200s"
+          env:
+            - name: ADDRESS
+              value: /csi/csi.sock
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+          resources:
+            limits:
+              memory: 200Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
         - name: liveness-probe
-          image: docker.io/juestnow/livenessprobe:v2.3.0
+          image: docker.io/juestnow/livenessprobe:v2.10.0
           args:
             - --csi-address=/csi/csi.sock
             - --probe-timeout=3s
@@ -61,13 +88,12 @@ spec:
               mountPath: /csi
           resources:
             limits:
-              cpu: 100m
               memory: 100Mi
             requests:
               cpu: 10m
               memory: 20Mi
         - name: nfs
-          image: docker.io/juestnow/nfs-csi:latest
+          image: docker.io/juestnow/nfsplugin:v4.4.0
           securityContext:
             privileged: true
             capabilities:
@@ -105,7 +131,6 @@ spec:
               name: socket-dir
           resources:
             limits:
-              cpu: 200m
               memory: 200Mi
             requests:
               cpu: 10m

@@ -1,12 +1,14 @@
 ---
-# This YAML file contains driver-registrar & csi driver nodeplugin API objects
-# that are necessary to run CSI nodeplugin for nfs
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: csi-nfs-node
   namespace: clusterstorage
 spec:
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
   selector:
     matchLabels:
       app: csi-nfs-node
@@ -15,13 +17,20 @@ spec:
       labels:
         app: csi-nfs-node
     spec:
-      hostNetwork: true # original nfs connection would be broken without hostNetwork setting
-      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true  # original nfs connection would be broken without hostNetwork setting
+      dnsPolicy: ClusterFirstWithHostNet  # available values: Default, ClusterFirstWithHostNet, ClusterFirst
+      serviceAccountName: csi-nfs-node-sa
+      priorityClassName: system-node-critical
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       nodeSelector:
         kubernetes.io/os: linux
+      tolerations:
+        - operator: "Exists"
       containers:
         - name: liveness-probe
-          image: docker.io/juestnow/livenessprobe:v2.3.0
+          image: docker.io/juestnow/livenessprobe:v2.10.0
           args:
             - --csi-address=/csi/csi.sock
             - --probe-timeout=3s
@@ -32,27 +41,27 @@ spec:
               mountPath: /csi
           resources:
             limits:
-              cpu: 100m
               memory: 100Mi
             requests:
               cpu: 10m
               memory: 20Mi
         - name: node-driver-registrar
-          image: docker.io/juestnow/csi-node-driver-registrar:v2.2.0
-          lifecycle:
-            preStop:
-              exec:
-                command:
-                  [
-                    "/bin/sh",
-                    "-c",
-                    "rm -rf /registration/csi-nfsplugin /registration/csi-nfsplugin-reg.sock",
-                  ]
+          image: docker.io/juestnow/csi-node-driver-registrar:v2.8.0
           args:
             - --v=2
             - --csi-address=/csi/csi.sock
-            - --kubelet-registration-path=/var/lib/kubelet/plugins/csi-nfsplugin/csi.sock
+            - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+          livenessProbe:
+            exec:
+              command:
+                - /csi-node-driver-registrar
+                - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)
+                - --mode=kubelet-registration-probe
+            initialDelaySeconds: 30
+            timeoutSeconds: 15
           env:
+            - name: DRIVER_REG_SOCK_PATH
+              value: /var/lib/kubelet/plugins/csi-nfsplugin/csi.sock
             - name: KUBE_NODE_NAME
               valueFrom:
                 fieldRef:
@@ -62,13 +71,19 @@ spec:
               mountPath: /csi
             - name: registration-dir
               mountPath: /registration
+          resources:
+            limits:
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
         - name: nfs
           securityContext:
             privileged: true
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: docker.io/juestnow/nfs-csi:latest
+          image: docker.io/juestnow/nfsplugin:v4.4.0
           args:
             - "-v=5"
             - "--nodeid=$(NODE_ID)"
@@ -99,6 +114,12 @@ spec:
             - name: pods-mount-dir
               mountPath: /var/lib/kubelet/pods
               mountPropagation: "Bidirectional"
+          resources:
+            limits:
+              memory: 300Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
       volumes:
         - name: socket-dir
           hostPath:
