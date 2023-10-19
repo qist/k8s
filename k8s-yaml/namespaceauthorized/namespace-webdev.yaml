@@ -3,6 +3,16 @@ kind: ServiceAccount
 metadata:
   name: webdev
   namespace: webdev
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: webdev-secret
+  namespace: webdev
+  annotations:
+    kubernetes.io/service-account.name: webdev
+type: kubernetes.io/service-account-token
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role

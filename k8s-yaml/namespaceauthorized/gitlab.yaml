@@ -32,6 +32,16 @@ kind: ServiceAccount
 metadata:
   name: gitlab
   namespace: gitlab
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-secret
+  namespace: gitlab
+  annotations:
+    kubernetes.io/service-account.name: gitlab
+type: kubernetes.io/service-account-token
 EOF
 # 全局授权 admin 权限
 cat << EOF | kubectl apply -f -
@@ -70,4 +80,14 @@ kind: ServiceAccount
 metadata:
   name: gitlab
   namespace: gitlab
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-secret
+  namespace: gitlab
+  annotations:
+    kubernetes.io/service-account.name: gitlab
+type: kubernetes.io/service-account-token
 EOF
