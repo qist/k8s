@@ -10,6 +10,7 @@ kind: ServiceAccount
 metadata:
   name: rabbitmq
   namespace: rabbitmq
+automountServiceAccountToken: false
 ---
 kind: StatefulSet
 apiVersion: apps/v1
