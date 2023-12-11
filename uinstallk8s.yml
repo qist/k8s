@@ -49,6 +49,7 @@
         - docker-init
         - docker-proxy
         - containerd-shim
+        - containerd-shim-runc-v2
         - runc
         - ctr
         - containerd
