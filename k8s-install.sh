@@ -148,33 +148,33 @@ export HOST_PATH=$(pwd)
 export DOWNLOAD_PATH=${HOST_PATH}/download
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.5.9
+export ETCD_VERSION=v3.5.11
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.28.0
+export KUBERNETES_VERSION=v1.29.0
 # cni 版本
-export CNI_VERSION=v1.3.0
+export CNI_VERSION=v1.4.0
 # iptables
 export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
-export CFSSL_VERSION=1.4.1
+export CFSSL_VERSION=1.6.4
 # docker 版本
-export DOCKER_VERSION=24.0.5
+export DOCKER_VERSION=24.0.7
 # docker cri 版本
-export CRI_DOCKER_VERSION=v0.3.4
+export CRI_DOCKER_VERSION=v0.3.8
 # containerd 版本
-export CONTAINERD_VERSION=1.7.3
+export CONTAINERD_VERSION=1.7.11
 # crictl 版本
-export CRICTL_VERSION=v1.28.0
+export CRICTL_VERSION=v1.29.0
 # runc 版本
-export RUNC_VERSION=v1.1.9
+export RUNC_VERSION=v1.1.10
 # cri-o 版本
-export DOWNLOAD_CRIO_VERSION="https://github.com/cri-o/cri-o/releases/download/v1.27.1/cri-o.amd64.v1.27.1.tar.gz"
-export CRIO_VERSION=v1.27.1
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.28.2.tar.gz"
+export CRIO_VERSION=v1.28.2
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
 FLANNEL_CNI_PLUGIN="docker.io/flannel/flannel-cni-plugin:v1.2.0"
 # flannel 插件选择
-FLANNEL_VERSION="docker.io/flannel/flannel:v0.22.1"
+FLANNEL_VERSION="docker.io/flannel/flannel:v0.22.3"
 # kube-router 镜像
 KUBE_ROUTER_INIT="docker.io/cloudnativelabs/kube-router"
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
@@ -3126,48 +3126,152 @@ EOF
     fi
     # 生成containerd 配置文件
     cat >${HOST_PATH}/roles/containerd/templates/config.toml <<EOF
-[plugins.opt]
-path = "${CONTAINERD_PATH}"
-[plugins.cri]
-stream_server_address = "127.0.0.1"
-stream_server_port = "10010"
-sandbox_image = "${SANDBOX_IMAGE}"
-max_concurrent_downloads = ${MAX_CONCURRENT_DOWNLOADS}
-  [plugins.cri.containerd]
+version = 2
+
+[plugins]
+
+  [plugins."io.containerd.gc.v1.scheduler"]
+    deletion_threshold = 0
+    mutation_threshold = 100
+    pause_threshold = 0.02
+    schedule_delay = "0s"
+    startup_delay = "100ms"
+
+  [plugins."io.containerd.grpc.v1.cri"]
+    image_pull_progress_timeout = "5m0s"
+    max_concurrent_downloads = ${MAX_CONCURRENT_DOWNLOADS}
+    max_container_log_line_size = 16384
+    netns_mounts_under_state_dir = false
+    restrict_oom_score_adj = false
+    sandbox_image = "${SANDBOX_IMAGE}"
+    selinux_category_range = 1024
+    stats_collect_period = 10
+    stream_idle_timeout = "4h0m0s"
+    stream_server_address = "127.0.0.1"
+    stream_server_port = "0"
+    systemd_cgroup = false
+    tolerate_missing_hugetlb_controller = true
+    unset_seccomp_profile = ""
+
+    [plugins."io.containerd.grpc.v1.cri".cni]
+      bin_dir = "${CNI_BIN_DIR}"
+      conf_dir = "${CNI_CONF_DIR}"
+      conf_template = ""
+      ip_pref = ""
+      max_conf_num = 1
+      setup_serially = false
+
+    [plugins."io.containerd.grpc.v1.cri".containerd]
+      default_runtime_name = "runc"
+      disable_snapshot_annotations = true
+      discard_unpacked_layers = false
+      ignore_blockio_not_enabled_errors = false
+      ignore_rdt_not_enabled_errors = false
+      no_pivot = false
   {% if  btrfs_result.rc == 0 or btr_result.rc == 0 %}
       snapshotter = "btrfs"
   {% else %}
-    snapshotter = "${SNAPSHOTTER}"
+      snapshotter = "${SNAPSHOTTER}"
   {% endif %}
-    [plugins.cri.containerd.default_runtime]
-      runtime_type = ""
-      runtime_engine = ""
-      runtime_root = ""
-    [plugins.cri.containerd.untrusted_workload_runtime]
-      runtime_type = ""
-      runtime_engine = ""
-      runtime_root = ""
-    [plugins.cri.containerd.runtimes.runc]
-      base_runtime_spec = ""
-      container_annotations = []
-      pod_annotations = []
-      privileged_without_host_devices = false
-      runtime_engine = ""
-      runtime_root = ""
-      runtime_type = "io.containerd.runc.v2"
-    [plugins.cri.containerd.runtimes.runc.options]
-      SystemdCgroup = ${CONTAINER_CGROUP}
-  [plugins.cri.cni]
-    bin_dir = "${CNI_BIN_DIR}"
-    conf_dir = "${CNI_CONF_DIR}"    
-[plugins."io.containerd.runtime.v1.linux"]
-  shim = "containerd-shim"
-  runtime = "runc"
-  runtime_root = ""
-  no_shim = false
-  shim_debug = false
-[plugins."io.containerd.runtime.v2.task"]
-  platforms = ["linux/amd64"]
+
+      [plugins."io.containerd.grpc.v1.cri".containerd.default_runtime]
+        base_runtime_spec = ""
+        cni_conf_dir = ""
+        cni_max_conf_num = 0
+        container_annotations = []
+        pod_annotations = []
+        privileged_without_host_devices = false
+        privileged_without_host_devices_all_devices_allowed = false
+        runtime_engine = ""
+        runtime_path = ""
+        runtime_root = ""
+        runtime_type = ""
+        sandbox_mode = ""
+        snapshotter = ""
+
+        [plugins."io.containerd.grpc.v1.cri".containerd.default_runtime.options]
+
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          base_runtime_spec = ""
+          cni_conf_dir = ""
+          cni_max_conf_num = 0
+          container_annotations = []
+          pod_annotations = []
+          privileged_without_host_devices = false
+          privileged_without_host_devices_all_devices_allowed = false
+          runtime_engine = ""
+          runtime_path = ""
+          runtime_root = ""
+          runtime_type = "io.containerd.runc.v2"
+          sandbox_mode = "podsandbox"
+          snapshotter = ""
+
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+            BinaryName = ""
+            CriuImagePath = ""
+            CriuPath = ""
+            CriuWorkPath = ""
+            IoGid = 0
+            IoUid = 0
+            NoNewKeyring = false
+            NoPivotRoot = false
+            Root = ""
+            ShimCgroup = ""
+            SystemdCgroup = ${CONTAINER_CGROUP}
+
+      [plugins."io.containerd.grpc.v1.cri".containerd.untrusted_workload_runtime]
+        base_runtime_spec = ""
+        cni_conf_dir = ""
+        cni_max_conf_num = 0
+        container_annotations = []
+        pod_annotations = []
+        privileged_without_host_devices = false
+        privileged_without_host_devices_all_devices_allowed = false
+        runtime_engine = ""
+        runtime_path = ""
+        runtime_root = ""
+        runtime_type = ""
+        sandbox_mode = ""
+        snapshotter = ""
+
+        [plugins."io.containerd.grpc.v1.cri".containerd.untrusted_workload_runtime.options]
+
+  [plugins."io.containerd.internal.v1.opt"]
+    path = "${CONTAINERD_PATH}"
+
+  [plugins."io.containerd.internal.v1.restart"]
+    interval = "10s"
+
+  [plugins."io.containerd.internal.v1.tracing"]
+    sampling_ratio = 1.0
+    service_name = "containerd"
+
+  [plugins."io.containerd.runtime.v1.linux"]
+    no_shim = false
+    runtime = "runc"
+    runtime_root = ""
+    shim = "containerd-shim"
+    shim_debug = false
+
+  [plugins."io.containerd.runtime.v2.task"]
+    platforms = ["linux/amd64"]
+    sched_core = false
+
+  [plugins."io.containerd.transfer.v1.local"]
+    config_path = ""
+    max_concurrent_downloads = ${MAX_CONCURRENT_DOWNLOADS}
+    max_concurrent_uploaded_layers = 3
+
+    [[plugins."io.containerd.transfer.v1.local".unpack_config]]
+      differ = ""
+      platform = "linux/amd64"
+  {% if  btrfs_result.rc == 0 or btr_result.rc == 0 %}
+      snapshotter = "btrfs"
+  {% else %}
+     snapshotter = "${SNAPSHOTTER}"
+  {% endif %}
 EOF
     # containerd 启动文件创建
     cat >${HOST_PATH}/roles/containerd/templates/containerd.service <<EOF

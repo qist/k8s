@@ -79,6 +79,7 @@
         - /run/containers/storage
         - /var/lib/containerd
         - /run/containerd
+      ignore_errors: True
     #    - name: remove  mount K8S
     #      lineinfile:
     #        dest: /etc/fstab
