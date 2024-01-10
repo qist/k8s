@@ -2274,6 +2274,9 @@ EOF
       - { key: 'net.ipv4.conf.default.arp_announce', value: '2' }
       - { key: 'net.ipv4.conf.lo.arp_announce', value: '2' }
       - { key: 'net.ipv4.conf.all.arp_announce', value: '2' }
+      - { key: 'net.ipv4.conf.default.arp_ignore', value: '1' }
+      - { key: 'net.ipv4.conf.lo.arp_ignore', value: '1' }
+      - { key: 'net.ipv4.conf.all.arp_ignore', value: '1' }
       - { key: 'net.ipv4.tcp_max_tw_buckets', value: '5000' }
       - { key: 'net.ipv4.tcp_syncookies', value: '1' }
       - { key: 'net.ipv4.tcp_synack_retries', value: '2' }
