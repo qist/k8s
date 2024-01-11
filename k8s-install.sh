@@ -1,8 +1,8 @@
 #!/bin/bash
-###########################################################K8S一键自动安装#################################################################################################
-###########################################################K8S 版本支持在v1.25.0 及以上版本低版本到版本分支下载#####################################################################
-###########################################################在部署中会重启服务器及更新系统需要在全新环境部署不然重启对业务有影响############################################
-#########################支持操作系统centos7，centos8-Stream版本原centos8源已经不再更新，Ubuntu维护版本非维护版本可能源有问题，openSUSE Leap 15.0及上版本##################
+###########################################################K8S一键自动安装##############################################################################################################
+###########################################################K8S 版本支持在v1.25.0 及以上版本低版本到版本分支下载############################################################################
+###########################################################在部署中会重启服务器及更新系统需要在全新环境部署不然重启对业务有影响###############################################################
+#########################支持操作系统centos7，centos8-Stream版本原centos8源已经不再更新，Ubuntu维护版本非维护版本可能源有问题，openSUSE Leap 15.0及上版本rockylinux8,9版本支持##################
 # 开启 下载代理 国内尽量配置
 Proxy() {
   # export http_proxy=http://127.0.0.1:7890/
@@ -2500,7 +2500,7 @@ EOF
   yum:
     name: epel-release
     state: present
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky'  
+  when: ansible_distribution_major_version == '8' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky')  
 - name: remove  epel-release
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
@@ -2512,7 +2512,7 @@ EOF
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'  or  ansible_os_family == 'Rocky'
+  when: ansible_distribution_major_version == '8' and  (ansible_os_family == 'RedHat'  or  ansible_os_family == 'Rocky')
 - name: is set  epel-release
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
@@ -2523,7 +2523,71 @@ EOF
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky'
+  when: ansible_distribution_major_version == '8' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky')
+
+- name: enabled Rocky9 BaseOS
+  replace:
+    path: '/etc/yum.repos.d/{{ item }}'
+    regexp: '^enabled=0'
+    replace: 'enabled=1'
+  with_items:
+      - rocky-devel.repo
+      - rocky-addons.repo
+      - rocky.repo
+      - rocky-extras.repo
+  when: ansible_distribution_major_version == '9'  and  ansible_distribution == 'Rocky'
+
+- name: remove Rocky BaseOS
+  lineinfile: 
+    dest: '/etc/yum.repos.d/{{ item }}'
+    regexp: "^mirrorlist"
+    line: "#mirrorlist" 
+    state: absent
+  with_items:
+      - rocky-devel.repo
+      - rocky-addons.repo
+      - rocky.repo
+      - rocky-extras.repo
+  when: ansible_distribution_major_version == '9' and  ansible_distribution == 'Rocky'
+
+- name: is set Rocky 9 BaseOS
+  replace:
+    path: '/etc/yum.repos.d/{{ item }}'
+    regexp: '^#baseurl=http://dl.rockylinux.org/\$contentdir'
+    replace: 'baseurl=https://mirrors.aliyun.com/rockylinux'
+  with_items:
+      - rocky-devel.repo
+      - rocky-addons.repo
+      - rocky.repo
+      - rocky-extras.repo
+  when: ansible_distribution_major_version == '9' and  ansible_distribution == 'Rocky'
+
+- name: install the epel-release9 rpm from a remote repo
+  yum:
+    name: epel-release
+    state: present
+  when: ansible_distribution_major_version == '9' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky') 
+
+- name: remove  epel-release9
+  lineinfile: 
+    dest: '/etc/yum.repos.d/{{ item }}'
+    regexp: "^metalink"
+    line: "#metalink" 
+    state: absent
+  with_items:
+      - epel-testing.repo
+      - epel.repo
+  when: ansible_distribution_major_version == '9' and  (ansible_os_family == 'RedHat'  or  ansible_os_family == 'Rocky')
+
+- name: is set  epel-release9
+  replace:
+    path: '/etc/yum.repos.d/{{ item }}'
+    regexp: '^#baseurl=https://download.example/pub'
+    replace: 'baseurl=https://mirrors.aliyun.com'
+  with_items:
+      - epel-testing.repo
+      - epel.repo
+  when: ansible_distribution_major_version == '9' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky')
 #- name: Remove /etc/yum.repos.d/CentOS-AppStream.repo
 #  file:
 #    path: "/etc/yum.repos.d/CentOS-AppStream.repo"
