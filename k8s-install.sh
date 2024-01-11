@@ -2537,7 +2537,7 @@ EOF
       - rocky-extras.repo
   when: ansible_distribution_major_version == '9'  and  ansible_distribution == 'Rocky'
 
-- name: remove Rocky BaseOS
+- name: remove Rocky9 BaseOS
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
     regexp: "^mirrorlist"
