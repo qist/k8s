@@ -4,6 +4,16 @@
 
 * [cert-manager安装](./cert-manager安装.md)
 
+修改 登录过期时间
+
+```yaml
+# 找到 Deployment kubernetes-dashboard-api
+          args:
+            - --enable-insecure-login
+            - --namespace=kubernetes-dashboard
+            - --token-ttl=43200 # 添加过期时间
+```
+
 ## 修改  dashboard ingress 打开kubernetes-dashboard.yaml 改成自己的域名
 
 ```text
