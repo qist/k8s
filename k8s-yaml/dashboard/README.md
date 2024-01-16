@@ -1,6 +1,6 @@
 # kubernetes-dashboard 部署说明
 
-新版dashboard 首先不是cert-manager安装
+新版dashboard 首先部署cert-manager安装
 
 * [cert-manager安装](./cert-manager安装.md)
 
