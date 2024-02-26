@@ -43,6 +43,7 @@ rules:
   - create
 ---
 apiVersion: v1
+automountServiceAccountToken: true
 kind: ServiceAccount
 metadata:
   name: blackbox-exporter
