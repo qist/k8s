@@ -913,7 +913,7 @@
         "ymax": 100,
         "ymin": 0
       },
-      "tableColumn": "{mode=\"user\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "clamp_max(avg by (nodename,mode)((avg by (mode) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",mode=\"user\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",mode=\"user\"}[5m]),1)) )) *100 or (avg_over_time(node_cpu_average{instance=~\"$node_name\", mode=\"user\"}[$interval]) or avg_over_time(node_cpu_average{instance=~\"$node_name\", mode=\"user\"}[5m]))),100)",
@@ -1002,7 +1002,7 @@
         "ymax": 100,
         "ymin": 0
       },
-      "tableColumn": "{mode=\"system\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "clamp_max(avg by (nodename,mode)((avg by (mode) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",mode=\"system\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",mode=\"system\"}[5m]),1)) )) *100 or (avg_over_time(node_cpu_average{instance=~\"$node_name\", mode=\"system\"}[$interval]) or avg_over_time(node_cpu_average{instance=~\"$node_name\", mode=\"system\"}[5m]))),100)",
@@ -1091,7 +1091,7 @@
         "ymax": 100,
         "ymin": 0
       },
-      "tableColumn": "{mode=\"iowait\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "clamp_max(avg by (nodename,mode)((avg by (mode) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",mode=\"iowait\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",mode=\"iowait\"}[5m]),1)) )) *100 or (avg_over_time(node_cpu_average{instance=~\"$node_name\", mode=\"wait\"}[$interval]) or avg_over_time(node_cpu_average{instance=~\"$node_name\", mode=\"wait\"}[5m]))),100)",
@@ -1180,7 +1180,7 @@
         "ymax": 100,
         "ymin": 0
       },
-      "tableColumn": "{mode=\"steal\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "clamp_max(avg by (nodename,mode)((avg by (mode) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",mode=\"steal\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",mode=\"steal\"}[5m]),1)) )) *100 or (avg_over_time(node_cpu_average{instance=~\"$node_name\", mode=\"steal\"}[$interval]) or avg_over_time(node_cpu_average{instance=~\"$node_name\", mode=\"steal\"}[5m]))),100)",
@@ -1503,7 +1503,7 @@
         "ymax": 100,
         "ymin": 0
       },
-      "tableColumn": "{mode=\"user\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "clamp_max(avg by (nodename,mode)((avg by (mode) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",cpu=\"$cpu\",mode=\"user\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",cpu=\"$cpu\",mode=\"user\"}[5m]),1)) )) *100 or (avg_over_time(node_cpu_average{instance=~\"$node_name\", cpu=\"All\", mode=\"user\"}[$interval]) or avg_over_time(node_cpu_average{instance=~\"$node_name\", cpu=\"All\", mode=\"user\"}[5m]))),100)",
@@ -1592,7 +1592,7 @@
         "ymax": 100,
         "ymin": 0
       },
-      "tableColumn": "{mode=\"system\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "clamp_max(avg by (nodename,mode)((avg by (mode) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",cpu=\"$cpu\",mode=\"system\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",cpu=\"$cpu\",mode=\"system\"}[5m]),1)) )) *100 or (avg_over_time(node_cpu_average{instance=~\"$node_name\", cpu=\"All\", mode=\"system\"}[$interval]) or avg_over_time(node_cpu_average{instance=~\"$node_name\", cpu=\"All\", mode=\"system\"}[5m]))),100)",
@@ -1681,7 +1681,7 @@
         "ymax": 100,
         "ymin": 0
       },
-      "tableColumn": "{mode=\"iowait\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "clamp_max(avg by (node_name,mode)((avg by (mode) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",cpu=\"$cpu\",mode=\"iowait\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",cpu=\"$cpu\",mode=\"iowait\"}[5m]),1)) )) *100 or (avg_over_time(node_cpu_average{instance=~\"$node_name\", cpu=\"All\", mode=\"wait\"}[$interval]) or avg_over_time(node_cpu_average{instance=~\"$node_name\", cpu=\"All\", mode=\"wait\"}[5m]))),100)",
@@ -1770,7 +1770,7 @@
         "ymax": 100,
         "ymin": 0
       },
-      "tableColumn": "{mode=\"steal\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "clamp_max(avg by (nodename,mode)((avg by (mode) ( (clamp_max(rate(node_cpu_seconds_total{instance=~\"$node_name\",cpu=\"$cpu\",mode=\"steal\"}[$interval]),1)) or (clamp_max(irate(node_cpu_seconds_total{instance=~\"$node_name\",cpu=\"$cpu\",mode=\"steal\"}[5m]),1)) )) *100 or (avg_over_time(node_cpu_average{instance=~\"$node_name\", cpu=\"All\", mode=\"steal\"}[$interval]) or avg_over_time(node_cpu_average{instance=~\"$node_name\", cpu=\"All\", mode=\"steal\"}[5m]))),100)",

@@ -124,7 +124,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", daemonset=\"cattle-node-agent\", environment=\"nck8s\", job=\"kube-state-metrics\", namespace=\"cattle-system\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "max(kube_daemonset_status_desired_number_scheduled{daemonset=\"$daemonset_name\",namespace=\"$daemonset_namespace\",environment=~\"$env\"}) without (instance, pod)",
@@ -216,7 +216,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", daemonset=\"cattle-node-agent\", environment=\"nck8s\", job=\"kube-state-metrics\", namespace=\"cattle-system\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "min(kube_daemonset_status_number_available{daemonset=\"$daemonset_name\",namespace=\"$daemonset_namespace\",environment=~\"$env\"}) without (instance, pod)",
@@ -308,7 +308,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", daemonset=\"cattle-node-agent\", environment=\"nck8s\", job=\"kube-state-metrics\", namespace=\"cattle-system\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "max(kube_daemonset_metadata_generation{daemonset=\"$daemonset_name\",namespace=\"$daemonset_namespace\",environment=~\"$env\"}) without (instance, pod)",

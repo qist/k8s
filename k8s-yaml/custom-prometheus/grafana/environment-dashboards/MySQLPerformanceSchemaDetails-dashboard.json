@@ -1426,7 +1426,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "{instance=\"172.16.7.198:9104\"}",
+      "tableColumn": "",
       "targets": [
         {
           "calculatedInterval": "10m",
@@ -1615,7 +1615,7 @@
         "ymax": null,
         "ymin": null
       },
-      "tableColumn": "{instance=\"172.16.7.198:9104\"}",
+      "tableColumn": "",
       "targets": [
         {
           "calculatedInterval": "10m",
@@ -1712,7 +1712,7 @@
         "ymax": null,
         "ymin": null
       },
-      "tableColumn": "{instance=\"172.16.7.198:9104\"}",
+      "tableColumn": "",
       "targets": [
         {
           "calculatedInterval": "10m",
@@ -1809,7 +1809,7 @@
         "ymax": null,
         "ymin": null
       },
-      "tableColumn": "{instance=\"172.16.7.198:9104\"}",
+      "tableColumn": "",
       "targets": [
         {
           "calculatedInterval": "10m",
@@ -2727,7 +2727,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{instance=\"172.16.7.198:9100\"}",
+      "tableColumn": "",
       "targets": [
         {
           "calculatedInterval": "10m",
@@ -2818,7 +2818,7 @@
         "ymax": null,
         "ymin": null
       },
-      "tableColumn": "{instance=\"172.16.7.198:9100\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "avg by (instance) (avg_over_time(node_load1{instance=~\"$node_name:.*\"}[$interval]) or avg_over_time(node_load1{instance=~\"$node_name:.*\"}[5m]))",
@@ -2910,7 +2910,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{instance=\"172.16.7.198:9100\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "avg by (instance) (node_memory_MemTotal_bytes{instance=~\"$node_name:.*\"})",
@@ -3003,7 +3003,7 @@
         "ymax": null,
         "ymin": null
       },
-      "tableColumn": "{instance=\"172.16.7.198:9100\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "avg by (instance) ((node_memory_MemAvailable_bytes{instance=~\"$node_name:.*\"} or (node_memory_MemFree_bytes{instance=~\"$node_name:.*\"} + node_memory_Buffers_bytes{instance=~\"$node_name:.*\"} + node_memory_Cached_bytes{instance=~\"$node_name:.*\"})) / node_memory_MemTotal_bytes{instance=~\"$node_name:.*\"} * 100)",
@@ -3096,7 +3096,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{instance=\"172.16.7.198:9100\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "avg by (instance) (node_memory_MemTotal_bytes{instance=~\"$node_name:.*\"}+node_memory_SwapTotal_bytes{instance=~\"$node_name:.*\"})",
@@ -3196,7 +3196,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{instance=\"172.16.7.198:9100\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "avg by (instance) (sum(avg(node_filesystem_size_bytes{instance=~\"$node_name:.*\",fstype=~\"(ext.|xfs|vfat|)\"}) without (mountpoint)) without (device,fstype))",

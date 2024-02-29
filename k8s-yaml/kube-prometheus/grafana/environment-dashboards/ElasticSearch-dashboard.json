@@ -182,7 +182,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "{cluster=\"dwc_es\", color=\"green\", environment=\"boshun\", instance=\"172.16.4.135:7114\", job=\"elasticsearch-exporter\", service=\"elasticsearch-exporter\", service_name=\"elasticsearch-exporter-172.16.4.135\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "elasticsearch_cluster_health_status{cluster=\"$cluster\",color=\"red\"}==1 or (elasticsearch_cluster_health_status{cluster=\"$cluster\",color=\"green\"}==1)+4 or (elasticsearch_cluster_health_status{cluster=\"$cluster\",color=\"yellow\"}==1)+22",
@@ -287,7 +287,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "__name__",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "count(elasticsearch_breakers_tripped{cluster=\"$cluster\",name=~\"$name\"}>0)",
@@ -577,7 +577,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "elasticsearch_cluster_health_number_of_nodes{cluster=\"dwc_es\", environment=\"boshun\", instance=\"172.16.4.135:7114\", job=\"elasticsearch-exporter\", service=\"elasticsearch-exporter\", service_name=\"elasticsearch-exporter-172.16.4.135\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "elasticsearch_cluster_health_number_of_nodes{cluster=\"$cluster\"}",
@@ -672,7 +672,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "elasticsearch_cluster_health_number_of_data_nodes{cluster=\"dwc_es\", environment=\"boshun\", instance=\"172.16.4.135:7114\", job=\"elasticsearch-exporter\", service=\"elasticsearch-exporter\", service_name=\"elasticsearch-exporter-172.16.4.135\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "elasticsearch_cluster_health_number_of_data_nodes{cluster=\"$cluster\"}",
@@ -768,7 +768,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "elasticsearch_cluster_health_number_of_pending_tasks{cluster=\"dwc_es\", environment=\"boshun\", instance=\"172.16.4.135:7114\", job=\"elasticsearch-exporter\", service=\"elasticsearch-exporter\", service_name=\"elasticsearch-exporter-172.16.4.135\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "elasticsearch_cluster_health_number_of_pending_tasks{cluster=\"$cluster\"}",
@@ -968,7 +968,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "elasticsearch_cluster_health_active_primary_shards{cluster=\"dwc_es\", environment=\"boshun\", instance=\"172.16.4.135:7114\", job=\"elasticsearch-exporter\", service=\"elasticsearch-exporter\", service_name=\"elasticsearch-exporter-172.16.4.135\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "elasticsearch_cluster_health_active_primary_shards{cluster=\"$cluster\"}",
@@ -1062,7 +1062,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "elasticsearch_cluster_health_active_shards{cluster=\"dwc_es\", environment=\"boshun\", instance=\"172.16.4.135:7114\", job=\"elasticsearch-exporter\", service=\"elasticsearch-exporter\", service_name=\"elasticsearch-exporter-172.16.4.135\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "elasticsearch_cluster_health_active_shards{cluster=\"$cluster\"}",
@@ -1156,7 +1156,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "elasticsearch_cluster_health_initializing_shards{cluster=\"dwc_es\", environment=\"boshun\", instance=\"172.16.4.135:7114\", job=\"elasticsearch-exporter\", service=\"elasticsearch-exporter\", service_name=\"elasticsearch-exporter-172.16.4.135\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "elasticsearch_cluster_health_initializing_shards{cluster=\"$cluster\"}",
@@ -1250,7 +1250,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "elasticsearch_cluster_health_relocating_shards{cluster=\"dwc_es\", environment=\"boshun\", instance=\"172.16.4.135:7114\", job=\"elasticsearch-exporter\", service=\"elasticsearch-exporter\", service_name=\"elasticsearch-exporter-172.16.4.135\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "elasticsearch_cluster_health_relocating_shards{cluster=\"$cluster\"}",
@@ -1344,7 +1344,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "elasticsearch_cluster_health_delayed_unassigned_shards{cluster=\"dwc_es\", environment=\"boshun\", instance=\"172.16.4.135:7114\", job=\"elasticsearch-exporter\", service=\"elasticsearch-exporter\", service_name=\"elasticsearch-exporter-172.16.4.135\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "elasticsearch_cluster_health_delayed_unassigned_shards{cluster=\"$cluster\"} ",
@@ -1438,7 +1438,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "elasticsearch_cluster_health_unassigned_shards{cluster=\"dwc_es\", environment=\"boshun\", instance=\"172.16.4.135:7114\", job=\"elasticsearch-exporter\", service=\"elasticsearch-exporter\", service_name=\"elasticsearch-exporter-172.16.4.135\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "elasticsearch_cluster_health_unassigned_shards{cluster=\"$cluster\"} ",

@@ -494,7 +494,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "members",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "sum(etcd_server_id{instance=~\"$instance\",job=~\"$cluster\"})",
@@ -599,7 +599,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
-          "tableColumn": "{endpoint=\"https-metrics\", environment=\"nck8s\", instance=\"192.168.2.84:2379\", job=\"dns-etcd\", namespace=\"monitoring\", service=\"dns-etcd\"}",
+          "tableColumn": "",
           "targets": [
             {
               "expr": "(etcd_mvcc_db_total_size_in_bytes{instance=~\"$instance\",job=~\"$cluster\"} / etcd_server_quota_backend_bytes{instance=~\"$instance\",job=~\"$cluster\"})*100",
@@ -697,7 +697,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
-          "tableColumn": "{endpoint=\"https-metrics\", environment=\"nck8s\", instance=\"192.168.2.89:2379\", job=\"dns-etcd\", namespace=\"monitoring\", service=\"dns-etcd\"}",
+          "tableColumn": "",
           "targets": [
             {
               "expr": "(etcd_mvcc_db_total_size_in_bytes{instance=~\"$instance\",job=~\"$cluster\"} / etcd_server_quota_backend_bytes{instance=~\"$instance\",job=~\"$cluster\"})*100",
@@ -803,7 +803,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "tableColumn": "{endpoint=\"https-metrics\", environment=\"nck8s\", instance=\"192.168.2.84:2379\", job=\"dns-etcd\", namespace=\"monitoring\", service=\"dns-etcd\"}",
+          "tableColumn": "",
           "targets": [
             {
               "expr": "(etcd_mvcc_db_total_size_in_bytes{instance=~\"$instance\",job=~\"$cluster\"} / etcd_server_quota_backend_bytes{instance=~\"$instance\",job=~\"$cluster\"})*100",
@@ -908,7 +908,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "tableColumn": "{endpoint=\"https-metrics\", environment=\"nck8s\", instance=\"192.168.2.89:2379\", job=\"dns-etcd\", namespace=\"monitoring\", service=\"dns-etcd\"}",
+          "tableColumn": "",
           "targets": [
             {
               "expr": "(etcd_mvcc_db_total_size_in_bytes{instance=~\"$instance\",job=~\"$cluster\"} / etcd_server_quota_backend_bytes{instance=~\"$instance\",job=~\"$cluster\"})*100",
@@ -1001,7 +1001,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
-          "tableColumn": "Backend bytes - DB Size",
+          "tableColumn": "",
           "targets": [
             {
               "expr": "etcd_server_quota_backend_bytes{instance=~\"$instance\",job=~\"$cluster\"} - etcd_mvcc_db_total_size_in_bytes{instance=~\"$instance\",job=~\"$cluster\"}",
@@ -1097,7 +1097,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
-          "tableColumn": "Backend bytes - DB Size",
+          "tableColumn": "",
           "targets": [
             {
               "expr": "etcd_server_quota_backend_bytes{instance=~\"$instance\",job=~\"$cluster\"} - etcd_mvcc_db_total_size_in_bytes{instance=~\"$instance\",job=~\"$cluster\"}",
@@ -1217,7 +1217,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "tableColumn": "192.168.2.84:2379 Quota Bytes",
+          "tableColumn": "",
           "targets": [
             {
               "expr": "etcd_server_quota_backend_bytes{instance=~\"$instance\",job=~\"$cluster\"}",
@@ -1342,7 +1342,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "tableColumn": "192.168.2.89:2379 Quota Bytes",
+          "tableColumn": "",
           "targets": [
             {
               "expr": "etcd_server_quota_backend_bytes{instance=~\"$instance\",job=~\"$cluster\"}",

@@ -113,7 +113,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "apiserver_request:availability30d{environment=\"nck8s\", job=\"federate\", verb=\"all\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "apiserver_request:availability30d{verb=\"all\",environment=~\"$env\"}",
@@ -313,7 +313,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "apiserver_request:availability30d{environment=\"nck8s\", job=\"federate\", verb=\"read\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "apiserver_request:availability30d{verb=\"read\",environment=~\"$env\"}",
@@ -714,7 +714,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "apiserver_request:availability30d{environment=\"nck8s\", job=\"federate\", verb=\"write\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "apiserver_request:availability30d{verb=\"write\",environment=~\"$env\"}",

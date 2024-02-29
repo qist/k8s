@@ -117,7 +117,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", deployment=\"alibaba-log-controller\", environment=\"openplatformk8s\", job=\"kube-state-metrics\", namespace=\"kube-system\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "max(kube_deployment_spec_replicas{deployment=\"$deployment_name\",namespace=\"$deployment_namespace\",environment=~\"$env\"}) without (instance, pod)",
@@ -210,7 +210,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", deployment=\"alibaba-log-controller\", environment=\"openplatformk8s\", job=\"kube-state-metrics\", namespace=\"kube-system\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "max(kube_deployment_status_observed_generation{deployment=\"$deployment_name\",namespace=\"$deployment_namespace\",environment=~\"$env\"}) without (instance, pod)",
@@ -302,7 +302,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", deployment=\"alibaba-log-controller\", environment=\"openplatformk8s\", job=\"kube-state-metrics\", namespace=\"kube-system\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "min(kube_deployment_status_replicas_available{deployment=\"$deployment_name\",namespace=\"$deployment_namespace\",environment=~\"$env\"}) without (instance, pod)",
@@ -394,7 +394,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", deployment=\"alibaba-log-controller\", environment=\"openplatformk8s\", job=\"kube-state-metrics\", namespace=\"kube-system\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "max(kube_deployment_metadata_generation{deployment=\"$deployment_name\",namespace=\"$deployment_namespace\",environment=~\"$env\"}) without (instance, pod)",

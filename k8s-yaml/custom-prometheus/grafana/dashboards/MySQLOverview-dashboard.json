@@ -243,7 +243,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "mysql_global_status_uptime{environment=\"zhongshun\", instance=\"10.8.12.165:7104\", job=\"mysql-exporter\", service=\"mysql-exporter\", service_name=\"mysql-exporter-10.8.12.165\"}",
+      "tableColumn": "",
       "targets": [
         {
           "calculatedInterval": "10m",
@@ -341,7 +341,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "{environment=\"zhongshun\", instance=\"10.8.12.165:7104\", job=\"mysql-exporter\", service=\"mysql-exporter\", service_name=\"mysql-exporter-10.8.12.165\"}",
+      "tableColumn": "",
       "targets": [
         {
           "calculatedInterval": "10m",
@@ -439,7 +439,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "mysql_global_variables_innodb_buffer_pool_size{environment=\"zhongshun\", instance=\"10.8.12.165:7104\", job=\"mysql-exporter\", service=\"mysql-exporter\", service_name=\"mysql-exporter-10.8.12.165\"}",
+      "tableColumn": "",
       "targets": [
         {
           "calculatedInterval": "10m",

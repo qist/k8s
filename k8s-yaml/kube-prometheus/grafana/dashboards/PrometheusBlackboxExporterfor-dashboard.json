@@ -473,7 +473,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_success{app_kubernetes_io_instance=\"blackbox\", app_kubernetes_io_name=\"blackbox-exporter\", instance=\"blackbox-exporter.monitoring.svc:80\", job=\"blackbox-exporter\", namespace=\"monitoring\", service=\"blackbox-exporter\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "probe_success{instance=~\"$target\"}",
@@ -773,7 +773,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_http_status_code{app_kubernetes_io_instance=\"blackbox\", app_kubernetes_io_name=\"blackbox-exporter\", instance=\"blackbox-exporter.monitoring.svc:80\", job=\"blackbox-exporter\", namespace=\"monitoring\", service=\"blackbox-exporter\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "probe_http_status_code{instance=~\"$target\"}",
@@ -870,7 +870,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_http_version{app_kubernetes_io_instance=\"blackbox\", app_kubernetes_io_name=\"blackbox-exporter\", instance=\"blackbox-exporter.monitoring.svc:80\", job=\"blackbox-exporter\", namespace=\"monitoring\", service=\"blackbox-exporter\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "probe_http_version{instance=~\"$target\"}",
@@ -959,7 +959,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_http_ssl{app_kubernetes_io_instance=\"blackbox\", app_kubernetes_io_name=\"blackbox-exporter\", instance=\"blackbox-exporter.monitoring.svc:80\", job=\"blackbox-exporter\", namespace=\"monitoring\", service=\"blackbox-exporter\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "probe_http_ssl{instance=~\"$target\"}",
@@ -1060,7 +1060,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{app=\"rancher\", chart=\"rancher-2.4.8\", environment=\"openplatformk8s\", heritage=\"Helm\", instance=\"https://od.qkagame.com/\", job=\"kubernetes-ingresses\", namespace=\"cattle-system\", release=\"rancher\", service=\"rancher\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "probe_ssl_earliest_cert_expiry{instance=~\"$target\"} - time()",

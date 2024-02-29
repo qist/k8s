@@ -432,7 +432,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "aliyun_acs_ecs_dashboard_cpu_idle{environment=\"zhongshun\", instance=\"10.8.23.80:7525\", instanceId=\"i-2ze1yaiymkq96gl2x46f\", job=\"aliyun-exporter\", service=\"aliyun-exporter\", service_name=\"aliyun-exporter-10.8.23.80\", userId=\"1685775031133022\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "aliyun_acs_ecs_dashboard_cpu_idle{instanceId=\"$instanceId\"}",
@@ -523,7 +523,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "CPU百分比",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "aliyun_acs_ecs_dashboard_CPUUtilization{instanceId=\"$instanceId\"}",
@@ -673,7 +673,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "当前用户空间占用CPU百分比",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "aliyun_acs_ecs_dashboard_cpu_user{instanceId=\"$instanceId\"}",
@@ -762,7 +762,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "aliyun_acs_ecs_dashboard_memory_usedutilization{environment=\"zhongshun\", instance=\"10.8.23.80:7525\", instanceId=\"i-2ze1yaiymkq96gl2x46f\", job=\"aliyun-exporter\", service=\"aliyun-exporter\", service_name=\"aliyun-exporter-10.8.23.80\", userId=\"1685775031133022\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "aliyun_acs_ecs_dashboard_memory_usedutilization{instanceId=\"$instanceId\"}",
@@ -850,7 +850,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "当前等待IO操作的CPU百分比",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "aliyun_acs_ecs_dashboard_cpu_wait{instanceId=\"$instanceId\"}",
@@ -939,7 +939,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "其他占用CUP百分比",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "aliyun_acs_ecs_dashboard_cpu_other{instanceId=\"$instanceId\"}",
@@ -1028,7 +1028,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "aliyun_acs_ecs_dashboard_cpu_total{environment=\"zhongshun\", instance=\"10.8.23.80:7525\", instanceId=\"i-2ze1yaiymkq96gl2x46f\", job=\"aliyun-exporter\", service=\"aliyun-exporter\", service_name=\"aliyun-exporter-10.8.23.80\", userId=\"1685775031133022\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "aliyun_acs_ecs_dashboard_cpu_total{instanceId=\"$instanceId\"}",
@@ -1116,7 +1116,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "aliyun_acs_ecs_dashboard_memory_freeutilization{environment=\"zhongshun\", instance=\"10.8.23.80:7525\", instanceId=\"i-2ze1yaiymkq96gl2x46f\", job=\"aliyun-exporter\", service=\"aliyun-exporter\", service_name=\"aliyun-exporter-10.8.23.80\", userId=\"1685775031133022\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "aliyun_acs_ecs_dashboard_memory_freeutilization{instanceId=\"$instanceId\"}",

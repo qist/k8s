@@ -168,7 +168,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{environment=\"zhongshun\", instance=\"10.8.12.155:7100\", job=\"node-exporter\", service=\"node-exporter\", service_name=\"node-exporter-10.8.12.155\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "time() - node_boot_time_seconds{instance=~\"$node\"}",
@@ -538,7 +538,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "{environment=\"zhongshun\", instance=\"10.8.12.155:7100\", job=\"node-exporter\", service=\"node-exporter\", service_name=\"node-exporter-10.8.12.155\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "(1 - (node_memory_MemAvailable_bytes{instance=~\"$node\"} / (node_memory_MemTotal_bytes{instance=~\"$node\"})))* 100",
@@ -627,7 +627,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "node_filefd_allocated{environment=\"zhongshun\", instance=\"10.8.12.155:7100\", job=\"node-exporter\", service=\"node-exporter\", service_name=\"node-exporter-10.8.12.155\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "node_filefd_allocated{instance=~\"$node\"}",
@@ -713,7 +713,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "{device=\"/dev/vda1\", environment=\"zhongshun\", fstype=\"ext4\", instance=\"10.8.12.155:7100\", job=\"node-exporter\", mountpoint=\"/\", service=\"node-exporter\", service_name=\"node-exporter-10.8.12.155\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "100 - ((node_filesystem_avail_bytes{instance=~\"$node\",mountpoint=\"/\",fstype=~\"ext4|xfs\"} * 100) / node_filesystem_size_bytes {instance=~\"$node\",mountpoint=\"/\",fstype=~\"ext4|xfs\"})",
@@ -806,7 +806,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "{device=\"/dev/vdb\", environment=\"zhongshun\", fstype=\"xfs\", instance=\"10.8.12.155:7100\", job=\"node-exporter\", mountpoint=\"/apps\", service=\"node-exporter\", service_name=\"node-exporter-10.8.12.155\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "100 - ((node_filesystem_avail_bytes{instance=~\"$node\",mountpoint=\"$maxmount\",fstype=~\"ext4|xfs\"} * 100) / node_filesystem_size_bytes {instance=~\"$node\",mountpoint=\"$maxmount\",fstype=~\"ext4|xfs\"})",
@@ -897,7 +897,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "10.8.12.155:7100",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "node_memory_MemTotal_bytes{instance=~\"$node\"}",

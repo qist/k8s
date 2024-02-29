@@ -136,7 +136,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{app=\"grafana\", component=\"core\", environment=\"nck8s\", instance=\"172.144.2.251:3000\", job=\"grafana\", namespace=\"monitoring\", pod=\"grafana-core-86b878c456-dv9rc\", service=\"grafana\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "process_start_time_seconds{job=\"grafana\"} * 1000",
@@ -223,7 +223,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "grafana_stat_total_orgs{app=\"grafana\", component=\"core\", environment=\"nck8s\", instance=\"172.144.2.251:3000\", job=\"grafana\", namespace=\"monitoring\", pod=\"grafana-core-86b878c456-dv9rc\", service=\"grafana\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "grafana_stat_total_orgs{kubernetes_pod_name=\"$pod\"}",
@@ -310,7 +310,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "grafana_stat_total_users{app=\"grafana\", component=\"core\", environment=\"nck8s\", instance=\"172.144.2.251:3000\", job=\"grafana\", namespace=\"monitoring\", pod=\"grafana-core-86b878c456-dv9rc\", service=\"grafana\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "grafana_stat_total_users{kubernetes_pod_name=\"$pod\"}",
@@ -397,7 +397,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "grafana_stat_totals_dashboard{app=\"grafana\", component=\"core\", environment=\"nck8s\", instance=\"172.144.2.251:3000\", job=\"grafana\", namespace=\"monitoring\", pod=\"grafana-core-86b878c456-dv9rc\", service=\"grafana\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "grafana_stat_totals_dashboard{kubernetes_pod_name=\"$pod\"}",

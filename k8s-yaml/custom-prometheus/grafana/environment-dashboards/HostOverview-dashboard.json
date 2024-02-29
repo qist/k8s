@@ -410,7 +410,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "{environment=\"nck8s\", instance=\"192.168.1.169:9156\", job=\"node\", k8s_app=\"node\", namespace=\"monitoring\", service=\"node\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "((node_memory_MemTotal_bytes{instance=~\"$node:$port\",job=~\"$job\"} - node_memory_MemFree_bytes{instance=~\"$node:$port\",job=~\"$job\"}) / (node_memory_MemTotal_bytes{instance=~\"$node:$port\",job=~\"$job\"} )) * 100",
@@ -651,7 +651,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{environment=\"nck8s\", instance=\"192.168.1.169:9156\", job=\"node\", k8s_app=\"node\", namespace=\"monitoring\", service=\"node\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "node_time_seconds{instance=~\"$node:$port\",job=~\"$job\"} - node_boot_time_seconds{instance=~\"$node:$port\",job=~\"$job\"}",
@@ -830,7 +830,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "node_load1{environment=\"nck8s\", instance=\"192.168.1.169:9156\", job=\"node\", k8s_app=\"node\", namespace=\"monitoring\", service=\"node\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "node_load1{job=\"$job\",instance=~\"$node:$port\",job=~\"$job\"}",
@@ -921,7 +921,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "node_memory_MemFree_bytes{environment=\"nck8s\", instance=\"192.168.1.169:9156\", job=\"node\", k8s_app=\"node\", namespace=\"monitoring\", service=\"node\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "node_memory_MemFree_bytes{job=\"$job\",instance=~\"$node:$port\",job=~\"$job\"}",

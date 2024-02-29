@@ -1056,7 +1056,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{endpoint=\"http\", environment=\"openplatformk8s\", instance=\"172.16.7.195:9100\", job=\"node-exporter\", namespace=\"kube-system\", service=\"node-exporter\", service_name=\"node-exporter-172.16.7.195\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "time() - node_boot_time_seconds{instance=~\"$node\"}",
@@ -1886,7 +1886,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "172.16.7.195:9100",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "node_memory_MemTotal_bytes{instance=~\"$node\"}",

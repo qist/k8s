@@ -530,7 +530,7 @@
         "ymax": 100,
         "ymin": 0
       },
-      "tableColumn": "{instance=\"172.16.7.195:9100\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "avg by (instance) (rate(node_netstat_Tcp_RetransSegs{instance=~\"$node_name\"}[1h]) * 100 / (rate(node_netstat_Tcp_OutSegs{instance=~\"$node_name\"}[1h]) + rate(node_netstat_Tcp_InSegs{instance=~\"$node_name\"}[1h])))",

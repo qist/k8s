@@ -1259,7 +1259,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{environment=\"boshun\", instance=\"172.16.3.85:7182\", job=\"windows-exporter\", service=\"windows-exporter\", service_name=\"windows-exporter-172.16.3.85\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "time() - windows_system_system_up_time{job=~\"$job\",instance=~\"$instance\"}",
@@ -1748,7 +1748,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "windows_cs_logical_processors{environment=\"boshun\", instance=\"172.16.3.85:7182\", job=\"windows-exporter\", service=\"windows-exporter\", service_name=\"windows-exporter-172.16.3.85\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "windows_cs_logical_processors{job=~\"$job\",instance=~\"$instance\"}",
@@ -1840,7 +1840,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "{environment=\"boshun\", instance=\"172.16.3.85:7182\", job=\"windows-exporter\", service=\"windows-exporter\", service_name=\"windows-exporter-172.16.3.85\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "100 - (windows_os_physical_memory_free_bytes{job=~\"$job\",instance=~\"$instance\"} / windows_cs_physical_memory_bytes{job=~\"$job\",instance=~\"$instance\"})*100",
@@ -1931,7 +1931,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "windows_cs_physical_memory_bytes{environment=\"boshun\", instance=\"172.16.3.85:7182\", job=\"windows-exporter\", service=\"windows-exporter\", service_name=\"windows-exporter-172.16.3.85\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "windows_cs_physical_memory_bytes{job=~\"$job\",instance=~\"$instance\"}",

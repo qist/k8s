@@ -122,7 +122,7 @@
         "lineColor": "rgb(151, 31, 193)",
         "show": true
       },
-      "tableColumn": "{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "rate(jenkins_job_building_duration_count[1m])",
@@ -312,7 +312,7 @@
         "lineColor": "rgb(31, 193, 185)",
         "show": true
       },
-      "tableColumn": "{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "rate(jenkins_job_queuing_duration_count[1m])",
@@ -400,7 +400,7 @@
         "lineColor": "rgb(60, 193, 31)",
         "show": true
       },
-      "tableColumn": "{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "(vm_memory_total_max - vm_memory_total_used) / vm_memory_total_max * 100.0",
@@ -490,7 +490,7 @@
         "lineColor": "#8F3BB8",
         "show": true
       },
-      "tableColumn": "vm_memory_total_used{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "vm_memory_total_used",
@@ -582,7 +582,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "jenkins_health_check_score{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "jenkins_health_check_score",
@@ -679,7 +679,7 @@
         "lineColor": "#E02F44",
         "show": false
       },
-      "tableColumn": "vm_uptime_milliseconds{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "vm_uptime_milliseconds",
@@ -771,7 +771,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "jenkins_node_offline_value{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "jenkins_node_offline_value",
@@ -856,7 +856,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "vm_cpu_load{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "vm_cpu_load",
@@ -949,7 +949,7 @@
         "lineColor": "#F2CC0C",
         "show": true
       },
-      "tableColumn": "jenkins_node_builds_count{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "jenkins_node_builds_count",
@@ -1041,7 +1041,7 @@
         "lineColor": "#37872D",
         "show": true
       },
-      "tableColumn": "jenkins_runs_success_total{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "jenkins_runs_success_total",
@@ -1133,7 +1133,7 @@
         "lineColor": "rgb(219, 198, 200)",
         "show": true
       },
-      "tableColumn": "jenkins_runs_aborted_total{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "jenkins_runs_aborted_total",
@@ -1226,7 +1226,7 @@
         "lineColor": "#FA6400",
         "show": true
       },
-      "tableColumn": "jenkins_runs_unstable_total{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "jenkins_runs_unstable_total",
@@ -1318,7 +1318,7 @@
         "lineColor": "#C4162A",
         "show": true
       },
-      "tableColumn": "jenkins_runs_failure_total{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "jenkins_runs_failure_total",
@@ -1409,7 +1409,7 @@
         "lineColor": "#FA6400",
         "show": true
       },
-      "tableColumn": "jenkins_queue_size_value{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "jenkins_queue_size_value",
@@ -1500,7 +1500,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": true
       },
-      "tableColumn": "jenkins_executor_free_value{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "jenkins_executor_free_value",
@@ -1802,7 +1802,7 @@
         "lineColor": "rgb(193, 185, 31)",
         "show": true
       },
-      "tableColumn": "jenkins_executor_in_use_value{environment=\"nck8s\", instance=\"192.168.1.121:8080\", job=\"jenkins\", k8s_app=\"jenkins\", namespace=\"monitoring\", service=\"jenkins\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "jenkins_executor_in_use_value",

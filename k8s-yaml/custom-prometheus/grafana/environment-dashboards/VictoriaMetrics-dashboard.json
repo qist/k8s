@@ -468,7 +468,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "vm_app_uptime_seconds{instance=\"localhost:8428\", job=\"victoriametrics\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "vm_app_uptime_seconds{job=\"$job\", instance=\"$instance\"}",

@@ -125,7 +125,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "当前空闲CPU百分比",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "sum(aliyun_acs_ecs_dashboard_cpu_idle{instance=\"$instance\"})",
@@ -215,7 +215,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "总CPU百分比",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "sum(aliyun_acs_ecs_dashboard_CPUUtilization{instance=\"$instance\"})",
@@ -367,7 +367,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "当前用户空间占用CPU百分比",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "sum(aliyun_acs_ecs_dashboard_cpu_user{instance=\"$instance\"})",
@@ -544,7 +544,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "当前等待IO操作的CPU百分比",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "sum(aliyun_acs_ecs_dashboard_cpu_wait{instance=\"$instance\"})",
@@ -633,7 +633,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "其他占用CUP百分比",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "sum(aliyun_acs_ecs_dashboard_cpu_other{instance=\"$instance\"})",

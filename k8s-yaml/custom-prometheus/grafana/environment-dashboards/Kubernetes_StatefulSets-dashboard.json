@@ -106,7 +106,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", environment=\"nck8s\", job=\"kube-state-metrics\", namespace=\"monitoring\", statefulset=\"alertmanager-main\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "max(kube_statefulset_replicas{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", statefulset=\"$statefulset\",environment=~\"$env\"}) without (instance, pod)",
@@ -200,7 +200,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", environment=\"nck8s\", job=\"kube-state-metrics\", namespace=\"monitoring\", statefulset=\"alertmanager-main\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "min(kube_statefulset_status_replicas_current{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", statefulset=\"$statefulset\",environment=~\"$env\"}) without (instance, pod)",
@@ -294,7 +294,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", environment=\"nck8s\", job=\"kube-state-metrics\", namespace=\"monitoring\", statefulset=\"alertmanager-main\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "max(kube_statefulset_status_observed_generation{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", statefulset=\"$statefulset\",environment=~\"$env\"}) without (instance, pod)",
@@ -388,7 +388,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{container=\"kube-state-metrics\", environment=\"nck8s\", job=\"kube-state-metrics\", namespace=\"monitoring\", statefulset=\"alertmanager-main\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "max(kube_statefulset_metadata_generation{job=\"kube-state-metrics\", statefulset=\"$statefulset\", cluster=\"$cluster\", namespace=\"$namespace\",environment=~\"$env\"}) without (instance, pod)",

@@ -474,7 +474,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_success{environment=\"zhongshun\", instance=\"bspromethues.boshungame.com:9090\", job=\"blackbox-tcp\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "probe_success{instance=~\"$target\",environment=~\"$env\"}",
@@ -777,7 +777,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_http_status_code{environment=\"zhongshun\", instance=\"http://bydjzgameupdate2019.qkagame.com\", job=\"blackbox-http\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "probe_http_status_code{instance=~\"$target\",environment=~\"$env\"}",
@@ -878,7 +878,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_http_version{environment=\"zhongshun\", instance=\"http://bydjzgameupdate2019.qkagame.com\", job=\"blackbox-http\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "probe_http_version{instance=~\"$target\",environment=~\"$env\"}",
@@ -969,7 +969,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "probe_http_ssl{environment=\"zhongshun\", instance=\"http://bydjzgameupdate2019.qkagame.com\", job=\"blackbox-http\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "probe_http_ssl{instance=~\"$target\",environment=~\"$env\"}",
@@ -1072,7 +1072,7 @@
         "lineColor": "rgb(31, 120, 193)",
         "show": false
       },
-      "tableColumn": "{app=\"rancher\", chart=\"rancher-2.4.8\", environment=\"openplatformk8s\", heritage=\"Helm\", instance=\"https://od.qkagame.com/\", job=\"kubernetes-ingresses\", namespace=\"cattle-system\", release=\"rancher\", service=\"rancher\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "probe_ssl_earliest_cert_expiry{instance=~\"$target\",environment=~\"$env\"} - time()",

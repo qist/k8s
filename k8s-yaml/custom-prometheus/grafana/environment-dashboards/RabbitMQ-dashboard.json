@@ -138,7 +138,7 @@
         "lineColor": "rgb(255, 255, 255)",
         "show": true
       },
-      "tableColumn": "rabbitmq_queues{cluster=\"rabbit@iz2ze71vadkp2255v7rue1z\", environment=\"zhongshun\", instance=\"10.8.28.209:7099\", job=\"rabbitmq-exporter\", service=\"rabbitmq-exporter\", service_name=\"rabbitmq-exporter-10.8.28.209\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "rabbitmq_queues{instance=\"$instance\"}",
@@ -232,7 +232,7 @@
         "lineColor": "rgb(255, 255, 255)",
         "show": true
       },
-      "tableColumn": "rabbitmq_consumers{cluster=\"rabbit@iz2ze71vadkp2255v7rue1z\", environment=\"zhongshun\", instance=\"10.8.28.209:7099\", job=\"rabbitmq-exporter\", service=\"rabbitmq-exporter\", service_name=\"rabbitmq-exporter-10.8.28.209\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "rabbitmq_consumers{instance=\"$instance\"}",
@@ -324,7 +324,7 @@
         "lineColor": "rgb(255, 255, 255)",
         "show": true
       },
-      "tableColumn": "rabbitmq_connections{cluster=\"rabbit@iz2ze71vadkp2255v7rue1z\", environment=\"zhongshun\", instance=\"10.8.28.209:7099\", job=\"rabbitmq-exporter\", service=\"rabbitmq-exporter\", service_name=\"rabbitmq-exporter-10.8.28.209\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "rabbitmq_connections{instance=\"$instance\"}",
@@ -416,7 +416,7 @@
         "lineColor": "rgb(255, 255, 255)",
         "show": true
       },
-      "tableColumn": "rabbitmq_channels{cluster=\"rabbit@iz2ze71vadkp2255v7rue1z\", environment=\"zhongshun\", instance=\"10.8.28.209:7099\", job=\"rabbitmq-exporter\", service=\"rabbitmq-exporter\", service_name=\"rabbitmq-exporter-10.8.28.209\"}",
+      "tableColumn": "",
       "targets": [
         {
           "expr": "rabbitmq_channels{instance=\"$instance\"}",
