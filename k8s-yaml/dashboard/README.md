@@ -4,19 +4,25 @@
 
 * [cert-manager安装](./cert-manager安装.md)
 
-修改 登录过期时间
+# Add kubernetes-dashboard repository
+```bash
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+```
+# Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
+```bash
+helm upgrade --install kubernetes-dashboard \
+             kubernetes-dashboard/kubernetes-dashboard \
+             --create-namespace \
+             --namespace kubernetes-dashboard \
+             --set kong.enabled=false
 
-```yaml
-# 找到 Deployment kubernetes-dashboard-api
-          args:
-            - --enable-insecure-login
-            - --namespace=kubernetes-dashboard
-            - --token-ttl=43200 # 添加过期时间
+# 如果要安装kong 就删除--set kong.enabled=false
 ```
 
-## 修改  dashboard ingress 打开kubernetes-dashboard.yaml 改成自己的域名
+## 修改  dashboard ingress 创建改成自己的域名
 
-```text
+```bash
+kubectl apply -f - <<EOF
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -32,10 +38,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - localhost
+        - dashboard.tycng.com
       secretName: kubernetes-dashboard-certs
   rules:
-    - host: localhost
+    - host: dashboard.tycng.com
       http:
         paths:
           - path: /
@@ -45,6 +51,27 @@ spec:
                 name: kubernetes-dashboard-web
                 port:
                   name: web
+          - path: /api/v1/login
+            pathType: Prefix
+            backend:
+              service:
+                name: kubernetes-dashboard-auth
+                port:
+                  name: auth   
+          - path: /api/v1/csrftoken/login
+            pathType: Prefix
+            backend:
+              service:
+                name: kubernetes-dashboard-auth
+                port:
+                  name: auth   
+          - path: /api/v1/me
+            pathType: Prefix
+            backend:
+              service:
+                name: kubernetes-dashboard-auth
+                port:
+                  name: auth          
           - path: /api
             pathType: Prefix
             backend:
@@ -52,6 +79,14 @@ spec:
                 name: kubernetes-dashboard-api
                 port:
                   name: api
+          - path: /metrics
+            pathType: Prefix
+            backend:
+              service:
+                name: kubernetes-dashboard-api
+                port:
+                  name: api
+EOF
 ```
 
 ## 创建登录kubeconfig
@@ -74,27 +109,5 @@ metadata:
 type: kubernetes.io/service-account-token
 EOF
 
-#获取dashboard.kubeconfig 使用token   值
-DASHBOARD_LOGIN_TOKEN=$(kubectl describe secret -n kube-system dashboard-admin-token | grep -E '^token' | awk '{print $2}')
-
-# ${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem 改成自己的集群ca 文件路径  ${KUBE_APISERVER} api master ip 端口
-echo ${DASHBOARD_LOGIN_TOKEN}
-kubectl config set-cluster kubernetes \
-  --certificate-authority=${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem \
-  --embed-certs=true \
-  --server=${KUBE_APISERVER} \
-  --kubeconfig=dashboard.kubeconfig
-# 设置客户端认证参数，使用上面创建的 Token
-kubectl config set-credentials dashboard_user \
-  --token=${DASHBOARD_LOGIN_TOKEN} \
-  --kubeconfig=dashboard.kubeconfig
-
-# 设置上下文参数
-kubectl config set-context default \
-  --cluster=kubernetes \
-  --user=dashboard_user \
-  --kubeconfig=dashboard.kubeconfig
-
-# 设置默认上下文
-kubectl config use-context default --kubeconfig=dashboard.kubeconfig
-```
+#获取dashboard 使用token   值
+kubectl describe secret -n kube-system dashboard-admin-token | grep -E '^token' | awk '{print $2}'
