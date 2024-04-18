@@ -148,38 +148,38 @@ export HOST_PATH=$(pwd)
 export DOWNLOAD_PATH=${HOST_PATH}/download
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.5.11
+export ETCD_VERSION=v3.5.13
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.29.0
+export KUBERNETES_VERSION=v1.30.0
 # cni 版本
-export CNI_VERSION=v1.4.0
+export CNI_VERSION=v1.4.1
 # iptables
 export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
 export CFSSL_VERSION=1.6.4
 # docker 版本
-export DOCKER_VERSION=24.0.7
+export DOCKER_VERSION=26.0.1
 # docker cri 版本
-export CRI_DOCKER_VERSION=v0.3.8
+export CRI_DOCKER_VERSION=v0.3.12
 # containerd 版本
-export CONTAINERD_VERSION=1.7.11
+export CONTAINERD_VERSION=1.7.15
 # crictl 版本
-export CRICTL_VERSION=v1.29.0
+export CRICTL_VERSION=v1.30.0
 # runc 版本
-export RUNC_VERSION=v1.1.10
+export RUNC_VERSION=v1.1.12
 # cri-o 版本
-export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.28.2.tar.gz"
-export CRIO_VERSION=v1.28.2
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.29.2.tar.gz"
+export CRIO_VERSION=v1.29.2
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
-FLANNEL_CNI_PLUGIN="docker.io/flannel/flannel-cni-plugin:v1.2.0"
+FLANNEL_CNI_PLUGIN="docker.io/flannel/flannel-cni-plugin:v1.4.1-flannel1"
 # flannel 插件选择
-FLANNEL_VERSION="docker.io/flannel/flannel:v0.22.3"
+FLANNEL_VERSION="docker.io/flannel/flannel:v0.25.1"
 # kube-router 镜像
 KUBE_ROUTER_INIT="docker.io/cloudnativelabs/kube-router"
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
 # coredns 镜像
-COREDNS_IMAGE=coredns/coredns
+COREDNS_IMAGE=docker.io/coredns/coredns:1.11.1
 # 应用部署目录 选择硬盘空间比较大的
 TOTAL_PATH=/apps
 # etcd 部署目录
