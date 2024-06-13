@@ -2852,10 +2852,6 @@ cat > ${HOST_PATH}/roles/docker/templates/daemon.json << EOF
     "storage-opts":["overlay2.override_kernel_check=true"],
     {% endif %}
     "debug": false,
-    "registry-mirrors": [
-        "https://docker.mirrors.ustc.edu.cn",
-        "https://hub-mirror.c.163.com/"
-    ],
     "log-opts": {
         "max-size": "${LOG_OPTS_MAX_SIZE}",
         "max-file": "${LOG_OPTS_MAX_FILE}"
