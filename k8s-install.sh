@@ -2359,7 +2359,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
 #    url: https://mirrors.aliyun.com/repo/Centos-8.repo
 #    dest: /etc/yum.repos.d/CentOS-Base.repo
 #    force: yes
-#  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'  
+#  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'CentOS'  
 - name: enabled centos8 BaseOS
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
@@ -2370,7 +2370,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - CentOS-Linux-PowerTools.repo
       - CentOS-Linux-BaseOS.repo
       - CentOS-Linux-Extras.repo
-  when: ansible_distribution_major_version == '8'  and  ansible_os_family == 'RedHat'
+  when: ansible_distribution_major_version == '8'  and  ansible_distribution == 'CentOS'
 - name: remove centos8 BaseOS
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
@@ -2382,18 +2382,18 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - CentOS-Linux-PowerTools.repo
       - CentOS-Linux-BaseOS.repo
       - CentOS-Linux-Extras.repo 
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
+  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'CentOS'
 - name: is set centos8 BaseOS
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
     regexp: '^#baseurl=http://mirror.centos.org/\\\$contentdir'
-    replace: 'baseurl=https://mirrors.aliyun.com/centos'
+    replace: 'baseurl=https://mirrors.aliyun.com/centos-vault'
   with_items:
       - CentOS-Linux-AppStream.repo
       - CentOS-Linux-PowerTools.repo
       - CentOS-Linux-BaseOS.repo
       - CentOS-Linux-Extras.repo
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'RedHat'
+  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'CentOS'
  
 - name: enabled Rocky BaseOS
   lineinfile: 
@@ -2405,7 +2405,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - Rocky-PowerTools.repo
       - Rocky-BaseOS.repo
       - Rocky-Extras.repo
-  when: ansible_distribution_major_version == '8'  and  ansible_os_family == 'Rocky'
+  when: ansible_distribution_major_version == '8'  and  ansible_distribution == 'Rocky'
 - name: remove Rocky BaseOS
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
@@ -2417,7 +2417,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - Rocky-PowerTools.repo
       - Rocky-BaseOS.repo
       - Rocky-Extras.repo 
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'Rocky'
+  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'Rocky'
 - name: is set Rocky BaseOS
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
@@ -2428,7 +2428,7 @@ cat > ${HOST_PATH}/roles/package-sysctl/tasks/main.yml << EOF
       - Rocky-PowerTools.repo
       - Rocky-BaseOS.repo
       - Rocky-Extras.repo
-  when: ansible_distribution_major_version == '8' and  ansible_os_family == 'Rocky'
+  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'Rocky'
   
 - name: install the epel-release rpm from a remote repo
   yum:
