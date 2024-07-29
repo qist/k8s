@@ -3300,6 +3300,7 @@ version = 2
         snapshotter = ""
 
         [plugins."io.containerd.grpc.v1.cri".containerd.untrusted_workload_runtime.options]
+        
     [plugins."io.containerd.grpc.v1.cri".image_decryption]
       key_model = "node"
 
