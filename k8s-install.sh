@@ -3300,6 +3300,23 @@ version = 2
         snapshotter = ""
 
         [plugins."io.containerd.grpc.v1.cri".containerd.untrusted_workload_runtime.options]
+    [plugins."io.containerd.grpc.v1.cri".image_decryption]
+      key_model = "node"
+
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      config_path = ""
+
+      [plugins."io.containerd.grpc.v1.cri".registry.auths]
+
+      [plugins."io.containerd.grpc.v1.cri".registry.configs]
+
+      [plugins."io.containerd.grpc.v1.cri".registry.headers]
+
+      [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+
+    [plugins."io.containerd.grpc.v1.cri".x509_key_pair_streaming]
+      tls_cert_file = ""
+      tls_key_file = ""
 
   [plugins."io.containerd.internal.v1.opt"]
     path = "${CONTAINERD_PATH}"
