@@ -137,7 +137,7 @@ else
 fi
 
 # pod-infra-container-image 地址
-POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause:3.9"
+POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause:3.10"
 #########################################################################################################################################################################
 #########################################################################################################################################################################
 #############################################                    一般参数修改                                    ########################################################
@@ -148,38 +148,38 @@ export HOST_PATH=$(pwd)
 export DOWNLOAD_PATH=${HOST_PATH}/download
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.5.13
+export ETCD_VERSION=v3.5.17
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.30.0
+export KUBERNETES_VERSION=v1.31.0
 # cni 版本
-export CNI_VERSION=v1.4.1
+export CNI_VERSION=v1.6.0
 # iptables
 export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
-export CFSSL_VERSION=1.6.4
+export CFSSL_VERSION=v1.6.5
 # docker 版本
-export DOCKER_VERSION=26.0.1
+export DOCKER_VERSION=27.3.1
 # docker cri 版本
-export CRI_DOCKER_VERSION=v0.3.12
+export CRI_DOCKER_VERSION=v0.3.15
 # containerd 版本
-export CONTAINERD_VERSION=1.7.15
-# crictl 版本
-export CRICTL_VERSION=v1.30.0
+export CONTAINERD_VERSION=2.0.0
+# crictl 版本 cri-tools 版本
+export CRICTL_VERSION=v1.31.1
 # runc 版本
-export RUNC_VERSION=v1.1.12
+export RUNC_VERSION=v1.2.1
 # cri-o 版本
-export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.29.2.tar.gz"
-export CRIO_VERSION=v1.29.2
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.31.2.tar.gz"
+export CRIO_VERSION=v1.31.2
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
-FLANNEL_CNI_PLUGIN="docker.io/flannel/flannel-cni-plugin:v1.4.1-flannel1"
+FLANNEL_CNI_PLUGIN="docker.io/flannel/flannel-cni-plugin:v1.5.1-flannel2"
 # flannel 插件选择
-FLANNEL_VERSION="docker.io/flannel/flannel:v0.25.1"
+FLANNEL_VERSION="docker.io/flannel/flannel:v0.26.1"
 # kube-router 镜像
 KUBE_ROUTER_INIT="docker.io/cloudnativelabs/kube-router"
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
 # coredns 镜像
-COREDNS_IMAGE=docker.io/coredns/coredns:1.11.1
+COREDNS_IMAGE=docker.io/coredns/coredns:1.11.4
 # 应用部署目录 选择硬盘空间比较大的
 TOTAL_PATH=/apps
 # etcd 部署目录
@@ -1912,7 +1912,7 @@ KUBE_APISERVER_OPTS="--bind-address={{ $KUBELET_IPV4 }} \\
         --encryption-provider-config=${K8S_PATH}/config/encryption-config.yaml \\
         --enable-admission-plugins=${ENABLE_ADMISSION_PLUGINS} \\
         --disable-admission-plugins=${DISABLE_ADMISSION_PLUGINS} \\
-        --cors-allowed-origins=.* \\
+        --cors-allowed-origins=^https?://.*(:[0-9]+)?$ \\
         --runtime-config=${RUNTIME_CONFIG} \\
         --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname \\
         --authorization-mode=Node,RBAC \\
