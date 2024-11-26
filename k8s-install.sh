@@ -156,7 +156,7 @@ export CNI_VERSION=v1.6.0
 # iptables
 export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
-export CFSSL_VERSION=v1.6.5
+export CFSSL_VERSION=1.6.5
 # docker 版本
 export DOCKER_VERSION=27.3.1
 # docker cri 版本
@@ -4961,7 +4961,6 @@ KUBE_CONTROLLER_MANAGER_OPTS="--profiling \\
 --authorization-kubeconfig=${K8S_PATH}/config/kube-controller-manager.kubeconfig \\
 --use-service-account-credentials=true \\
 --client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
---requestheader-client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --requestheader-client-ca-file=${K8S_PATH}/ssl/k8s/k8s-ca.pem \\
 --requestheader-allowed-names=aggregator \\
 --requestheader-extra-headers-prefix=X-Remote-Extra- \\

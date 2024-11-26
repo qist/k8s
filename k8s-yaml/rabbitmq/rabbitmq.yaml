@@ -155,7 +155,6 @@ metadata:
   namespace: rabbitmq
   labels:
     app: rabbitmq
-    type: LoadBalancer
   annotations:
     prometheus.io/port: "15692"
     prometheus.io/scrape: "true"
