@@ -32,7 +32,7 @@ usage() {
     SELF="kubectl ns"
   fi
 
-  cat <<EOF
+cat <<EOF
 USAGE:
   $SELF                    : list the namespaces in the current context
   $SELF <NAME>             : change the active namespace of current context
