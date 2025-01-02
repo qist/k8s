@@ -150,36 +150,37 @@ export DOWNLOAD_PATH=${HOST_PATH}/download
 # ETCD 版本
 export ETCD_VERSION=v3.5.17
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.31.0
+export KUBERNETES_VERSION=v1.32.0
+export DOWNLOAD_KUBERNETES_VERSION="https://dl.k8s.io/v1.32.0/kubernetes-server-linux-amd64.tar.gz"
 # cni 版本
-export CNI_VERSION=v1.6.0
+export CNI_VERSION=v1.6.1
 # iptables
 export IPTABLES_VERSION=1.8.5
 # 数字证书签名工具
 export CFSSL_VERSION=1.6.5
 # docker 版本
-export DOCKER_VERSION=27.3.1
+export DOCKER_VERSION=27.4.1
 # docker cri 版本
-export CRI_DOCKER_VERSION=v0.3.15
+export CRI_DOCKER_VERSION=v0.3.16
 # containerd 版本
-export CONTAINERD_VERSION=2.0.0
+export CONTAINERD_VERSION=2.0.1
 # crictl 版本 cri-tools 版本
-export CRICTL_VERSION=v1.31.1
+export CRICTL_VERSION=v1.32.0
 # runc 版本
-export RUNC_VERSION=v1.2.1
+export RUNC_VERSION=v1.2.3
 # cri-o 版本
-export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.31.2.tar.gz"
-export CRIO_VERSION=v1.31.2
+export CRIO_VERSION=v1.32.0
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.32.0.tar.gz"
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
-FLANNEL_CNI_PLUGIN="docker.io/flannel/flannel-cni-plugin:v1.5.1-flannel2"
+FLANNEL_CNI_PLUGIN="docker.io/flannel/flannel-cni-plugin:v1.6.0-flannel1"
 # flannel 插件选择
-FLANNEL_VERSION="docker.io/flannel/flannel:v0.26.1"
+FLANNEL_VERSION="docker.io/flannel/flannel:v0.26.2"
 # kube-router 镜像
 KUBE_ROUTER_INIT="docker.io/cloudnativelabs/kube-router"
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
 # coredns 镜像
-COREDNS_IMAGE=docker.io/coredns/coredns:1.11.4
+COREDNS_IMAGE=docker.io/coredns/coredns:1.12.0
 # 应用部署目录 选择硬盘空间比较大的
 TOTAL_PATH=/apps
 # etcd 部署目录
@@ -468,7 +469,7 @@ downloadK8S() {
     exit $?
   fi
   # 下载kubernetes
-  wget -c --tries=40 https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/kubernetes-server-linux-amd64.tar.gz \
+  wget -c --tries=40 ${DOWNLOAD_KUBERNETES_VERSION} \
     -O $DOWNLOAD_PATH/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz
   if [[ $? -ne 0 ]]; then
     colorEcho ${RED} "download  FATAL kubernetes."
@@ -3305,7 +3306,7 @@ version = 2
       key_model = "node"
 
     [plugins."io.containerd.grpc.v1.cri".registry]
-      config_path = ""
+      config_path = "${CONTAINERD_PATH}/conf/certs.d"
 
       [plugins."io.containerd.grpc.v1.cri".registry.auths]
 
@@ -3324,10 +3325,6 @@ version = 2
 
   [plugins."io.containerd.internal.v1.restart"]
     interval = "10s"
-
-  [plugins."io.containerd.internal.v1.tracing"]
-    sampling_ratio = 1.0
-    service_name = "containerd"
 
   [plugins."io.containerd.runtime.v1.linux"]
     no_shim = false
