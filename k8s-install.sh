@@ -5940,16 +5940,12 @@ spec:
     metadata:
       labels:
         k8s-app: kube-dns
-      annotations:
-        seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
     spec:
       priorityClassName: system-cluster-critical
       serviceAccountName: coredns
       tolerations:
         - key: "CriticalAddonsOnly"
           operator: "Exists"
-      nodeSelector:
-        beta.kubernetes.io/os: linux
       containers:
       - name: coredns
         image: ${COREDNS_IMAGE}

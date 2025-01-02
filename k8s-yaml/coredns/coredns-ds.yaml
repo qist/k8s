@@ -124,8 +124,6 @@ spec:
           operator: Exists
         - effect: NoExecute
           operator: Exists
-      nodeSelector:
-        beta.kubernetes.io/os: linux
       containers:
         - name: coredns
           image: docker.io/coredns/coredns:1.9.3
