@@ -158,6 +158,9 @@ spec:
           name: configmap-prometheus-files-discover-icmp
         - name: prometheus-k8s-db
           emptyDir: {}
+        # - mountPath: /prometheus
+          # name: prometheus-k8s-db
+          # subPath: prometheus-db
   updateStrategy:
     type: RollingUpdate
   #volumeClaimTemplates:
