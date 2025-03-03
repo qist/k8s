@@ -229,6 +229,8 @@ HEARTBEAT_INTERVAL=6000
 ELECTION_TIMEOUT=30000
 # 触发快照到磁盘的已提交事务数
 SNAPSHOT_COUNT=5000
+# 高并发场景调大并发流数，默认1024
+MAX_CONCURRENT_STREAMS=2048
 # 在一个小时内为mvcc键值存储的自动压实保留。0表示禁用自动压缩。
 AUTO_COMPACTION_RETENTION=1
 # 服务器将接受的最大客户端请求大小（字节）
@@ -1597,6 +1599,7 @@ ETCD_OPTS="--name={{ ansible_hostname }} \\
            --heartbeat-interval=${HEARTBEAT_INTERVAL} \\
            --election-timeout=${ELECTION_TIMEOUT} \\
            --snapshot-count=${SNAPSHOT_COUNT} \\
+           --max-concurrent-streams=${MAX_CONCURRENT_STREAMS} \\
            --auto-compaction-retention=${AUTO_COMPACTION_RETENTION} \\
            --max-request-bytes=${MAX_REQUEST_BYTES} \\
            --quota-backend-bytes=${QUOTA_BACKEND_BYTES} \\
