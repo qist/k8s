@@ -180,7 +180,7 @@ FLANNEL_VERSION="docker.io/flannel/flannel:v0.26.2"
 KUBE_ROUTER_INIT="docker.io/cloudnativelabs/kube-router"
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
 # coredns 镜像
-COREDNS_IMAGE=docker.io/coredns/coredns:1.12.0
+COREDNS_IMAGE=docker.io/coredns/coredns:1.12.3
 # 应用部署目录 选择硬盘空间比较大的
 TOTAL_PATH=/apps
 # etcd 部署目录

@@ -126,7 +126,7 @@ spec:
           operator: Exists
       containers:
         - name: coredns
-          image: docker.io/coredns/coredns:1.9.3
+          image: docker.io/coredns/coredns:1.12.3
           imagePullPolicy: Always
           resources:
             limits:
