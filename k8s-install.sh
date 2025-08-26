@@ -129,7 +129,8 @@ FEATURE_GATES_OPT="ServiceTopology=true,EndpointSlice=true,TTLAfterFinished=true
 ## kube-apiserver ha proxy 配置
 # nginx 启动进程数 auto 当前机器cpu 核心数的进程数
 CPU_NUM=4
-# 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者nginx docker.io/juestnow/nginx-proxy:1.21.6
+# 所用 镜像名字 可以自己构建  项目地址 https://github.com/qist/k8s/tree/master/dockerfile/k8s-ha-master 或者nginx docker.io/juestnow/nginx-proxy:1.21.6 
+# 只支持amd64架构 其它的请自己下载dockerfile 自己构建
 if [ $IPVS = true ]; then
   HA_PROXY_IMAGE="docker.io/juestnow/lvscare-proxy:v1.1.3-beta.8-amd64"
 else
@@ -146,31 +147,46 @@ POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause:3.10"
 export HOST_PATH=$(pwd)
 # 设置下载文件目录
 export DOWNLOAD_PATH=${HOST_PATH}/download
+# cpu 架构参数
+export K8S_ARCH=amd64
+#K8S 客户都cpu架构
+export K8S_CLIENT_ARCH=amd64
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.5.17
+export ETCD_VERSION=v3.6.4
+export DOWNLOAD_ETCD_VERSION="https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.32.0
-export DOWNLOAD_KUBERNETES_VERSION="https://dl.k8s.io/v1.32.0/kubernetes-server-linux-amd64.tar.gz"
+export KUBERNETES_VERSION=v1.33.4
+export DOWNLOAD_KUBERNETES_VERSION="https://dl.k8s.io/${KUBERNETES_VERSION}/kubernetes-server-linux-${K8S_ARCH}.tar.gz"
+export DOWNLOAD_KUBERNETES_CLIENT_VERSION="https://dl.k8s.io/${KUBERNETES_VERSION}/kubernetes-client-linux-${K8S_CLIENT_ARCH}.tar.gz"
 # cni 版本
-export CNI_VERSION=v1.6.1
+export CNI_VERSION=v1.7.1
+export DOWNLOAD_CNI_VERSION="https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}.tgz"
 # iptables
-export IPTABLES_VERSION=1.8.5
+export IPTABLES_VERSION=1.8.8
+export DOWNLOAD_IPTABLES_VERSION="https://www.netfilter.org/projects/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2"
 # 数字证书签名工具
 export CFSSL_VERSION=1.6.5
+export DOWNLOAD_CFSSL_VERSION="https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssl_${CFSSL_VERSION}_linux_${K8S_ARCH}"
+export DOWNLOAD_CFSSLJSON_VERSION="https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssljson_${CFSSL_VERSION}_linux_${K8S_ARCH}"
 # docker 版本
-export DOCKER_VERSION=27.4.1
+export DOCKER_VERSION=28.3.3
+export DOWNLOAD_DOCKER_VERSION="https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz"
 # docker cri 版本
-export CRI_DOCKER_VERSION=v0.3.16
+export CRI_DOCKER_VERSION=0.3.18
+export DOWNLOAD_CRI_DOCKER_VERSION="https://github.com/Mirantis/cri-dockerd/releases/download/v${CRI_DOCKER_VERSION}/cri-dockerd-${CRI_DOCKER_VERSION}.${K8S_ARCH}.tgz"
 # containerd 版本
-export CONTAINERD_VERSION=2.0.1
+export CONTAINERD_VERSION=2.1.4
+export DOWNLOAD_CONTAINERD_VERSION="https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-static-${CONTAINERD_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # crictl 版本 cri-tools 版本
-export CRICTL_VERSION=v1.32.0
+export CRICTL_VERSION=v1.34.0
+export DOWNLOAD_CRICTL_VERSION="https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # runc 版本
 export RUNC_VERSION=v1.2.3
+export DOWNLOAD_RUNC_VERSION="https://github.com/opencontainers/runc/releases/download/${RUNC_VERSION}/runc.${K8S_ARCH}"
 # cri-o 版本
 export CRIO_VERSION=v1.32.0
-export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.amd64.v1.32.0.tar.gz"
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.${K8S_ARCH}.v1.32.0.tar.gz"
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
 FLANNEL_CNI_PLUGIN="docker.io/flannel/flannel-cni-plugin:v1.6.0-flannel1"
@@ -464,29 +480,29 @@ downloadK8S() {
     colorEcho ${GREEN} '文件夹已经存在'
   fi
   # 下载etcd
-  wget -c --tries=40 https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz \
-    -O $DOWNLOAD_PATH/etcd-${ETCD_VERSION}-linux-amd64.tar.gz
+  wget -c --tries=40 ${DOWNLOAD_ETCD_VERSION} \
+    -O $DOWNLOAD_PATH/etcd-${ETCD_VERSION}-linux-${K8S_ARCH}.tar.gz
   if [[ $? -ne 0 ]]; then
     colorEcho ${RED} "download  FATAL etcd."
     exit $?
   fi
   # 下载kubernetes
   wget -c --tries=40 ${DOWNLOAD_KUBERNETES_VERSION} \
-    -O $DOWNLOAD_PATH/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz
+    -O $DOWNLOAD_PATH/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz
   if [[ $? -ne 0 ]]; then
     colorEcho ${RED} "download  FATAL kubernetes."
     exit $?
   fi
   # 下载cni
-  wget -c --tries=40 https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz \
-    -O $DOWNLOAD_PATH/cni-plugins-linux-amd64-${CNI_VERSION}.tgz
+  wget -c --tries=40 ${DOWNLOAD_CNI_VERSION} \
+    -O $DOWNLOAD_PATH/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}.tgz
   if [[ $? -ne 0 ]]; then
     colorEcho ${RED} "download  FATAL cni."
     exit $?
   fi
   if [ ${IPTABLES_INSTALL} == "ON" ]; then
     # 下载iptables
-    curl -C - https://www.netfilter.org/projects/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2 \
+    curl -C - ${DOWNLOAD_IPTABLES_VERSION} \
       -o $DOWNLOAD_PATH/iptables-${IPTABLES_VERSION}.tar.bz2
     if [[ $? -ne 0 ]]; then
       colorEcho ${RED} "download  FATAL iptables."
@@ -497,37 +513,37 @@ downloadK8S() {
   fi
   if [[ ${RUNTIME} == "DOCKER" ]]; then
     # 下载docker
-    wget -c --tries=40 https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz \
+    wget -c --tries=40 ${DOWNLOAD_DOCKER_VERSION} \
       -O $DOWNLOAD_PATH/docker-${DOCKER_VERSION}.tgz
     if [[ $? -ne 0 ]]; then
       colorEcho ${RED} "download  FATAL docker."
       exit $?
     fi
     # 下载 docker-cri
-    wget -c --tries=40 https://github.com/Mirantis/cri-dockerd/releases/download/v${CRI_DOCKER_VERSION}/cri-dockerd-${CRI_DOCKER_VERSION}.amd64.tgz \
-      -O $DOWNLOAD_PATH/cri-dockerd-${CRI_DOCKER_VERSION}.amd64.tgz
+    wget -c --tries=40 ${DOWNLOAD_CRI_DOCKER_VERSION} \
+      -O $DOWNLOAD_PATH/cri-dockerd-${CRI_DOCKER_VERSION}.${K8S_ARCH}.tgz
     if [[ $? -ne 0 ]]; then
       colorEcho ${RED} "download  FATAL cri-dockerd."
       exit $?
     fi
   elif [[ ${RUNTIME} == "CONTAINERD" ]]; then
     # 下载crictl
-    wget -c --tries=40 https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz \
-      -O $DOWNLOAD_PATH/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz
+    wget -c --tries=40 ${DOWNLOAD_CRICTL_VERSION} \
+      -O $DOWNLOAD_PATH/crictl-${CRICTL_VERSION}-linux-${K8S_ARCH}.tar.gz
     if [[ $? -ne 0 ]]; then
       colorEcho ${RED} "download  FATAL crictl."
       exit $?
     fi
     # 下载runc
-    wget -c --tries=40 https://github.com/opencontainers/runc/releases/download/${RUNC_VERSION}/runc.amd64 \
+    wget -c --tries=40 ${DOWNLOAD_RUNC_VERSION} \
       -O $DOWNLOAD_PATH/runc-${RUNC_VERSION}
     if [[ $? -ne 0 ]]; then
       colorEcho ${RED} "download  FATAL runc."
       exit $?
     fi
     # 下载containerd
-    wget -c --tries=40 https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz \
-      -O $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz
+    wget -c --tries=40 ${DOWNLOAD_CONTAINERD_VERSION} \
+      -O $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-${K8S_ARCH}.tar.gz
     if [[ $? -ne 0 ]]; then
       colorEcho ${RED} "download  FATAL containerd."
       exit $?
@@ -600,15 +616,15 @@ kubectlInstall() {
   fi
   # 下载kubernetes client
   if [[ ! -n $(command -v kubectl) ]]; then
-    wget -c --tries=40 https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/kubernetes-client-linux-amd64.tar.gz \
-      -O $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}.tar.gz
+    wget -c --tries=40 ${DOWNLOAD_KUBERNETES_CLIENT_VERSION} \
+      -O $DOWNLOAD_PATH/kubernetes-client-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz
     if [[ $? -ne 0 ]]; then
       colorEcho ${RED} "download  FATAL kubernetes-client."
       exit $?
     fi
-    mkdir -p $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}
-    tar -xf $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}
-    cp -pdr $DOWNLOAD_PATH/kubernetes-client-linux-amd64-${KUBERNETES_VERSION}/kubernetes/client/bin/kubectl /usr/bin/kubectl
+    mkdir -p $DOWNLOAD_PATH/kubernetes-client-linux-${K8S_ARCH}-${KUBERNETES_VERSION}
+    tar -xf $DOWNLOAD_PATH/kubernetes-client-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz -C $DOWNLOAD_PATH/kubernetes-client-linux-${K8S_ARCH}-${KUBERNETES_VERSION}
+    cp -pdr $DOWNLOAD_PATH/kubernetes-client-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/client/bin/kubectl /usr/bin/kubectl
   fi
   UNProxy
   return 0
@@ -616,7 +632,7 @@ kubectlInstall() {
 cfsslInstall() {
   Proxy
   if [[ ! -n $(command -v cfssl) ]]; then
-    wget -c --tries=40 https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssl_${CFSSL_VERSION}_linux_amd64 \
+    wget -c --tries=40 ${DOWNLOAD_CFSSL_VERSION} \
       -O $DOWNLOAD_PATH/cfssl
     if [[ $? -ne 0 ]]; then
       colorEcho ${RED} "download  FATAL cfssl."
@@ -626,7 +642,7 @@ cfsslInstall() {
     chmod +x /usr/bin/cfssl
   fi
   if [[ ! -n $(command -v cfssljson) ]]; then
-    wget -c --tries=40 https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssljson_${CFSSL_VERSION}_linux_amd64 \
+    wget -c --tries=40 ${DOWNLOAD_CFSSLJSON_VERSION} \
       -O $DOWNLOAD_PATH/cfssljson
     if [[ $? -ne 0 ]]; then
       colorEcho ${RED} "download  FATAL cfssljson."
@@ -1500,12 +1516,12 @@ etcdConfig() {
   else
     colorEcho ${GREEN} '文件夹已经存在'
   fi
-  if [[ -e "${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz" ]]; then
-    if [[ ! -e "${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64/etcd" ]] || [[ ! -e "${HOST_PATH}/roles/etcd/files/bin/etcd" ]]; then
+  if [[ -e "${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-${K8S_ARCH}.tar.gz" ]]; then
+    if [[ ! -e "${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-${K8S_ARCH}/etcd" ]] || [[ ! -e "${HOST_PATH}/roles/etcd/files/bin/etcd" ]]; then
       # cp 二进制文件及ssl 文件到 ansible 目录
-      tar -xf ${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz -C ${DOWNLOAD_PATH}
+      tar -xf ${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-${K8S_ARCH}.tar.gz -C ${DOWNLOAD_PATH}
       mkdir -p ${HOST_PATH}/roles/etcd/files/{ssl,bin}
-      \cp -pdr ${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-amd64/{etcd,etcdctl} ${HOST_PATH}/roles/etcd/files/bin
+      \cp -pdr ${DOWNLOAD_PATH}/etcd-${ETCD_VERSION}-linux-${K8S_ARCH}/{etcd,etcdctl} ${HOST_PATH}/roles/etcd/files/bin
       \cp -pdr ${HOST_PATH}/cfssl/pki/etcd/*.pem ${HOST_PATH}/roles/etcd/files/ssl
     fi
   else
@@ -1610,7 +1626,6 @@ ETCD_OPTS="--name={{ ansible_hostname }} \\
            --peer-key-file=${ETCD_PATH}/ssl/{{ ETCD_MEMBER }}-{{ ansible_hostname }}-key.pem \\
            --peer-client-cert-auth \\
            --cipher-suites=${TLS_CIPHER} \\
-           --enable-v2=true \\
            --peer-trusted-ca-file=${ETCD_PATH}/ssl/{{ ca }}.pem"
 EOF
   # 创建etcd 启动文件
@@ -1674,14 +1689,14 @@ KubeApiserverConfig() {
   else
     colorEcho ${GREEN} '文件夹已经存在'
   fi
-  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-    if [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-apiserver" ]] || [[ ! -e "${HOST_PATH}/roles/kube-apiserver/files/bin/kube-apiserver" ]]; then
+  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz" ]]; then
+    if [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-apiserver" ]] || [[ ! -e "${HOST_PATH}/roles/kube-apiserver/files/bin/kube-apiserver" ]]; then
       # cp 二进制文件及ssl 文件到 ansible 目录
-      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
-      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
+      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}
+      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/
       mkdir -p ${HOST_PATH}/roles/kube-apiserver/files/{ssl,bin,config}
       mkdir -p ${HOST_PATH}/roles/kube-apiserver/files/ssl/{etcd,k8s}
-      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-apiserver ${HOST_PATH}/roles/kube-apiserver/files/bin/
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-apiserver ${HOST_PATH}/roles/kube-apiserver/files/bin/
       \cp -pdr ${HOST_PATH}/cfssl/pki/etcd/{etcd-client*.pem,etcd-ca.pem} ${HOST_PATH}/roles/kube-apiserver/files/ssl/etcd
       \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-server*.pem,k8s-ca*.pem,aggregator*.pem} ${HOST_PATH}/roles/kube-apiserver/files/ssl/k8s
     fi
@@ -2814,7 +2829,7 @@ runtimeConfig() {
         mkdir -p ${HOST_PATH}/roles/docker/files/bin
         mkdir -p ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}
         tar -xf ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}.tgz -C ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}
-        tar -xf ${DOWNLOAD_PATH}/cri-dockerd-${CRI_DOCKER_VERSION}.amd64.tgz -C $DOWNLOAD_PATH
+        tar -xf ${DOWNLOAD_PATH}/cri-dockerd-${CRI_DOCKER_VERSION}.${K8S_ARCH}.tgz -C $DOWNLOAD_PATH
         \cp -pdr ${DOWNLOAD_PATH}/docker-${DOCKER_VERSION}/docker/* ${HOST_PATH}/roles/docker/files/bin/
         \cp -pdr $DOWNLOAD_PATH/cri-dockerd/cri-dockerd ${HOST_PATH}/roles/docker/files/bin/cri-dockerd
       fi
@@ -3171,13 +3186,13 @@ EOF
     else
       colorEcho ${GREEN} '文件夹已经存在'
     fi
-    if [[ -e "$DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz" ]]; then
-      if [[ ! -e "$DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64/bin/containerd" ]] || [[ ! -e "${HOST_PATH}/roles/containerd/files/bin/containerd" ]]; then
+    if [[ -e "$DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-${K8S_ARCH}.tar.gz" ]]; then
+      if [[ ! -e "$DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-${K8S_ARCH}/bin/containerd" ]] || [[ ! -e "${HOST_PATH}/roles/containerd/files/bin/containerd" ]]; then
         # cp 二进制 文件到 ansible 目录
-        mkdir -p $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64
-        tar -xf $DOWNLOAD_PATH/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz -C $DOWNLOAD_PATH
-        tar -xf $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz -C $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64
-        \cp -pdr $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-amd64/bin ${HOST_PATH}/roles/containerd/files/
+        mkdir -p $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-${K8S_ARCH}
+        tar -xf $DOWNLOAD_PATH/crictl-${CRICTL_VERSION}-linux-${K8S_ARCH}.tar.gz -C $DOWNLOAD_PATH
+        tar -xf $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-${K8S_ARCH}.tar.gz -C $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-${K8S_ARCH}
+        \cp -pdr $DOWNLOAD_PATH/containerd-${CONTAINERD_VERSION}.linux-${K8S_ARCH}/bin ${HOST_PATH}/roles/containerd/files/
         \cp -pdr $DOWNLOAD_PATH/runc-${RUNC_VERSION} ${HOST_PATH}/roles/containerd/files/bin/runc
         \cp -pdr $DOWNLOAD_PATH/crictl ${HOST_PATH}/roles/containerd/files/crictl
       fi
@@ -3337,7 +3352,7 @@ version = 2
     shim_debug = false
 
   [plugins."io.containerd.runtime.v2.task"]
-    platforms = ["linux/amd64"]
+    platforms = ["linux/${K8S_ARCH}"]
     sched_core = false
 
   [plugins."io.containerd.transfer.v1.local"]
@@ -3347,7 +3362,7 @@ version = 2
 
     [[plugins."io.containerd.transfer.v1.local".unpack_config]]
       differ = ""
-      platform = "linux/amd64"
+      platform = "linux/${K8S_ARCH}"
   {% if  btrfs_result.rc == 0 or btr_result.rc == 0 %}
       snapshotter = "btrfs"
   {% else %}
@@ -4243,24 +4258,24 @@ kubeletConfig() {
   else
     colorEcho ${GREEN} '文件夹已经存在'
   fi
-  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet" ]]; then
+  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz" ]]; then
+    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet" ]]; then
       # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
       mkdir -p ${HOST_PATH}/roles/kubelet/files/{bin,ssl}
       mkdir -p ${HOST_PATH}/roles/kubelet/files/ssl/k8s
-      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet ${HOST_PATH}/roles/kubelet/files/bin/
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet ${HOST_PATH}/roles/kubelet/files/bin/
       # 复制ssl
       \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem ${HOST_PATH}/roles/kubelet/files/ssl/k8s/
       # 复制bootstrap.kubeconfig 文件
       \cp -pdr ${HOST_PATH}/kubeconfig/bootstrap.kubeconfig ${HOST_PATH}/roles/kubelet/templates/
-    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet" ]] || [[ ! -e "${HOST_PATH}/roles/kubelet/files/bin/kubelet" ]]; then
+    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet" ]] || [[ ! -e "${HOST_PATH}/roles/kubelet/files/bin/kubelet" ]]; then
       # cp 二进制文件及ssl 文件到 ansible 目录
-      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
-      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
+      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}
+      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/
       # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
       mkdir -p ${HOST_PATH}/roles/kubelet/files/{bin,ssl}
       mkdir -p ${HOST_PATH}/roles/kubelet/files/ssl/k8s
-      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet ${HOST_PATH}/roles/kubelet/files/bin/
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kubelet ${HOST_PATH}/roles/kubelet/files/bin/
       # 复制ssl
       \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/k8s-ca.pem ${HOST_PATH}/roles/kubelet/files/ssl/k8s/
       # 复制bootstrap.kubeconfig 文件
@@ -4769,16 +4784,16 @@ cniConfig() {
   else
     colorEcho ${GREEN} '文件夹已经存在'
   fi
-  if [[ -e "${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" ]]; then
-    if [[ -e "${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin/portmap" ]]; then
+  if [[ -e "${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}.tgz" ]]; then
+    if [[ -e "${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}/bin/portmap" ]]; then
       # cp 二进制文件到 ansible 目录
-      mkdir -p ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
-      tar -xf ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz -C ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
-      \cp -pdr ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin ${HOST_PATH}/roles/cni/files
-    elif [[ ! -e "${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin/portmap" ]] || [[ ! -e "${HOST_PATH}/roles/cni/files/bin/portmap" ]]; then
-      mkdir -p ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
-      tar -xf ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz -C ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin
-      \cp -pdr ${DOWNLOAD_PATH}/cni-plugins-linux-amd64-${CNI_VERSION}/bin ${HOST_PATH}/roles/cni/files
+      mkdir -p ${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}/bin
+      tar -xf ${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}.tgz -C ${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}/bin
+      \cp -pdr ${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}/bin ${HOST_PATH}/roles/cni/files
+    elif [[ ! -e "${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}/bin/portmap" ]] || [[ ! -e "${HOST_PATH}/roles/cni/files/bin/portmap" ]]; then
+      mkdir -p ${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}/bin
+      tar -xf ${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}.tgz -C ${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}/bin
+      \cp -pdr ${DOWNLOAD_PATH}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}/bin ${HOST_PATH}/roles/cni/files
     fi
   else
     colorEcho ${RED} "cni no download."
@@ -4916,24 +4931,24 @@ controllerConfig() {
   else
     colorEcho ${GREEN} '文件夹已经存在'
   fi
-  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager" ]]; then
+  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz" ]]; then
+    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager" ]]; then
       # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
       mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/{ssl,bin}
       mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
-      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager ${HOST_PATH}/roles/kube-controller-manager/files/bin/
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager ${HOST_PATH}/roles/kube-controller-manager/files/bin/
       # 复制kube-controller-manager.kubeconfig 文件
       \cp -pdr ${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig ${HOST_PATH}/roles/kube-controller-manager/templates/
       # 复制ssl
       \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-controller-manager*.pem,k8s-ca*.pem} ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
-    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager" ]] || [[ ! -e "${HOST_PATH}/roles/kube-controller-manager/files/bin/kube-controller-manager" ]]; then
+    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager" ]] || [[ ! -e "${HOST_PATH}/roles/kube-controller-manager/files/bin/kube-controller-manager" ]]; then
       # cp 二进制文件及ssl 文件到 ansible 目录
-      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
-      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
+      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}
+      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/
       # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
       mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/{ssl,bin}
       mkdir -p ${HOST_PATH}/roles/kube-controller-manager/files/ssl/k8s
-      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager ${HOST_PATH}/roles/kube-controller-manager/files/bin/
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-controller-manager ${HOST_PATH}/roles/kube-controller-manager/files/bin/
       # 复制kube-controller-manager.kubeconfig 文件
       \cp -pdr ${HOST_PATH}/kubeconfig/kube-controller-manager.kubeconfig ${HOST_PATH}/roles/kube-controller-manager/templates/
       # 复制ssl
@@ -5090,24 +5105,24 @@ schedulerConfig() {
   else
     colorEcho ${GREEN} '文件夹已经存在'
   fi
-  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]]; then
+  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz" ]]; then
+    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]]; then
       # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
       mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/{ssl,bin}
       mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
-      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
       # 复制kube-scheduler.kubeconfig 文件
       \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/
       # 复制ssl
       \cp -pdr ${HOST_PATH}/cfssl/pki/k8s/{k8s-scheduler*.pem,k8s-ca.pem} ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
-    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]] || [[ ! -e "${HOST_PATH}/roles/kube-scheduler/files/bin/kube-scheduler" ]]; then
+    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler" ]] || [[ ! -e "${HOST_PATH}/roles/kube-scheduler/files/bin/kube-scheduler" ]]; then
       # cp 二进制文件及ssl 文件到 ansible 目录
-      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
-      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
+      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}
+      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/
       # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
       mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/{ssl,bin}
       mkdir -p ${HOST_PATH}/roles/kube-scheduler/files/ssl/k8s
-      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-scheduler ${HOST_PATH}/roles/kube-scheduler/files/bin/
       # 复制kube-scheduler.kubeconfig 文件
       \cp -pdr ${HOST_PATH}/kubeconfig/kube-scheduler.kubeconfig ${HOST_PATH}/roles/kube-scheduler/templates/
       # 复制ssl
@@ -5237,20 +5252,20 @@ kubeProxyConfig() {
   else
     colorEcho ${GREEN} '文件夹已经存在'
   fi
-  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz" ]]; then
-    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy" ]]; then
+  if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz" ]]; then
+    if [[ -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy" ]]; then
       # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
       mkdir -p ${HOST_PATH}/roles/kube-proxy/files/bin
-      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy ${HOST_PATH}/roles/kube-proxy/files/bin/
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy ${HOST_PATH}/roles/kube-proxy/files/bin/
       # 复制kube-proxy.kubeconfig 文件
       \cp -pdr ${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig ${HOST_PATH}/roles/kube-proxy/templates/
-    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy" ]] || [[ ! -e "${HOST_PATH}/roles/kube-proxy/files/bin/kube-proxy" ]]; then
+    elif [[ ! -e "${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy" ]] || [[ ! -e "${HOST_PATH}/roles/kube-proxy/files/bin/kube-proxy" ]]; then
       # cp 二进制文件及ssl 文件到 ansible 目录
-      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}
-      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/
+      mkdir -p ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}
+      tar -xf ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}.tar.gz -C ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/
       # cp 二进制文件及ssl及kubeconfig 文件到 ansible 目录
       mkdir -p ${HOST_PATH}/roles/kube-proxy/files/bin
-      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-amd64-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy ${HOST_PATH}/roles/kube-proxy/files/bin/
+      \cp -pdr ${DOWNLOAD_PATH}/kubernetes-server-linux-${K8S_ARCH}-${KUBERNETES_VERSION}/kubernetes/server/bin/kube-proxy ${HOST_PATH}/roles/kube-proxy/files/bin/
       # 复制kube-proxy.kubeconfig 文件
       \cp -pdr ${HOST_PATH}/kubeconfig/kube-proxy.kubeconfig ${HOST_PATH}/roles/kube-proxy/templates/
     fi
@@ -6130,6 +6145,7 @@ README.md() {
   cat >${HOST_PATH}/README.md <<EOF
 ########## mkdir -p /root/.kube
 ##########复制admin kubeconfig 到root用户作为kubectl 工具默认密钥文件
+##########升级版本 ${PACKAGE_SYSCTL_FILE} 删除不需重复执行 第一次部署执行就可以了！
 ########## \cp -pdr ${HOST_PATH}/kubeconfig/admin.kubeconfig /root/.kube/config
 ##########　kubectl 可以读取环境变量 export KUBECONFIG=${HOST_PATH}/kubeconfig/admin.kubeconfig
 ###################################################################################
