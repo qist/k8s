@@ -19,6 +19,18 @@ helm upgrade --install kubernetes-dashboard \
 # 如果要安装kong 就删除--set kong.enabled=false
 ```
 
+```yaml
+cat <<EOF | kubectl apply -f -
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: kubernetes-issuer
+  namespace: kubernetes-dashboard
+spec:
+  selfSigned: {}
+EOF
+```
+
 ## 修改  dashboard ingress 创建改成自己的域名
 
 ```bash
@@ -33,7 +45,7 @@ metadata:
     app.kubernetes.io/part-of: kubernetes-dashboard
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/issuer: selfsigned
+    cert-manager.io/cluster-issuer: kubernetes-issuer
 spec:
   ingressClassName: nginx
   tls:

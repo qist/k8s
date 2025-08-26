@@ -22,7 +22,7 @@ helm install \
 ## 创建自签CA
 
 ```yaml
-cat <<EOF | kubectl create -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
