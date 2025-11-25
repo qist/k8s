@@ -149,18 +149,19 @@ export HOST_PATH=$(pwd)
 export DOWNLOAD_PATH=${HOST_PATH}/download
 # cpu 架构参数
 export K8S_ARCH=amd64
+export D_ARCH=x86_64
 #K8S 客户都cpu架构
 export K8S_CLIENT_ARCH=amd64
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.6.4
+export ETCD_VERSION=v3.6.6
 export DOWNLOAD_ETCD_VERSION="https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.33.4
+export KUBERNETES_VERSION=v1.34.2
 export DOWNLOAD_KUBERNETES_VERSION="https://dl.k8s.io/${KUBERNETES_VERSION}/kubernetes-server-linux-${K8S_ARCH}.tar.gz"
 export DOWNLOAD_KUBERNETES_CLIENT_VERSION="https://dl.k8s.io/${KUBERNETES_VERSION}/kubernetes-client-linux-${K8S_CLIENT_ARCH}.tar.gz"
 # cni 版本
-export CNI_VERSION=v1.7.1
+export CNI_VERSION=v1.8.0
 export DOWNLOAD_CNI_VERSION="https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}.tgz"
 # iptables
 export IPTABLES_VERSION=1.8.8
@@ -170,33 +171,33 @@ export CFSSL_VERSION=1.6.5
 export DOWNLOAD_CFSSL_VERSION="https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssl_${CFSSL_VERSION}_linux_${K8S_ARCH}"
 export DOWNLOAD_CFSSLJSON_VERSION="https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssljson_${CFSSL_VERSION}_linux_${K8S_ARCH}"
 # docker 版本
-export DOCKER_VERSION=28.3.3
-export DOWNLOAD_DOCKER_VERSION="https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz"
+export DOCKER_VERSION=29.0.4
+export DOWNLOAD_DOCKER_VERSION="https://download.docker.com/linux/static/stable/${D_ARCH}/docker-${DOCKER_VERSION}.tgz"
 # docker cri 版本
-export CRI_DOCKER_VERSION=0.3.18
+export CRI_DOCKER_VERSION=0.3.21
 export DOWNLOAD_CRI_DOCKER_VERSION="https://github.com/Mirantis/cri-dockerd/releases/download/v${CRI_DOCKER_VERSION}/cri-dockerd-${CRI_DOCKER_VERSION}.${K8S_ARCH}.tgz"
 # containerd 版本
-export CONTAINERD_VERSION=2.1.4
+export CONTAINERD_VERSION=2.2.0
 export DOWNLOAD_CONTAINERD_VERSION="https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-static-${CONTAINERD_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # crictl 版本 cri-tools 版本
 export CRICTL_VERSION=v1.34.0
 export DOWNLOAD_CRICTL_VERSION="https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # runc 版本
-export RUNC_VERSION=v1.2.3
+export RUNC_VERSION=v1.3.3
 export DOWNLOAD_RUNC_VERSION="https://github.com/opencontainers/runc/releases/download/${RUNC_VERSION}/runc.${K8S_ARCH}"
 # cri-o 版本
-export CRIO_VERSION=v1.32.0
-export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.${K8S_ARCH}.v1.32.0.tar.gz"
+export CRIO_VERSION=v1.34.2
+export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.${K8S_ARCH}.${CRIO_VERSION}.tar.gz"
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
-FLANNEL_CNI_PLUGIN="docker.io/flannel/flannel-cni-plugin:v1.6.0-flannel1"
+FLANNEL_CNI_PLUGIN="ghcr.io/flannel-io/flannel-cni-plugin:v1.8.0-flannel1"
 # flannel 插件选择
-FLANNEL_VERSION="docker.io/flannel/flannel:v0.26.2"
+FLANNEL_VERSION="ghcr.io/flannel-io/flannel:v0.27.4"
 # kube-router 镜像
 KUBE_ROUTER_INIT="docker.io/cloudnativelabs/kube-router"
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
 # coredns 镜像
-COREDNS_IMAGE=docker.io/coredns/coredns:1.12.3
+COREDNS_IMAGE=docker.io/coredns/coredns:1.13.1
 # 应用部署目录 选择硬盘空间比较大的
 TOTAL_PATH=/apps
 # etcd 部署目录
