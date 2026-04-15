@@ -2286,7 +2286,7 @@ EOF
       - { key: 'kernel.shmall', value: '4294967296' }
       - { key: 'kernel.core_uses_pid', value: '1' } 
       - { key: 'net.ipv4.neigh.default.gc_stale_time', value: '120' }
-      - { key: 'net.ipv4.neigh.default.gc_thresh1', value: '0' }
+      - { key: 'net.ipv4.neigh.default.gc_thresh1', value: '1024' }
       - { key: 'net.ipv4.neigh.default.gc_thresh2', value: '4096' }
       - { key: 'net.ipv4.neigh.default.gc_thresh3', value: '8192' }
       - { key: 'net.ipv4.conf.all.rp_filter', value: '0' }
