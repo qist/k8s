@@ -2308,13 +2308,18 @@ EOF
       - { key: 'net.ipv4.tcp_keepalive_probes', value: '10' }
       - { key: 'net.ipv4.tcp_keepalive_intvl', value: '30' }
       - { key: 'net.ipv4.tcp_orphan_retries', value: '3' }
-      - { key: 'net.nf_conntrack_max', value: '25000000' }
-      - { key: 'net.netfilter.nf_conntrack_max', value: '25000000' }
+      - { key: 'net.ipv4.tcp_retries2', value: '5' }
+      - { key: 'net.netfilter.nf_conntrack_max', value: '262144' }
       - { key: 'net.netfilter.nf_conntrack_tcp_timeout_established', value: '180' }
       - { key: 'net.netfilter.nf_conntrack_tcp_timeout_time_wait', value: '120' }
       - { key: 'net.netfilter.nf_conntrack_tcp_timeout_close_wait', value: '60' }
       - { key: 'net.netfilter.nf_conntrack_tcp_timeout_fin_wait', value: '12' }
       - { key: 'net.netfilter.nf_conntrack_tcp_timeout_close', value: '3' }
+      - { key: 'net.netfilter.nf_conntrack_acct', value: '1' }
+      - { key: 'net.netfilter.nf_conntrack_udp_timeout', value: '60' }
+      - { key: 'net.netfilter.nf_conntrack_udp_timeout_stream', value: '120' }
+      - { key: 'net.netfilter.nf_conntrack_buckets', value: '65536' }
+      - { key: 'net.netfilter.nf_conntrack_expect_max', value: '16384' }
       - { key: 'net.ipv4.conf.all.route_localnet', value: '1' }
 - name: Add the sysctl
   sysctl:
