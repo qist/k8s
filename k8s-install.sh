@@ -14,7 +14,11 @@ UNProxy() {
   unset http_proxy
   unset https_proxy
 }
-
+# 是否开启系统更新 默认不开启 方便内网使用
+UPDATE_SYS=OFF
+# 修改源 默认不开启 开启后会修改系统源为国内源 速度更快
+MODIFY_SOURCE=OFF
+SYSTEM_SOURCE="mirrors.ustc.edu.cn"
 ###########################################################################################################################################################################
 ###################################                           必须修改            hostname必须先修改好         ##############################################################
 ###########################################################################################################################################################################
@@ -137,8 +141,9 @@ else
   HA_PROXY_IMAGE="docker.io/juestnow/haproxy-proxy:2.5.4"
 fi
 
-# pod-infra-container-image 地址
-POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause:3.10.1"
+# pod-infra-container-image 地址 juestnow 仓库只有x86_64 镜像 
+#POD_INFRA_CONTAINER_IMAGE="docker.io/juestnow/pause:3.10.2" 
+POD_INFRA_CONTAINER_IMAGE="registry.k8s.io/pause:3.10.2"
 #########################################################################################################################################################################
 #########################################################################################################################################################################
 #############################################                    一般参数修改                                    #########################################################
@@ -154,10 +159,10 @@ export D_ARCH=x86_64
 export K8S_CLIENT_ARCH=amd64
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.6.9
+export ETCD_VERSION=v3.6.11
 export DOWNLOAD_ETCD_VERSION="https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.35.3
+export KUBERNETES_VERSION=v1.36.1
 export DOWNLOAD_KUBERNETES_VERSION="https://dl.k8s.io/${KUBERNETES_VERSION}/kubernetes-server-linux-${K8S_ARCH}.tar.gz"
 export DOWNLOAD_KUBERNETES_CLIENT_VERSION="https://dl.k8s.io/${KUBERNETES_VERSION}/kubernetes-client-linux-${K8S_CLIENT_ARCH}.tar.gz"
 # cni 版本
@@ -171,33 +176,33 @@ export CFSSL_VERSION=1.6.5
 export DOWNLOAD_CFSSL_VERSION="https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssl_${CFSSL_VERSION}_linux_${K8S_ARCH}"
 export DOWNLOAD_CFSSLJSON_VERSION="https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssljson_${CFSSL_VERSION}_linux_${K8S_ARCH}"
 # docker 版本
-export DOCKER_VERSION=29.3.0
+export DOCKER_VERSION=29.5.2
 export DOWNLOAD_DOCKER_VERSION="https://download.docker.com/linux/static/stable/${D_ARCH}/docker-${DOCKER_VERSION}.tgz"
 # docker cri 版本
-export CRI_DOCKER_VERSION=0.4.2
+export CRI_DOCKER_VERSION=0.4.3
 export DOWNLOAD_CRI_DOCKER_VERSION="https://github.com/Mirantis/cri-dockerd/releases/download/v${CRI_DOCKER_VERSION}/cri-dockerd-${CRI_DOCKER_VERSION}.${K8S_ARCH}.tgz"
 # containerd 版本
-export CONTAINERD_VERSION=2.2.2
+export CONTAINERD_VERSION=2.3.1
 export DOWNLOAD_CONTAINERD_VERSION="https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-static-${CONTAINERD_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # crictl 版本 cri-tools 版本
-export CRICTL_VERSION=v1.35.0
+export CRICTL_VERSION=v1.36.0
 export DOWNLOAD_CRICTL_VERSION="https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # runc 版本
-export RUNC_VERSION=v1.3.5
+export RUNC_VERSION=v1.4.2
 export DOWNLOAD_RUNC_VERSION="https://github.com/opencontainers/runc/releases/download/${RUNC_VERSION}/runc.${K8S_ARCH}"
 # cri-o 版本
-export CRIO_VERSION=v1.35.1
+export CRIO_VERSION=v1.35.3
 export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.${K8S_ARCH}.${CRIO_VERSION}.tar.gz"
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
-FLANNEL_CNI_PLUGIN="ghcr.io/flannel-io/flannel-cni-plugin:v1.9.0-flannel1"
+FLANNEL_CNI_PLUGIN="ghcr.io/flannel-io/flannel-cni-plugin:v1.9.1-flannel1"
 # flannel 插件选择
-FLANNEL_VERSION="ghcr.io/flannel-io/flannel:v0.28.1"
+FLANNEL_VERSION="ghcr.io/flannel-io/flannel:v0.28.4"
 # kube-router 镜像
 KUBE_ROUTER_INIT="docker.io/cloudnativelabs/kube-router"
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
 # coredns 镜像
-COREDNS_IMAGE=docker.io/coredns/coredns:1.14.2
+COREDNS_IMAGE=docker.io/coredns/coredns:1.14.3
 # 应用部署目录 选择硬盘空间比较大的
 TOTAL_PATH=/apps
 # etcd 部署目录
@@ -2180,7 +2185,7 @@ packageSysctl() {
   colorEcho ${GREEN} "create for Package-Sysctl Config."
   # 创建 kube-apiserver playbook 目录
   if [[ ! -d "${HOST_PATH}/roles/package-sysctl/" ]]; then
-    mkdir -p ${HOST_PATH}/roles/package-sysctl/{templates,tasks}
+    mkdir -p ${HOST_PATH}/roles/package-sysctl/{templates,tasks,defaults}
   else
     colorEcho ${GREEN} '文件夹已经存在'
   fi
@@ -2198,9 +2203,13 @@ ip_vs_rr
 ip_vs_wrr
 ip_vs_sh
 EOF
+  cat >${HOST_PATH}/roles/package-sysctl/defaults/main.yml <<EOF
+UPDATE_SYS: ${UPDATE_SYS}
+MODIFY_SOURCE: ${MODIFY_SOURCE}
+EOF
   cat >${HOST_PATH}/roles/package-sysctl/tasks/main.yml <<EOF
 - name: Get Kernel version
-  shell: uname -r | egrep '^[0-9]*' -o
+  shell: uname -r | egrep -o '^[0-9]+\.[0-9]+'
   register: kernel_shell_output
 - name: copy modprobe modules
   template: 
@@ -2211,18 +2220,16 @@ EOF
   with_items:
       - k8s-redhat-modules.conf
       - k8s-ipvs-modules.conf
-  when: 'kernel_shell_output.stdout|int <= 3'
+  when: 'kernel_shell_output.stdout is version("4", "<")'
 - name: Add the ipvs-modules module
-  modprobe: 
-    name: '{{ item }}'
-    state: present
+  shell: modprobe {{ item }}
   with_items:
       - ip_vs
       - ip_vs_rr
       - ip_vs_wrr
       - ip_vs_sh
       - nf_conntrack_ipv4
-  when: 'kernel_shell_output.stdout|int <= 3'
+  when: 'kernel_shell_output.stdout is version("4", "<")'
 - name: copy "{{ item }}"
   template: 
     src: '{{ item }}'
@@ -2232,18 +2239,17 @@ EOF
   with_items:
       - k8s-debian-modules.conf
       - k8s-ipvs-modules.conf
-  when: 'kernel_shell_output.stdout|int >= 4'
+  when: 'kernel_shell_output.stdout is version("4", ">=")'
 - name: Add the ipvs-modules module
-  modprobe: 
-    name: '{{ item }}'
-    state: present
+  shell: modprobe {{ item }}
   with_items:
       - ip_vs
       - ip_vs_rr
       - ip_vs_wrr
       - ip_vs_sh
       - nf_conntrack
-  when: 'kernel_shell_output.stdout|int >= 4'
+  when: 'kernel_shell_output.stdout is version("4", ">=")'
+  
 - name: Change various sysctl-settings, look at the sysctl-vars file for documentation
   sysctl:
     name: '{{ item.key }}'
@@ -2331,13 +2337,12 @@ EOF
     ignoreerrors: yes
   with_items:
       - { key: 'fs.may_detach_mounts', value: '1' }
-  when: 'kernel_shell_output.stdout|int <= 3'      
+  when: 'kernel_shell_output.stdout is version("4", "<")'
 - name: Add or modify hard nofile limits for wildcard domain
-  pam_limits:
-    domain: '*'
-    limit_type: '{{ item.key }}'
-    limit_item: '{{ item.item }}'
-    value: '{{ item.value }}'
+  lineinfile:
+    dest: /etc/security/limits.conf
+    line: '* {{ item.key }} {{ item.item }} {{ item.value }}'
+    regexp: '^\*\s+{{ item.key }}\s+{{ item.item }}'
   with_items:
       - { key: 'soft', item: 'nofile', value: '$HARD_SOFT'  }
       - { key: 'hard', item: 'nofile', value: '$HARD_SOFT'  }
@@ -2345,17 +2350,17 @@ EOF
       - { key: 'hard', item: 'nproc', value: '$HARD_SOFT'  }
       - { key: 'soft', item: 'core', value: 'unlimited'  }
       - { key: 'hard', item: 'core', value: 'unlimited'  }
+
 - name: Add or modify  nofile limits for wildcard domain
-  pam_limits:
+  lineinfile:
     dest: '/etc/security/limits.d/20-nproc.conf'
-    domain: '{{ item.domain }}'
-    limit_type: '{{ item.key }}'
-    limit_item: '{{ item.item }}'
-    value: '{{ item.value }}'
+    line: '{{ item.domain }} {{ item.key }} {{ item.item }} {{ item.value }}'
+    regexp: '^{{ item.domain | regex_escape }}\s+{{ item.key }}\s+{{ item.item }}'
   with_items:
       - { domain: '*', key: 'soft', item: 'nproc', value: '$HARD_SOFT'  }
       - { domain: 'root', key: 'soft', item: 'nproc', value: '$HARD_SOFT'  }
   when: ansible_distribution_major_version == '7' and ansible_os_family == 'RedHat'
+
 - name: Disable SELinux
   selinux:
     state: disabled
@@ -2415,18 +2420,18 @@ EOF
   replace:
     path: /etc/apt/sources.list
     regexp: 'archive.ubuntu.com'
-    replace: 'mirrors.aliyun.com'
-  when: ansible_facts.distribution == 'Ubuntu'
+    replace: '${SYSTEM_SOURCE}'
+  when: ansible_facts.distribution == 'Ubuntu' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 - name: Only run "update_cache=yes"
   apt:
     update_cache: yes
-  when: ansible_facts.distribution == 'Ubuntu'
+  when: ansible_facts.distribution == 'Ubuntu' and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name: Only run "update *"
   apt:
     name: "*"
     state: latest
   register: ubuntu_upack_source
-  when: ansible_facts.distribution == 'Ubuntu'
+  when: ansible_facts.distribution == 'Ubuntu' and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name: remove RedHat swap
   lineinfile: 
     dest: /etc/fstab
@@ -2436,18 +2441,18 @@ EOF
   when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky'
 - name: CentOS 7 repo
   get_url:
-    url: https://mirrors.aliyun.com/repo/Centos-7.repo
+    url: https://${SYSTEM_SOURCE}/repo/Centos-7.repo
     dest: /etc/yum.repos.d/CentOS-Base.repo
     force: yes
-  when: ansible_distribution_major_version == '7' and  ansible_os_family == 'RedHat'
+  when: ansible_distribution_major_version == '7' and  ansible_os_family == 'RedHat' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 - name: CentOS 7 epel.repo
   get_url:
-    url: http://mirrors.aliyun.com/repo/epel-7.repo
+    url: http://${SYSTEM_SOURCE}/repo/epel-7.repo
     dest: /etc/yum.repos.d/epel.repo
-  when: ansible_distribution_major_version == '7' and  ansible_os_family == 'RedHat'
+  when: ansible_distribution_major_version == '7' and  ansible_os_family == 'RedHat' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 #- name: CentOS 8 repo
 #  get_url:
-#    url: https://mirrors.aliyun.com/repo/Centos-8.repo
+#    url: https://${SYSTEM_SOURCE}/repo/Centos-8.repo
 #    dest: /etc/yum.repos.d/CentOS-Base.repo
 #    force: yes
 #  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'CentOS'  
@@ -2461,7 +2466,7 @@ EOF
       - CentOS-Stream-PowerTools.repo
       - CentOS-Stream-BaseOS.repo
       - CentOS-Stream-Extras.repo
-  when: ansible_distribution_major_version == '8'  and  ansible_distribution == 'CentOS'
+  when: ansible_distribution_major_version == '8'  and  ansible_distribution == 'CentOS' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 - name: remove centos8 BaseOS
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
@@ -2473,18 +2478,18 @@ EOF
       - CentOS-Stream-PowerTools.repo
       - CentOS-Stream-BaseOS.repo
       - CentOS-Stream-Extras.repo 
-  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'CentOS'
+  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'CentOS' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 - name: is set centos8 BaseOS
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
     regexp: '^#baseurl=http://mirror.centos.org/\\\$contentdir'
-    replace: 'baseurl=https://mirrors.aliyun.com/centos'
+    replace: 'baseurl=https://${SYSTEM_SOURCE}/centos'
   with_items:
       - CentOS-Stream-AppStream.repo
       - CentOS-Stream-PowerTools.repo
       - CentOS-Stream-BaseOS.repo
       - CentOS-Stream-Extras.repo
-  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'CentOS'
+  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'CentOS' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
  
 - name: enabled Rocky BaseOS
   lineinfile: 
@@ -2496,7 +2501,7 @@ EOF
       - Rocky-PowerTools.repo
       - Rocky-BaseOS.repo
       - Rocky-Extras.repo
-  when: ansible_distribution_major_version == '8'  and  ansible_distribution == 'Rocky'
+  when: ansible_distribution_major_version == '8'  and  ansible_distribution == 'Rocky' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 - name: remove Rocky BaseOS
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
@@ -2508,24 +2513,24 @@ EOF
       - Rocky-PowerTools.repo
       - Rocky-BaseOS.repo
       - Rocky-Extras.repo 
-  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'Rocky'
+  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'Rocky' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 - name: is set Rocky BaseOS
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
     regexp: '^#baseurl=http://dl.rockylinux.org/\\\$contentdir'
-    replace: 'baseurl=https://mirrors.aliyun.com/rockylinux'
+    replace: 'baseurl=https://${SYSTEM_SOURCE}/rockylinux'
   with_items:
       - Rocky-AppStream.repo
       - Rocky-PowerTools.repo
       - Rocky-BaseOS.repo
       - Rocky-Extras.repo
-  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'Rocky'
+  when: ansible_distribution_major_version == '8' and  ansible_distribution == 'Rocky' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
   
 - name: install the epel-release rpm from a remote repo
   yum:
     name: epel-release
     state: present
-  when: ansible_distribution_major_version == '8' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky')  
+  when: ansible_distribution_major_version == '8' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky') and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 - name: remove  epel-release
   lineinfile: 
     dest: '/etc/yum.repos.d/{{ item }}'
@@ -2537,18 +2542,18 @@ EOF
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '8' and  (ansible_os_family == 'RedHat'  or  ansible_os_family == 'Rocky')
+  when: ansible_distribution_major_version == '8' and  (ansible_os_family == 'RedHat'  or  ansible_os_family == 'Rocky') and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 - name: is set  epel-release
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
     regexp: '^#baseurl=https://download.example/pub'
-    replace: 'baseurl=https://mirrors.aliyun.com'
+    replace: 'baseurl=https://${SYSTEM_SOURCE}'
   with_items:
       - epel-modular.repo
       - epel-testing-modular.repo
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '8' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky')
+  when: ansible_distribution_major_version == '8' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky') and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 
 - name: enabled Rocky9 BaseOS
   replace:
@@ -2560,7 +2565,7 @@ EOF
       - rocky-addons.repo
       - rocky.repo
       - rocky-extras.repo
-  when: ansible_distribution_major_version == '9'  and  ansible_distribution == 'Rocky'
+  when: ansible_distribution_major_version == '9'  and  ansible_distribution == 'Rocky' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 
 - name: remove Rocky9 BaseOS
   lineinfile: 
@@ -2573,25 +2578,25 @@ EOF
       - rocky-addons.repo
       - rocky.repo
       - rocky-extras.repo
-  when: ansible_distribution_major_version == '9' and  ansible_distribution == 'Rocky'
+  when: ansible_distribution_major_version == '9' and  ansible_distribution == 'Rocky' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 
 - name: is set Rocky 9 BaseOS
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
-    regexp: '^#baseurl=http://dl.rockylinux.org/\$contentdir'
-    replace: 'baseurl=https://mirrors.aliyun.com/rockylinux'
+    regexp: '^#baseurl=http://dl.rockylinux.org/\\\$contentdir'
+    replace: 'baseurl=https://${SYSTEM_SOURCE}/rockylinux'
   with_items:
       - rocky-devel.repo
       - rocky-addons.repo
       - rocky.repo
       - rocky-extras.repo
-  when: ansible_distribution_major_version == '9' and  ansible_distribution == 'Rocky'
+  when: ansible_distribution_major_version == '9' and  ansible_distribution == 'Rocky' and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 
 - name: install the epel-release9 rpm from a remote repo
   yum:
     name: epel-release
     state: present
-  when: ansible_distribution_major_version == '9' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky') 
+  when: ansible_distribution_major_version == '9' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky') and MODIFY_SOURCE|default('OFF')|upper == 'ON' 
 
 - name: remove  epel-release9
   lineinfile: 
@@ -2602,17 +2607,17 @@ EOF
   with_items:
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '9' and  (ansible_os_family == 'RedHat'  or  ansible_os_family == 'Rocky')
+  when: ansible_distribution_major_version == '9' and  (ansible_os_family == 'RedHat'  or  ansible_os_family == 'Rocky') and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 
 - name: is set  epel-release9
   replace:
     path: '/etc/yum.repos.d/{{ item }}'
     regexp: '^#baseurl=https://download.example/pub'
-    replace: 'baseurl=https://mirrors.aliyun.com'
+    replace: 'baseurl=https://${SYSTEM_SOURCE}'
   with_items:
       - epel-testing.repo
       - epel.repo
-  when: ansible_distribution_major_version == '9' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky')
+  when: ansible_distribution_major_version == '9' and  (ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky') and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 #- name: Remove /etc/yum.repos.d/CentOS-AppStream.repo
 #  file:
 #    path: "/etc/yum.repos.d/CentOS-AppStream.repo"
@@ -2625,13 +2630,13 @@ EOF
     state: latest
     lock_timeout: 36000
   register: redhat_upack_source
-  when: ansible_os_family == 'RedHat' or  ansible_os_family == 'Rocky'
+  when: (ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky') and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name:  dnf Install
   dnf: 
     name:  
       - epel-release
     state: latest
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name:  dnf Install
   dnf: 
     name:
@@ -2654,14 +2659,14 @@ EOF
       - device-mapper-persistent-data
       - fuse-devel
     state: latest
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name: centos7 yum Install
   yum: 
     name:  
       - epel-release
       - yum-plugin-fastestmirror
     state: latest
-  when: ansible_pkg_mgr == "yum"
+  when: ansible_pkg_mgr == "yum" and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name: centos7 yum Install
   yum: 
     name:
@@ -2685,14 +2690,14 @@ EOF
       - fuse-devel
       - ceph-common
     state: latest
-  when: ansible_pkg_mgr == "yum"
+  when: ansible_pkg_mgr == "yum" and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name: dpkg  update db
   shell: dpkg --configure -a
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name: Only run "update_cache=yes"
   apt:
     update_cache: yes
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name: ubuntu apt Install
   apt: 
     name:
@@ -2714,7 +2719,7 @@ EOF
       - ceph-common
       - software-properties-common
     state: latest
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name: remove net.ipv4.ip_forward suse yast set forwarding
   sysctl:
     name: net.ipv4.ip_forward 
@@ -2730,30 +2735,23 @@ EOF
     state: absent
   when: ansible_os_family == 'Suse' 
 
-- name: remvoe repository
-  zypper_repository:
-    name: openSUSE-Leap-{{ ansible_distribution_version }}-1
-    state: absent
+- name: remove repository
+  shell: zypper rr openSUSE-Leap-{{ ansible_distribution_version }}-1
   ignore_errors: True
-  when: ansible_pkg_mgr == "zypper" 
+  when: ansible_pkg_mgr == "zypper" and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 - name: add repository
-  zypper_repository:
-    name: '{{ item.value }}'
-    repo: '{{ item.key }}'
-    state: present
+  shell: zypper ar {{ item.key }} {{ item.value }}
   with_items:    
-      - { key: 'https://mirrors.ustc.edu.cn/opensuse/distribution/leap/{{ ansible_distribution_version }}/repo/oss/', value: 'USTC:{{ ansible_distribution_version }}:OSS' }
-      - { key: 'https://mirrors.ustc.edu.cn/opensuse/distribution/leap/{{ ansible_distribution_version }}/repo/non-oss/', value: 'USTC:{{ ansible_distribution_version }}:NON-OSS' }
-      - { key: 'https://mirrors.ustc.edu.cn/opensuse/update/leap/{{ ansible_distribution_version }}/oss/', value: 'USTC:{{ ansible_distribution_version }}:UPDATE-OSS' }
-      - { key: 'https://mirrors.ustc.edu.cn/opensuse/update/leap/{{ ansible_distribution_version }}/non-oss/', value: 'USTC:{{ ansible_distribution_version }}:UPDATE-NON-OSS ' }
+      - { key: 'https://${SYSTEM_SOURCE}/opensuse/distribution/leap/{{ ansible_distribution_version }}/repo/oss/', value: 'USTC:{{ ansible_distribution_version }}:OSS' }
+      - { key: 'https://${SYSTEM_SOURCE}/opensuse/distribution/leap/{{ ansible_distribution_version }}/repo/non-oss/', value: 'USTC:{{ ansible_distribution_version }}:NON-OSS' }
+      - { key: 'https://${SYSTEM_SOURCE}/opensuse/update/leap/{{ ansible_distribution_version }}/oss/', value: 'USTC:{{ ansible_distribution_version }}:UPDATE-OSS' }
+      - { key: 'https://${SYSTEM_SOURCE}/opensuse/update/leap/{{ ansible_distribution_version }}/non-oss/', value: 'USTC:{{ ansible_distribution_version }}:UPDATE-NON-OSS ' }
   ignore_errors: True
-  when: ansible_pkg_mgr == "zypper"
+  when: ansible_pkg_mgr == "zypper" and MODIFY_SOURCE|default('OFF')|upper == 'ON'
 - name: Refresh all repos 
-  zypper_repository:
-    repo: '*'
-    runrefresh: yes
+  shell: zypper ref
   ignore_errors: True
-  when: ansible_pkg_mgr == "zypper"    
+  when: ansible_pkg_mgr == "zypper" and MODIFY_SOURCE|default('OFF')|upper == 'ON'    
 #- name: Only run
 #  zypper:
 #    name: '*'
@@ -2761,52 +2759,14 @@ EOF
 #  ignore_errors: True  
 #  when: ansible_pkg_mgr == "zypper" 
 - name: Update all packages
-  zypper:
-    name: '*'
-    state: latest
+  shell: ZYPP_LOCK_TIMEOUT=3600 zypper -n update
   register: suse_upack_source
-  environment:
-    ZYPP_LOCK_TIMEOUT: 3600
-  when: ansible_pkg_mgr == "zypper"
+  ignore_errors: True
+  when: ansible_pkg_mgr == "zypper" and UPDATE_SYS|default('OFF')|upper == 'ON'
 - name: Suse zypper Install
-  zypper: 
-    name:
-      - ipvsadm
-      - telnet
-      - wget
-      - net-tools
-      - conntrackd
-      - ipset
-      - jq
-      - iptables
-      - curl
-      - sysstat
-      - libseccomp2
-      - socat
-      - nfs-utils
-      - fuse
-      - lvm2
-      - apparmor-parser 
-      - apparmor-parser-lang 
-      - catatonit  
-      - less 
-      - libbsd0 
-      - liblvm2cmd2_03 
-      - libnet9 
-      - libpcre2-8-0 
-      - libprotobuf-c1
-      - libsha1detectcoll1  
-      - perl-Error 
-      - rsync 
-      - vim
-      - tree
-      - iputils
-      - net-tools-deprecated
-      - device-mapper
-      - fuse-devel
-      - ceph-common
-    state: latest
-  when: ansible_pkg_mgr == "zypper"    
+  shell: zypper -n install ipvsadm telnet wget net-tools conntrackd ipset jq iptables curl sysstat libseccomp2 socat nfs-utils fuse lvm2 apparmor-parser apparmor-parser-lang catatonit less libbsd0 liblvm2cmd2_03 libnet9 libpcre2-8-0 libprotobuf-c1 libsha1detectcoll1 perl-Error rsync vim tree iputils net-tools-deprecated device-mapper fuse-devel ceph-common
+  ignore_errors: True
+  when: ansible_pkg_mgr == "zypper" and UPDATE_SYS|default('OFF')|upper == 'ON'    
 - name: Detect cgroup v2
   stat:
     path: /sys/fs/cgroup/cgroup.controllers
@@ -2818,12 +2778,10 @@ EOF
 - name: Enable cgroup v2 when disabled
   when: not cgroup_v2_enabled
   block:
-    - name: Fail if CentOS/RHEL 7
+    - name: Fail if kernel version < 4.15
       fail:
-        msg: "当前系统是 cgroup v1，且 {{ ansible_distribution }} {{ ansible_distribution_major_version }} 不支持可靠启用 cgroup v2，请升级到 8/9 或使用 failCgroupV1 绕过。"
-      when:
-        - ansible_os_family == 'RedHat'
-        - (ansible_distribution_major_version | int) < 8
+        msg: "当前系统内核版本为 {{ kernel_shell_output.stdout }}，cgroup v2 需要内核版本 >= 4.15。请升级内核后再尝试，或使用 failCgroupV1 绕过。"
+      when: 'kernel_shell_output.stdout is version("4.15", "<")'
 
     - name: Read /etc/default/grub
       slurp:
@@ -2894,7 +2852,7 @@ EOF
 - name: Reboot a slow machine that might have lots of updates to apply
   reboot:
     reboot_timeout: 3600
-  when: ubuntu_upack_source.changed or redhat_upack_source.changed or suse_upack_source.changed or cgroup_v2_need_enable
+  when: (ubuntu_upack_source.changed or redhat_upack_source.changed or suse_upack_source.changed) and UPDATE_SYS|default('OFF')|upper == 'ON' or cgroup_v2_need_enable
 
 - name: Re-detect cgroup v2 after reboot
   stat:
