@@ -377,7 +377,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       initContainers:
         - name: init-sysctl
-          image: 'busybox:1.24'
+          image: 'docker.io/juestnow/busybox:1.24'
           command:
             - /bin/sh
             - '-c'
@@ -403,7 +403,7 @@ spec:
       #  canruningress: run
       containers:
         - name: controller
-          image: juestnow/ingress-nginx:v1.2.0
+          image: docker.io/juestnow/ingress-nginx:v1.2.0
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
