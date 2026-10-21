@@ -1,0 +1,26 @@
+* text=auto
+
+# Linux 脚本使用 LF
+*.sh text eol=lf
+
+# YAML 文件使用 LF
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Markdown 使用 LF
+*.md text eol=lf
+
+# 配置文件使用 LF
+*.conf text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.tmpl text eol=lf
+
+# 二进制文件不处理
+*.png binary
+*.jpg binary
+*.ico binary
+*.pem binary
+*.key binary
+*.crt binary
+*.csr binary
