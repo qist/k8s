@@ -1,5 +1,5 @@
 kind: Ingress
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: blackbox-exporter
   namespace: monitoring
@@ -9,6 +9,9 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: blackbox-exporter
-              servicePort: http
+              service:
+                name: blackbox-exporter
+                port:
+                  name: http
