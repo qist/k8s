@@ -159,45 +159,45 @@ export D_ARCH=x86_64
 export K8S_CLIENT_ARCH=amd64
 # 设置版本号
 # ETCD 版本
-export ETCD_VERSION=v3.6.11
+export ETCD_VERSION=v3.7.2
 export DOWNLOAD_ETCD_VERSION="https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # kubernetes 版本
-export KUBERNETES_VERSION=v1.36.1
+export KUBERNETES_VERSION=v1.37.1
 export DOWNLOAD_KUBERNETES_VERSION="https://dl.k8s.io/${KUBERNETES_VERSION}/kubernetes-server-linux-${K8S_ARCH}.tar.gz"
 export DOWNLOAD_KUBERNETES_CLIENT_VERSION="https://dl.k8s.io/${KUBERNETES_VERSION}/kubernetes-client-linux-${K8S_CLIENT_ARCH}.tar.gz"
 # cni 版本
 export CNI_VERSION=v1.9.1
 export DOWNLOAD_CNI_VERSION="https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-${K8S_ARCH}-${CNI_VERSION}.tgz"
 # iptables
-export IPTABLES_VERSION=1.8.8
+export IPTABLES_VERSION=1.8.13
 export DOWNLOAD_IPTABLES_VERSION="https://www.netfilter.org/projects/iptables/files/iptables-${IPTABLES_VERSION}.tar.bz2"
 # 数字证书签名工具
-export CFSSL_VERSION=1.6.5
+export CFSSL_VERSION=1.7.1
 export DOWNLOAD_CFSSL_VERSION="https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssl_${CFSSL_VERSION}_linux_${K8S_ARCH}"
 export DOWNLOAD_CFSSLJSON_VERSION="https://github.com/cloudflare/cfssl/releases/download/v${CFSSL_VERSION}/cfssljson_${CFSSL_VERSION}_linux_${K8S_ARCH}"
 # docker 版本
-export DOCKER_VERSION=29.5.2
+export DOCKER_VERSION=29.9.2
 export DOWNLOAD_DOCKER_VERSION="https://download.docker.com/linux/static/stable/${D_ARCH}/docker-${DOCKER_VERSION}.tgz"
 # docker cri 版本
-export CRI_DOCKER_VERSION=0.4.3
+export CRI_DOCKER_VERSION=0.4.9
 export DOWNLOAD_CRI_DOCKER_VERSION="https://github.com/Mirantis/cri-dockerd/releases/download/v${CRI_DOCKER_VERSION}/cri-dockerd-${CRI_DOCKER_VERSION}.${K8S_ARCH}.tgz"
 # containerd 版本
-export CONTAINERD_VERSION=2.3.1
+export CONTAINERD_VERSION=2.4.2
 export DOWNLOAD_CONTAINERD_VERSION="https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-static-${CONTAINERD_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # crictl 版本 cri-tools 版本
-export CRICTL_VERSION=v1.36.0
+export CRICTL_VERSION=v1.37.0
 export DOWNLOAD_CRICTL_VERSION="https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-${K8S_ARCH}.tar.gz"
 # runc 版本
-export RUNC_VERSION=v1.4.2
+export RUNC_VERSION=v1.5.2
 export DOWNLOAD_RUNC_VERSION="https://github.com/opencontainers/runc/releases/download/${RUNC_VERSION}/runc.${K8S_ARCH}"
 # cri-o 版本
-export CRIO_VERSION=v1.35.3
+export CRIO_VERSION=v1.37.2
 export DOWNLOAD_CRIO_VERSION="https://storage.googleapis.com/cri-o/artifacts/cri-o.${K8S_ARCH}.${CRIO_VERSION}.tar.gz"
 # 网络插件镜像选择 尽量下载使用私有仓库镜像地址这样部署很快
 # flannel cni
 FLANNEL_CNI_PLUGIN="ghcr.io/flannel-io/flannel-cni-plugin:v1.9.1-flannel1"
 # flannel 插件选择
-FLANNEL_VERSION="ghcr.io/flannel-io/flannel:v0.28.4"
+FLANNEL_VERSION="ghcr.io/flannel-io/flannel:v0.28.10"
 # kube-router 镜像
 KUBE_ROUTER_INIT="docker.io/cloudnativelabs/kube-router"
 KUBE_ROUTER_IMAGE="docker.io/cloudnativelabs/kube-router"
@@ -1984,8 +1984,8 @@ EOF
   if [[ ! -e ${HOST_PATH}/roles/kube-apiserver/files/config/encryption-config.yaml ]]; then
     # 生成encryption-config.yaml
     cat >${HOST_PATH}/roles/kube-apiserver/files/config/encryption-config.yaml <<EOF
-kind: EncryptionConfig
-apiVersion: v1
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
 resources:
   - resources:
       - secrets
